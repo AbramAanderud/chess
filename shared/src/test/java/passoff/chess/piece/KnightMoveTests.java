@@ -1,6 +1,6 @@
 package passoff.chess.piece;
 
-import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Test;
 
 import static passoff.chess.TestUtilities.validateMoves;
@@ -19,7 +19,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(5, 5),
+                new ChessPositionBuilder().setRow(5).setCol(5).createChessPosition(),
                 new int[][]{
                         {7, 6}, {6, 7}, {4, 7}, {3, 6}, {3, 4}, {4, 3}, {6, 3}, {7, 4},
                 }
@@ -38,7 +38,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(5, 5),
+                new ChessPositionBuilder().setRow(5).setCol(5).createChessPosition(),
                 new int[][]{
                         {7, 6}, {6, 7}, {4, 7}, {3, 6}, {3, 4}, {4, 3}, {6, 3}, {7, 4},
                 }
@@ -58,7 +58,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 1),
+                new ChessPositionBuilder().setRow(4).setCol(1).createChessPosition(),
                 new int[][]{{6, 2}, {5, 3}, {3, 3}, {2, 2}}
         );
     }
@@ -75,7 +75,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(3, 8),
+                new ChessPositionBuilder().setRow(3).setCol(8).createChessPosition(),
                 new int[][]{{1, 7}, {2, 6}, {4, 6}, {5, 7}}
         );
     }
@@ -92,7 +92,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | |N| | |
                         """,
-                new ChessPosition(1, 6),
+                new ChessPositionBuilder().setRow(1).setCol(6).createChessPosition(),
                 new int[][]{{2, 4}, {3, 5}, {3, 7}, {2, 8}}
         );
     }
@@ -109,7 +109,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(8, 3),
+                new ChessPositionBuilder().setRow(8).setCol(3).createChessPosition(),
                 new int[][]{{7, 5}, {6, 4}, {6, 2}, {7, 1}}
         );
     }
@@ -127,7 +127,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | |N|
                         """,
-                new ChessPosition(1, 8),
+                new ChessPositionBuilder().setRow(1).setCol(8).createChessPosition(),
                 new int[][]{{2, 6}, {3, 7}}
         );
     }
@@ -144,7 +144,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(8, 8),
+                new ChessPositionBuilder().setRow(8).setCol(8).createChessPosition(),
                 new int[][]{{6, 7}, {7, 6}}
         );
     }
@@ -161,7 +161,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(8, 1),
+                new ChessPositionBuilder().setRow(8).setCol(1).createChessPosition(),
                 new int[][]{{7, 3}, {6, 2}}
         );
     }
@@ -178,7 +178,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         |n| | | | | | | |
                         """,
-                new ChessPosition(1, 1),
+                new ChessPositionBuilder().setRow(1).setCol(1).createChessPosition(),
                 new int[][]{{2, 3}, {3, 2}}
         );
     }
@@ -196,7 +196,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(5, 5),
+                new ChessPositionBuilder().setRow(5).setCol(5).createChessPosition(),
                 new int[][]{{3, 4}, {3, 6}, {4, 7}, {7, 6}, {6, 3}}
         );
     }
@@ -214,7 +214,7 @@ public class KnightMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(5, 5),
+                new ChessPositionBuilder().setRow(5).setCol(5).createChessPosition(),
                 new int[][]{{7, 6}, {6, 7}, {4, 7}, {3, 6}, {3, 4}, {4, 3}, {6, 3}, {7, 4}}
         );
     }

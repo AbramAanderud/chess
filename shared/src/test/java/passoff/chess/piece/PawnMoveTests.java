@@ -3,6 +3,7 @@ package passoff.chess.piece;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 4),
+                new ChessPositionBuilder().setRow(4).setCol(4).createChessPosition(),
                 new int[][]{{5, 4}}
         );
     }
@@ -41,7 +42,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 4),
+                new ChessPositionBuilder().setRow(4).setCol(4).createChessPosition(),
                 new int[][]{{3, 4}}
         );
     }
@@ -59,7 +60,7 @@ public class PawnMoveTests {
                         | | | | |P| | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(2, 5),
+                new ChessPositionBuilder().setRow(2).setCol(5).createChessPosition(),
                 new int[][]{{3, 5}, {4, 5}}
         );
     }
@@ -76,7 +77,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(7, 3),
+                new ChessPositionBuilder().setRow(7).setCol(3).createChessPosition(),
                 new int[][]{{6, 3}, {5, 3}}
         );
     }
@@ -94,7 +95,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(7, 3),
+                new ChessPositionBuilder().setRow(7).setCol(3).createChessPosition(),
                 new int[][]{{8, 3}}
         );
     }
@@ -112,7 +113,7 @@ public class PawnMoveTests {
                         | | |p| | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(2, 3),
+                new ChessPositionBuilder().setRow(2).setCol(3).createChessPosition(),
                 new int[][]{{1, 3}}
         );
     }
@@ -130,7 +131,7 @@ public class PawnMoveTests {
                         | |p| | | | | | |
                         |N| | | | | | | |
                         """,
-                new ChessPosition(2, 2),
+                new ChessPositionBuilder().setRow(2).setCol(2).createChessPosition(),
                 new int[][]{{1, 1}, {1, 2}}
         );
     }
@@ -148,7 +149,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 4),
+                new ChessPositionBuilder().setRow(4).setCol(4).createChessPosition(),
                 new int[][]{}
         );
     }
@@ -165,7 +166,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(5, 4),
+                new ChessPositionBuilder().setRow(5).setCol(4).createChessPosition(),
                 new int[][]{}
         );
     }
@@ -183,7 +184,7 @@ public class PawnMoveTests {
                         | | | | | | |P| |
                         | | | | | | | | |
                         """,
-                new ChessPosition(2, 7),
+                new ChessPositionBuilder().setRow(2).setCol(7).createChessPosition(),
                 new int[][]{{3, 7}}
         );
     }
@@ -200,7 +201,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(7, 3),
+                new ChessPositionBuilder().setRow(7).setCol(3).createChessPosition(),
                 new int[][]{}
         );
     }
@@ -218,7 +219,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 4),
+                new ChessPositionBuilder().setRow(4).setCol(4).createChessPosition(),
                 new int[][]{{5, 3}, {5, 4}}
         );
     }
@@ -235,7 +236,7 @@ public class PawnMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 4),
+                new ChessPositionBuilder().setRow(4).setCol(4).createChessPosition(),
                 new int[][]{{3, 5}}
         );
     }
@@ -245,7 +246,7 @@ public class PawnMoveTests {
         var testPiece = board.getPiece(startingPosition);
         var validMoves = new HashSet<ChessMove>();
         for (var endPosition : endPositions) {
-            var end = new ChessPosition(endPosition[0], endPosition[1]);
+            var end = new ChessPositionBuilder().setRow(endPosition[0]).setCol(endPosition[1]).createChessPosition();
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.QUEEN));
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.BISHOP));
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.ROOK));

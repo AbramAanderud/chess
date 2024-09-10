@@ -1,6 +1,6 @@
 package passoff.chess.piece;
 
-import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Test;
 
 import static passoff.chess.TestUtilities.validateMoves;
@@ -20,7 +20,7 @@ public class RookMoveTests {
                         | | |R| | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(2, 3),
+                new ChessPositionBuilder().setRow(2).setCol(3).createChessPosition(),
                 new int[][]{
                         {2, 4}, {2, 5}, {2, 6}, {2, 7}, {2, 8},
                         {2, 2}, {2, 1},
@@ -43,7 +43,7 @@ public class RookMoveTests {
                         |q| | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(4, 1),
+                new ChessPositionBuilder().setRow(4).setCol(1).createChessPosition(),
                 new int[][]{
                         {5, 1},
                         {3, 1},
@@ -65,7 +65,7 @@ public class RookMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(8, 8),
+                new ChessPositionBuilder().setRow(8).setCol(8).createChessPosition(),
                 new int[][]{}
         );
     }

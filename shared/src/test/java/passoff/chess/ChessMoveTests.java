@@ -2,7 +2,7 @@ package passoff.chess;
 
 import chess.ChessMove;
 import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +20,11 @@ public class ChessMoveTests {
     private ChessMove promoteDifferent;
     @BeforeEach
     public void setUp() {
-        original = new ChessMove(new ChessPosition(2, 6), new ChessPosition(1, 5), null);
-        equal = new ChessMove(new ChessPosition(2, 6), new ChessPosition(1, 5), null);
-        startDifferent = new ChessMove(new ChessPosition(2, 4), new ChessPosition(1, 5), null);
-        endDifferent = new ChessMove(new ChessPosition(2, 6), new ChessPosition(5, 3), null);
-        promoteDifferent = new ChessMove(new ChessPosition(2, 6), new ChessPosition(1, 5),
+        original = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
+        equal = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
+        startDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(4).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
+        endDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(5).setCol(3).createChessPosition(), null);
+        promoteDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(),
                 ChessPiece.PieceType.QUEEN);
     }
 

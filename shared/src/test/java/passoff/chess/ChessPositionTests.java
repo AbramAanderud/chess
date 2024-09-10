@@ -1,6 +1,7 @@
 package passoff.chess;
 
 import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +16,9 @@ public class ChessPositionTests {
     private ChessPosition different;
     @BeforeEach
     public void setUp() {
-        original = new ChessPosition(3, 7);
-        equal = new ChessPosition(3, 7);
-        different = new ChessPosition(7, 3);
+        original = new ChessPositionBuilder().setRow(3).setCol(7).createChessPosition();
+        equal = new ChessPositionBuilder().setRow(3).setCol(7).createChessPosition();
+        different = new ChessPositionBuilder().setRow(7).setCol(3).createChessPosition();
     }
 
     @Test

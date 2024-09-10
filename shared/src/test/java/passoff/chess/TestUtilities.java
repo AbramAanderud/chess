@@ -51,7 +51,7 @@ public class TestUtilities {
                     ChessGame.TeamColor color = Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK
                             : ChessGame.TeamColor.WHITE;
                     var type = CHAR_TO_TYPE_MAP.get(Character.toLowerCase(c));
-                    var position = new ChessPosition(row, column);
+                    var position = new ChessPositionBuilder().setRow(row).setCol(column).createChessPosition();
                     var piece = new ChessPiece(color, type);
                     board.addPiece(position, piece);
                     column++;
@@ -65,7 +65,7 @@ public class TestUtilities {
         var validMoves = new HashSet<ChessMove>();
         for (var endPosition : endPositions) {
             validMoves.add(new ChessMove(startPosition,
-                    new ChessPosition(endPosition[0], endPosition[1]), null));
+                    new ChessPositionBuilder().setRow(endPosition[0]).setCol(endPosition[1]).createChessPosition(), null));
         }
         return validMoves;
     }

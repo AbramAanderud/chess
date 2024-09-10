@@ -1,6 +1,6 @@
 package passoff.chess.piece;
 
-import chess.ChessPosition;
+import chess.ChessPositionBuilder;
 import org.junit.jupiter.api.Test;
 
 import static passoff.chess.TestUtilities.validateMoves;
@@ -19,7 +19,7 @@ public class KingMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(3, 6),
+                new ChessPositionBuilder().setRow(3).setCol(6).createChessPosition(),
                 new int[][]{{4, 6}, {4, 7}, {3, 7}, {2, 7}, {2, 6}, {2, 5}, {3, 5}, {4, 5}}
         );
     }
@@ -37,7 +37,7 @@ public class KingMoveTests {
                         | | |P|b|p| | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(3, 4),
+                new ChessPositionBuilder().setRow(3).setCol(4).createChessPosition(),
                 new int[][]{{4, 4}, {3, 5}, {2, 3}, {3, 3}, {4, 3}}
         );
     }
@@ -55,7 +55,7 @@ public class KingMoveTests {
                         | | | | | | | | |
                         | | | | | | | | |
                         """,
-                new ChessPosition(8, 8),
+                new ChessPositionBuilder().setRow(8).setCol(8).createChessPosition(),
                 new int[][]{}
         );
     }

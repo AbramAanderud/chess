@@ -1,4 +1,8 @@
-package chess;
+package chess.AllMoves;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +30,6 @@ public class BishopMovesCalculator {
         }
 
         return moves;
-
     }
 
     private void getMoves(ChessBoard board, Collection<ChessMove> moves, int row, int col, int rowInc, int colInc) {

@@ -1,6 +1,8 @@
 package chess;
 
 
+import chess.AllMoves.BishopMovesCalculator;
+
 import java.util.Collection;
 
 public class PieceMoveCalculator {
@@ -22,9 +24,12 @@ public class PieceMoveCalculator {
         } else if(type == ChessPiece.PieceType.PAWN) {
             return new BishopMovesCalculator().pieceMoves(board, myPosition);
         }
+         else {
+             return null;
+         }
 
 
-         return null;
+
     }
 
 }

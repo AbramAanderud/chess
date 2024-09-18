@@ -28,13 +28,14 @@ public class PawnMovesCalculator {
             ChessPosition startPosition = new ChessPosition(currRow, currCol);
             ChessPosition oneInFront = new ChessPosition(currRow + 1, currCol);
             ChessPosition twoInFront = new ChessPosition(currRow + 2, currCol);
-            ChessPosition lefty = new ChessPosition(currRow + 1, currCol - 1);
-            ChessPosition righty = new ChessPosition(currRow + 1, currCol + 1);
+            ChessPosition lefty = (currCol > 1) ? new ChessPosition(currRow + 1, currCol - 1) : null;
+            ChessPosition righty = (currCol < 8) ? new ChessPosition(currRow + 1, currCol + 1) : null;
 
             if (currRow == 2 && board.isEmpty(oneInFront) && board.isEmpty(twoInFront)) {
                 moves.add(new ChessMove(startPosition, twoInFront, null));
                 moves.add(new ChessMove(startPosition, oneInFront, null));
-            } else if (board.isEmpty(oneInFront)) {
+            }
+            if (board.isEmpty(oneInFront)) {
                 if(oneInFront.getRow() == 8) {
                     Promotion(startPosition, oneInFront, moves);
                 } else {
@@ -42,13 +43,14 @@ public class PawnMovesCalculator {
                 }
             }
 
-            if ((!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            if (lefty != null && (!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(lefty.getRow() == 8) {
                     Promotion(startPosition, lefty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, lefty, null));
                 }
-            } else if ((!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            }
+            if (righty != null && (!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(righty.getRow() == 8) {
                     Promotion(startPosition, righty, moves);
                 } else {
@@ -63,13 +65,15 @@ public class PawnMovesCalculator {
             ChessPosition startPosition = new ChessPosition(currRow, currCol);
             ChessPosition oneInFront = new ChessPosition(currRow - 1, currCol);
             ChessPosition twoInFront = new ChessPosition(currRow - 2, currCol);
-            ChessPosition lefty = new ChessPosition(currRow - 1, currCol - 1);
-            ChessPosition righty = new ChessPosition(currRow - 1, currCol + 1);
+
+            ChessPosition lefty = (currCol > 1) ? new ChessPosition(currRow - 1, currCol - 1) : null;
+            ChessPosition righty = (currCol < 8) ? new ChessPosition(currRow - 1, currCol + 1) : null;
 
             if(currRow == 7 && board.isEmpty(oneInFront) && board.isEmpty(twoInFront)) {
                 moves.add(new ChessMove(startPosition, twoInFront, null));
                 moves.add(new ChessMove(startPosition, oneInFront, null));
-            } else if(board.isEmpty(oneInFront)) {
+            }
+            if(board.isEmpty(oneInFront)) {
                 if(oneInFront.getRow() == 1) {
                     Promotion(startPosition, oneInFront, moves);
                 } else {
@@ -77,13 +81,14 @@ public class PawnMovesCalculator {
                 }
             }
 
-            if((!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            if(lefty != null && (!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(lefty.getRow() == 1) {
                     Promotion(startPosition, lefty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, lefty, null));
                 }
-            } else if((!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            }
+            if(righty != null && (!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(righty.getRow() == 1) {
                     Promotion(startPosition, righty, moves);
                 } else {

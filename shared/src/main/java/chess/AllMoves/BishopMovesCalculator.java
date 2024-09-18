@@ -25,7 +25,6 @@ public class BishopMovesCalculator {
         for(int[] direction : Diagonals) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
         }
-
         return moves;
     }
 

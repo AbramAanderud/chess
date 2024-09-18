@@ -103,7 +103,6 @@ public class PawnMovesCalculator {
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.ROOK));
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.QUEEN));
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.BISHOP));
-
     }
 
 

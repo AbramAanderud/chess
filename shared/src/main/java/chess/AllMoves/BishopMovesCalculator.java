@@ -16,14 +16,11 @@ public class BishopMovesCalculator {
     };
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
-
         Collection<ChessMove> moves = new ArrayList<>();
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
 
         //System.out.println("Current Row: " + currRow + ", Current Column: " + currCol);
-
 
         for(int[] direction : Diagonals) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
@@ -42,7 +39,7 @@ public class BishopMovesCalculator {
 
             if(board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
-            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(new ChessPosition(row, col)).getTeamColor()) {
+            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
                 break;
             } else {

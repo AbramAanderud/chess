@@ -1,7 +1,7 @@
 package chess;
 
 
-import chess.AllMoves.BishopMovesCalculator;
+import chess.AllMoves.*;
 
 import java.util.Collection;
 
@@ -14,15 +14,15 @@ public class PieceMoveCalculator {
          if(type == ChessPiece.PieceType.BISHOP) {
             return new BishopMovesCalculator().pieceMoves(board, myPosition);
          } else if(type == ChessPiece.PieceType.KNIGHT) {
-            return new BishopMovesCalculator().pieceMoves(board, myPosition);
+            return new KingMovesCalculator().pieceMoves(board, myPosition);
         } else if(type == ChessPiece.PieceType.ROOK) {
-            return new BishopMovesCalculator().pieceMoves(board, myPosition);
+            return new RookMovesCalculator().pieceMoves(board, myPosition);
         } else if(type == ChessPiece.PieceType.QUEEN) {
-            return new BishopMovesCalculator().pieceMoves(board, myPosition);
+            return new QueenMovesCalculator().pieceMoves(board, myPosition);
         } else if(type == ChessPiece.PieceType.KING) {
-            return new BishopMovesCalculator().pieceMoves(board, myPosition);
+            return new KingMovesCalculator().pieceMoves(board, myPosition);
         } else if(type == ChessPiece.PieceType.PAWN) {
-            return new BishopMovesCalculator().pieceMoves(board, myPosition);
+            return new PawnMovesCalculator().pieceMoves(board, myPosition);
         }
          else {
              return null;

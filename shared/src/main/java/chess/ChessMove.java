@@ -45,6 +45,7 @@ public class ChessMove {
         return promotionPiece;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

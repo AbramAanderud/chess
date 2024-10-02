@@ -27,6 +27,27 @@ public class ChessBoard {
         return copy;
     }
 
+    public void makeRealMove(ChessMove move, ChessBoard board) {
+        ChessPosition endPos = move.getEndPosition();
+        ChessPosition startPos = move.getStartPosition();
+
+        ChessPiece pieceForType = board.getPiece(startPos);
+
+        if (pieceForType == null) {
+            throw new RuntimeException("No piece at the start position.");
+        }
+
+        int endPosRow = endPos.getRow();
+        int endPosColumn = endPos.getColumn();
+        int startPosRow = startPos.getRow();
+        int startPosColumn = startPos.getColumn();
+        ChessPiece.PieceType type = pieceForType.getPieceType();
+        ChessGame.TeamColor color = pieceForType.getTeamColor();
+
+        board.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
+        board.squares[startPosRow][startPosColumn] = null;
+    }
+
     public ChessBoard makeFakeMove(ChessMove move, ChessBoard board) {
         ChessPosition endPos = move.getEndPosition();
         ChessPosition startPos = move.getStartPosition();
@@ -37,6 +58,8 @@ public class ChessBoard {
             throw new RuntimeException("No piece at the start position.");
         }
 
+        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
+
         ChessPiece.PieceType type = pieceForType.getPieceType();
         ChessGame.TeamColor color = pieceForType.getTeamColor();
 
@@ -45,10 +68,10 @@ public class ChessBoard {
         int startPosRow = startPos.getRow();
         int startPosColumn = startPos.getColumn();
 
-        board.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
-        board.squares[startPosRow][startPosColumn] = null;
+        boardCopy.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
+        boardCopy.squares[startPosRow][startPosColumn] = null;
 
-         return board;
+         return boardCopy;
     }
 
     /**

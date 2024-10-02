@@ -72,11 +72,14 @@ public class ChessGame {
         }
 
         Collection<ChessMove> moves = currChessPiece.pieceMoves(board, startPosition);
-
         Collection<ChessMove> validMoves = new ArrayList<>();
-        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
 
-        throw new RuntimeException("Not implemented");
+        TeamColor teamColor = currChessPiece.getTeamColor();
+
+        for(ChessMove move : moves) {
+
+        }
+        return null;
     }
 
 
@@ -102,8 +105,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
 
-        throw new RuntimeException("Not implemented");
+        if (validMoves == null || !validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move.");
+        }
+
+        board.makeRealMove(move, board);
+
+        if(turn == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
+        }
+
     }
 
     /**
@@ -141,7 +156,6 @@ public class ChessGame {
         if(!isInCheck(teamColor)) {
             return false;
         }
-
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
 
@@ -193,7 +207,25 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(isInCheck(teamColor)) {
+            return false;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPosition currentPosition = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(currentPosition);
+
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> validMoves = validMoves(currentPosition);
+
+                    if (validMoves != null && !validMoves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**

@@ -21,57 +21,43 @@ public class ChessBoard {
 
         for(int i =0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                copy.squares[i][j] = new ChessPiece(this.squares[i][j].getTeamColor(), this.squares[i][j].getPieceType());
+                ChessPiece piece = this.squares[i][j];
+
+                if (piece != null) {
+                    copy.squares[i][j] = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+                } else {
+                    copy.squares[i][j] = null;
+                }
             }
         }
         return copy;
     }
 
-    public void makeRealMove(ChessMove move, ChessBoard board) {
-        ChessPosition endPos = move.getEndPosition();
+
+    public void makeMoveOnBoard(ChessMove move) {
         ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
 
-        ChessPiece pieceForType = board.getPiece(startPos);
-
-        if (pieceForType == null) {
-            throw new RuntimeException("No piece at the start position.");
+        ChessPiece piece = this.getPiece(startPos);
+        if (piece == null) {
+            throw new RuntimeException("No piece at the start pos");
         }
 
-        int endPosRow = endPos.getRow();
-        int endPosColumn = endPos.getColumn();
-        int startPosRow = startPos.getRow();
-        int startPosColumn = startPos.getColumn();
-        ChessPiece.PieceType type = pieceForType.getPieceType();
-        ChessGame.TeamColor color = pieceForType.getTeamColor();
-
-        board.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
-        board.squares[startPosRow][startPosColumn] = null;
+        this.addPiece(endPos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+        this.removePiece(startPos, piece);
     }
 
-    public ChessBoard makeFakeMove(ChessMove move, ChessBoard board) {
-        ChessPosition endPos = move.getEndPosition();
+    public void makePromoMoveOnBoard(ChessMove move) {
         ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
 
-        ChessPiece pieceForType = board.getPiece(startPos);
-
-        if (pieceForType == null) {
-            throw new RuntimeException("No piece at the start position.");
+        ChessPiece piece = this.getPiece(startPos);
+        if (piece == null) {
+            throw new RuntimeException("No piece at the start pos");
         }
 
-        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
-
-        ChessPiece.PieceType type = pieceForType.getPieceType();
-        ChessGame.TeamColor color = pieceForType.getTeamColor();
-
-        int endPosRow = endPos.getRow();
-        int endPosColumn = endPos.getColumn();
-        int startPosRow = startPos.getRow();
-        int startPosColumn = startPos.getColumn();
-
-        boardCopy.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
-        boardCopy.squares[startPosRow][startPosColumn] = null;
-
-         return boardCopy;
+        this.addPiece(endPos, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        this.removePiece(startPos, piece);
     }
 
     /**
@@ -82,6 +68,12 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getRow() - 1][position.getColumn() - 1] = piece;
+    }
+
+    public void removePiece(ChessPosition position, ChessPiece piece) {
+        if (squares[position.getRow() - 1][position.getColumn() - 1].getPieceType() == piece.getPieceType() && squares[position.getRow() - 1][position.getColumn() - 1].getTeamColor() == piece.getTeamColor()) {
+            squares[position.getRow() - 1][position.getColumn() - 1] = null;
+        }
     }
 
     /**

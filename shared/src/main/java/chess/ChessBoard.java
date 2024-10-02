@@ -27,6 +27,30 @@ public class ChessBoard {
         return copy;
     }
 
+    public ChessBoard makeFakeMove(ChessMove move, ChessBoard board) {
+        ChessPosition endPos = move.getEndPosition();
+        ChessPosition startPos = move.getStartPosition();
+
+        ChessPiece pieceForType = board.getPiece(startPos);
+
+        if (pieceForType == null) {
+            throw new RuntimeException("No piece at the start position.");
+        }
+
+        ChessPiece.PieceType type = pieceForType.getPieceType();
+        ChessGame.TeamColor color = pieceForType.getTeamColor();
+
+        int endPosRow = endPos.getRow();
+        int endPosColumn = endPos.getColumn();
+        int startPosRow = startPos.getRow();
+        int startPosColumn = startPos.getColumn();
+
+        board.squares[endPosRow][endPosColumn] = new ChessPiece(color, type);
+        board.squares[startPosRow][startPosColumn] = null;
+
+         return board;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *

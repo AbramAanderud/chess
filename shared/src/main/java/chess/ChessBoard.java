@@ -19,11 +19,11 @@ public class ChessBoard {
     public ChessBoard CopyBoard() {
         ChessBoard copy = new ChessBoard();
 
-        for(int i =0; i < 8; i++) {
+        for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 ChessPiece piece = this.squares[i][j];
 
-                if (piece != null) {
+                if (this.squares[i][j] != null) {
                     copy.squares[i][j] = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
                 } else {
                     copy.squares[i][j] = null;
@@ -39,11 +39,12 @@ public class ChessBoard {
         ChessPosition endPos = move.getEndPosition();
 
         ChessPiece piece = this.getPiece(startPos);
+
         if (piece == null) {
             throw new RuntimeException("No piece at the start pos");
         }
 
-        this.addPiece(endPos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+        this.addPiece(endPos, piece);
         this.removePiece(startPos, piece);
     }
 

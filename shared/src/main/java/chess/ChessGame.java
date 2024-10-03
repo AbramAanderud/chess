@@ -17,6 +17,7 @@ public class ChessGame {
 
     public ChessGame() {
         this.board = new ChessBoard();
+        board.resetBoard();
         this.turn = TeamColor.WHITE;
     }
 
@@ -76,7 +77,7 @@ public class ChessGame {
         TeamColor teamColor = currChessPiece.getTeamColor();
 
         for(ChessMove move : moves) {
-            ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
+            ChessBoard boardCopy = board.CopyBoard();
 
             if(move.getPromotionPiece() == null) {
                 boardCopy.makeMoveOnBoard(move);
@@ -161,7 +162,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPos = findKingPosition(teamColor, board);
-        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
+        ChessBoard boardCopy = board.CopyBoard();
 
         for(int i = 1; i < 8; i++) {
             for(int j = 1; j < 8; j++) {
@@ -200,17 +201,22 @@ public class ChessGame {
                     Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(i,j));
 
                     for(ChessMove move : moves) {
-                        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
-                        boardCopy.makeMoveOnBoard(move);
+                        ChessBoard boardCopy = board.CopyBoard();
 
                         if(move.getPromotionPiece() == null) {
+                            System.out.println(boardCopy);
                             boardCopy.makeMoveOnBoard(move);
                         } else {
                             boardCopy.makePromoMoveOnBoard(move);
                         }
+
+                        System.out.println("Board after move:");
+                        System.out.println(boardCopy);
+
                         if(!isInCheckWithBoard(teamColor, boardCopy)) {
                             return false;
                         }
+
                     }
                 }
             }
@@ -247,6 +253,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheck(teamColor)) {
+            return false;
+        }
         for (int i = 1; i < 8; i++) {
             for (int j = 1; j < 8; j++) {
                 ChessPosition currentPosition = new ChessPosition(i, j);

@@ -71,8 +71,6 @@ public class ChessGame {
             return null;
         }
 
-
-
         Collection<ChessMove> moves = currChessPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
 
@@ -80,7 +78,7 @@ public class ChessGame {
 
 
         for(ChessMove move : moves) {
-            ChessBoard boardCopy = (ChessBoard) this.board.CopyBoard();
+            ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
 
             if(move.getPromotionPiece() == null) {
                 boardCopy.makeMoveOnBoard(move);
@@ -107,7 +105,7 @@ public class ChessGame {
                 }
             }
         }
-        throw new RuntimeException("King not found on the board.");
+        return null;
     }
 
 
@@ -142,7 +140,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPos = findKingPosition(teamColor, board);
-        ChessBoard boardCopy = (ChessBoard) this.board.CopyBoard();
+        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
 
         for(int i = 1; i < 8; i++) {
             for(int j = 1; j < 8; j++) {
@@ -177,7 +175,7 @@ public class ChessGame {
                     Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(i,j));
 
                     for(ChessMove move : moves) {
-                        ChessBoard boardCopy = (ChessBoard) this.board.CopyBoard();
+                        ChessBoard boardCopy = (ChessBoard) board.CopyBoard();
 
                         boardCopy.makeMoveOnBoard(move);
 

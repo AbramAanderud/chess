@@ -46,6 +46,10 @@ public class ChessBoard {
 
         this.addPiece(endPos, piece);
         this.removePiece(startPos, piece);
+
+        //need to move these methods into the chessboard maybe
+        //Other moves can move into a position in which they would
+        //be allowed to still be captured but the king cannot
     }
 
     public void makePromoMoveOnBoard(ChessMove move) {

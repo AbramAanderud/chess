@@ -84,21 +84,59 @@ public class ChessGame {
             } else {
                 boardCopy.makePromoMoveOnBoard(move);
             }
-            if(!isInCheckWithBoard(teamColor, boardCopy)) {
+
+            if (currChessPiece.getPieceType() == ChessPiece.PieceType.KING && currChessPiece.getTeamColor() == teamColor) {
+                ChessPosition newKingPosition = move.getEndPosition();
+                if (!newKingPositionThreat(newKingPosition, teamColor, boardCopy)) {
+                    validMoves.add(move);
+                }
+            } else if(!isInCheckWithBoard(teamColor, boardCopy)) {
                 validMoves.add(move);
             }
         }
         return validMoves;
     }
 
+    private boolean newKingPositionThreat(ChessPosition position,TeamColor teamColor, ChessBoard baord) {
+        for(int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
+
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> opponentMoves = piece.pieceMoves(board, new ChessPosition(i, j));
+
+                    for (ChessMove move : opponentMoves) {
+                        if (move.getEndPosition().equals(position)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     private ChessPosition findKingPosition(TeamColor teamColor, ChessBoard board) {
-        for(int i = 1; i < 8; i++) {
-            for(int j = 1; j < 8; j++) {
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
                 ChessPosition currPos = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(currPos);
 
                 if(piece != null && board.getPiece(currPos).getTeamColor() == teamColor && board.getPiece(currPos).getPieceType() == ChessPiece.PieceType.KING) {
+                    return currPos;
+                }
+            }
+        }
+        return null;
+    }
+
+    private ChessPosition findOppositeKingPosition(TeamColor teamColor, ChessBoard board) {
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
+                ChessPosition currPos = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(currPos);
+
+                if(piece != null && board.getPiece(currPos).getTeamColor() == TeamColor.BLACK && board.getPiece(currPos).getPieceType() == ChessPiece.PieceType.KING) {
                     return currPos;
                 }
             }
@@ -115,10 +153,13 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
+
         if(piece == null || piece.getTeamColor() != this.getTeamTurn()) {
             throw new InvalidMoveException("wrong teams piece trying to be moved");
         }
+
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+
         if (validMoves == null || !validMoves.contains(move)) {
             throw new InvalidMoveException("Invalid, not in valid moves");
         }
@@ -164,8 +205,8 @@ public class ChessGame {
         ChessPosition kingPos = findKingPosition(teamColor, board);
         ChessBoard boardCopy = board.CopyBoard();
 
-        for(int i = 1; i < 8; i++) {
-            for(int j = 1; j < 8; j++) {
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));
 
                 if(piece != null && piece.getTeamColor() != teamColor) {
@@ -190,33 +231,33 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(!isInCheck(teamColor)) {
-            return false;
-        }
-        for(int i = 1; i < 8; i++) {
-            for(int j = 1; j < 8; j++) {
+
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
                 ChessPiece piece = this.board.getPiece(new ChessPosition(i,j));
 
                 if(piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(i,j));
+                    Collection<ChessMove> moves = validMoves(new ChessPosition(i,j));
 
                     for(ChessMove move : moves) {
                         ChessBoard boardCopy = board.CopyBoard();
 
+
                         if(move.getPromotionPiece() == null) {
-                            System.out.println(boardCopy);
                             boardCopy.makeMoveOnBoard(move);
                         } else {
                             boardCopy.makePromoMoveOnBoard(move);
                         }
 
+
                         System.out.println("Board after move:");
-                        System.out.println(boardCopy);
+
+                        ChessPosition currKingPos = findKingPosition(TeamColor.BLACK, board);
+                        System.out.println("curr king pos " + currKingPos);
 
                         if(!isInCheckWithBoard(teamColor, boardCopy)) {
                             return false;
                         }
-
                     }
                 }
             }
@@ -227,8 +268,8 @@ public class ChessGame {
     public boolean isInCheckWithBoard(TeamColor teamColor, ChessBoard board) {
         ChessPosition kingPos = findKingPosition(teamColor, board);
 
-        for(int i = 1; i < 8; i++) {
-            for(int j = 1; j < 8; j++) {
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));
 
                 if (piece != null && piece.getTeamColor() != teamColor) {
@@ -256,8 +297,8 @@ public class ChessGame {
         if (isInCheck(teamColor)) {
             return false;
         }
-        for (int i = 1; i < 8; i++) {
-            for (int j = 1; j < 8; j++) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
                 ChessPosition currentPosition = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(currentPosition);
 

@@ -19,6 +19,8 @@ public class Server {
         //CreateGame
         //JoinGame
 
+        if()
+
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();

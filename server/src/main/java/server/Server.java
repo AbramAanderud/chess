@@ -1,5 +1,6 @@
 package server;
 
+import handlers.RegisterHandler;
 import spark.*;
 
 public class Server {
@@ -19,7 +20,9 @@ public class Server {
         //CreateGame
         //JoinGame
 
-        if()
+        Spark.post("/user", (request, response) ->
+                (new RegisterHandler()).handleRequest(request, response));
+
 
 
         //This line initializes the server and can be removed once you have a functioning endpoint 

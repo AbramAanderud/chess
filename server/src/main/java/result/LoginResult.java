@@ -1,4 +1,4 @@
-package results;
+package result;
 
 public class LoginResult {
 }

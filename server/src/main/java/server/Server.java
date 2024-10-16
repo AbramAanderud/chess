@@ -20,10 +20,10 @@ public class Server {
         //CreateGame
         //JoinGame
 
+
+        //for register
         Spark.post("/user", (request, response) ->
                 (new RegisterHandler()).handleRequest(request, response));
-
-
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();

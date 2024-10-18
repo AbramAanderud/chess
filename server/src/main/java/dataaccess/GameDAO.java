@@ -1,24 +1,31 @@
 package dataaccess;
 
+import model.GameData;
 import model.UserData;
+
+import java.util.Collection;
 
 public class GameDAO {
     DataAccess dataAccess;
     //Crud class
 
-    public void createUser(UserData u) {
-        dataAccess.createUser(u);
+    public void createGame(GameData g) {
+        dataAccess.createGame(g);
     }
 
-    public UserData getUser(String username) {
-        return dataAccess.getUser(username);
+    public GameData getGame(int gameID) {
+        return dataAccess.getGame(gameID);
     }
 
-    public void updateUser(UserData u) {
-        dataAccess.updateUser(u);
+    public void updateGame(GameData g) {
+        dataAccess.updateGame(g);
     }
 
-    public void deleteUser(String username) {
-        dataAccess.deleteUser(username);
+    public Collection<GameData> listGames() {
+        return dataAccess.listGames();
+    }
+
+    public void deleteGame(int gameID) {
+        dataAccess.deleteGame(gameID);
     }
 }

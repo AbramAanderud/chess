@@ -4,23 +4,14 @@ import model.UserData;
 
 import java.util.Collection;
 
-public class UserDAO {
-    DataAccess dataAccess;
-    //Crud class
+public interface UserDAO {
+    void createUser(UserData u) throws DataAccessException;
 
-    public void createUser(UserData u) {
-        dataAccess.createUser(u);
-    }
+    UserData getUser(String username);
 
-    public UserData getUser(String username) {
-        return dataAccess.getUser(username);
-    }
+    void updateUser(UserData u);
 
-    public void updateUser(UserData u) {
-        dataAccess.updateUser(u);
-    }
+    void deleteUser(String username);
 
-    public void deleteUser(String username) {
-        dataAccess.deleteUser(username);
-    }
+    void clearAllUserData();
 }

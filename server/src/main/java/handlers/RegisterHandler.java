@@ -9,9 +9,23 @@ public class RegisterHandler {
     private final UserService userService = new UserService();
 
     public String handleRequest(Request req, Response res) {
-        RegisterRequest request = jsonHandler.fromJson(req, RegisterRequest.class);
-        RegisterResult result = userService.register(request);
+        try {
+            RegisterRequest request = jsonHandler.fromJson(req, RegisterRequest.class);
+            RegisterResult result = userService.register(request);
 
-        return jsonHandler.toJson(result);
+            if(result.authToken() != null) {
+                res.status(200);
+                return jsonHandler.toJson(result);
+            } else if(result.message() != null && result.message().contains("already taken")) {
+                res.status(403);
+            } else {
+                res.status(400);
+            }
+            return jsonHandler.toJson(result);
+
+        } catch (Exception e) {
+            res.status(500);
+            throw new RuntimeException(e);
+        }
     }
 }

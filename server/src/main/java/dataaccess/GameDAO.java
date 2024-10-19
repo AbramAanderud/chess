@@ -5,27 +5,16 @@ import model.UserData;
 
 import java.util.Collection;
 
-public class GameDAO {
-    DataAccess dataAccess;
-    //Crud class
+public interface GameDAO {
+    void createGame(GameData g);
 
-    public void createGame(GameData g) {
-        dataAccess.createGame(g);
-    }
+    GameData getGame(int gameID);
 
-    public GameData getGame(int gameID) {
-        return dataAccess.getGame(gameID);
-    }
+    void updateGame(GameData g);
 
-    public void updateGame(GameData g) {
-        dataAccess.updateGame(g);
-    }
+    Collection<GameData> listGames();
 
-    public Collection<GameData> listGames() {
-        return dataAccess.listGames();
-    }
+    void deleteGame(int gameID);
 
-    public void deleteGame(int gameID) {
-        dataAccess.deleteGame(gameID);
-    }
+    void clearAllGameData();
 }

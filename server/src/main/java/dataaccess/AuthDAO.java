@@ -3,19 +3,12 @@ package dataaccess;
 import model.AuthData;
 import model.UserData;
 
-public class AuthDAO {
-    DataAccess dataAccess;
-    //CRUD class
+public interface AuthDAO {
+    String createAuth(String username);
 
-    public void createAuth(String username) {
-        dataAccess.createAuth(username);
-    }
+    AuthData getAuth(String username);
 
-    public AuthData getAuth(String username) {
-        return dataAccess.getAuth(username);
-    }
+    void deleteAuth(String username);
 
-    public void deleteAuth(String username) {
-        dataAccess.deleteAuth(username);
-    }
+    void clearAllAuthData();
 }

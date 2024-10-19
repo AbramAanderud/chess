@@ -6,7 +6,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class MemoryUserDAO {
+public class MemoryUserDAO implements UserDAO {
     Collection<UserData> userData = new ArrayList<>();
 
     public void createUser(UserData u) {

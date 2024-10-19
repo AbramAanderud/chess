@@ -7,7 +7,7 @@ import model.UserData;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class MemoryGameDAO {
+public class MemoryGameDAO implements GameDAO {
     Collection<GameData> gameData = new ArrayList<>();
 
     public void createGame(GameData g) {
@@ -65,5 +65,9 @@ public class MemoryGameDAO {
 
     public boolean isDataEmpty(Collection<GameData> gameData) {
         return gameData.isEmpty();
+    }
+
+    public void clearAllGameData() {
+        gameData.clear();
     }
 }

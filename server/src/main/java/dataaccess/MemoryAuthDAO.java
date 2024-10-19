@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-public class MemoryAuthDAO {
+public class MemoryAuthDAO implements AuthDAO {
     Collection<AuthData> authData = new ArrayList<>();
 
-    public void createAuth(String username) {
+    public String createAuth(String username) {
         String newAuthToken = UUID.randomUUID().toString();
         AuthData newAuthData = new AuthData(newAuthToken, username);
         authData.add(newAuthData);
+        return newAuthToken;
     }
 
     public AuthData getAuth(String username) {
@@ -36,5 +37,9 @@ public class MemoryAuthDAO {
             return;
         }
         authData.removeIf(currData -> currData.username().equals(username));
+    }
+
+    public void clearAllAuthData() {
+        authData.clear();
     }
 }

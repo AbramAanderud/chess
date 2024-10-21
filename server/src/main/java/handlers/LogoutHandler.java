@@ -1,21 +1,19 @@
 package handlers;
 
 import requests.LoginRequest;
-import requests.RegisterRequest;
 import result.LoginResult;
-import result.RegisterResult;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class LoginHandler {
+public class LogoutHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final UserService userService = new UserService();
 
     public String handleRequest(Request req, Response res) {
         try {
-            LoginRequest request = jsonHandler.fromJson(req, LoginRequest.class);
-            LoginResult result = userService.login(request);
+            LogoutRequest request = jsonHandler.fromJson(req, LogoutRequest.class);
+            LogoutResult result = userService.login(request);
 
             if(result.message() != null && result.message().contains("unauthorized")) {
                 res.status(401);
@@ -29,5 +27,4 @@ public class LoginHandler {
             throw new RuntimeException(e);
         }
     }
-
 }

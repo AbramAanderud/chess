@@ -14,4 +14,6 @@ public interface UserDAO {
     void deleteUser(String username);
 
     void clearAllUserData();
+
+    boolean correctPassword(UserData u);
 }

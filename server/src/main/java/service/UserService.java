@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
 import requests.RegisterRequest;
@@ -33,7 +34,21 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest l) throws DataAccessException {
+        UserData user = userDAO.getUser(l.username());
 
-        return null;
+        if(user == null) {
+            return new LoginResult(null, null, "\"message\": \"Error: unauthorized\"");
+        }
+
+        if(!user.password().equals(l.password())) {
+            System.out.println("passwords don't match");
+            return new LoginResult(null, null, "\"message\": \"Error: unauthorized\"");
+        }
+
+
+        authDAO.deleteAuth(l.username());
+        String newAuthToken = authDAO.createAuth(l.username());
+
+        return new LoginResult(l.username(), newAuthToken, null);
     }
 }

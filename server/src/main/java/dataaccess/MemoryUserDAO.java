@@ -53,6 +53,24 @@ public class MemoryUserDAO implements UserDAO {
         System.out.println("User with that username isnt found");
     }
 
+    public boolean correctPassword(UserData u) {
+        if(userData.isEmpty()) {
+            System.out.println("data is empty");
+            return false;
+        }
+        for(UserData currData : userData) {
+            if(currData.username().equals(u.username())) {
+                if(currData.password().equals(u.password())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        System.out.println("User with that username isnt found");
+        return false;
+    }
+
     public void deleteUser(String username) {
         if(userData.isEmpty()) {
             System.out.println("data is empty when trying to delete");

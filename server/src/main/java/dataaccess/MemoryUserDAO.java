@@ -7,7 +7,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class MemoryUserDAO implements UserDAO {
-    Collection<UserData> userData = new ArrayList<>();
+    private static MemoryUserDAO instance;
+    private final Collection<UserData> userData = new ArrayList<>();
+
+    private MemoryUserDAO() {
+    }
+
+    public static MemoryUserDAO getInstance() {
+        if (instance == null) {
+            instance = new MemoryUserDAO();
+        }
+        return instance;
+    }
 
     public void createUser(UserData u) {
         if(!userData.contains(u)) {
@@ -18,12 +29,9 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     public UserData getUser(String username) {
-        if(userData.isEmpty()) {
-            System.out.println("userData is empty");
-            return null;
-        }
         for(UserData currData : userData) {
             if(currData.username().equals(username)) {
+                System.out.println(currData.username());
                 return currData;
             }
         }

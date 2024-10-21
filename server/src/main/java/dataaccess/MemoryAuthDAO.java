@@ -8,7 +8,17 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
-    Collection<AuthData> authData = new ArrayList<>();
+    private static MemoryAuthDAO instance;
+    private final Collection<AuthData> authData = new ArrayList<>();
+
+    private MemoryAuthDAO() { }
+
+    public static MemoryAuthDAO getInstance() {
+        if (instance == null) {
+            instance = new MemoryAuthDAO();
+        }
+        return instance;
+    }
 
     public String createAuth(String username) {
         String newAuthToken = UUID.randomUUID().toString();

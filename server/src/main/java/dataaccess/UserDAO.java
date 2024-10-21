@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.Collection;
 
 public interface UserDAO {
-    void createUser(UserData u) throws DataAccessException;
+    void createUser(UserData u);
 
     UserData getUser(String username);
 

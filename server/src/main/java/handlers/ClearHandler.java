@@ -15,7 +15,12 @@ public class ClearHandler {
     public String handleRequest(Request req, Response res) {
         ClearResult result = clearService.clearAll();
 
-        res.status(200);
-        return jsonHandler.toJson(result);
+        if(result.message() != null) {
+            res.status(500);
+            return jsonHandler.toJson(result);
+        } else {
+            res.status(200);
+            return jsonHandler.toJson(result);
+        }
     }
 }

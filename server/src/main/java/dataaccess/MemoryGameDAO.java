@@ -8,7 +8,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class MemoryGameDAO implements GameDAO {
-    Collection<GameData> gameData = new ArrayList<>();
+    private static MemoryGameDAO instance;
+    private final Collection<GameData> gameData = new ArrayList<>();
+
+    private MemoryGameDAO() { }
+
+    public static MemoryGameDAO getInstance() {
+        if (instance == null) {
+            instance = new MemoryGameDAO();
+        }
+        return instance;
+    }
 
     public void createGame(GameData g) {
         for(GameData currData : gameData) {

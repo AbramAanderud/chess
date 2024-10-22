@@ -18,7 +18,7 @@ public class GameService {
     private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
     private final GameDAO gameDAO = MemoryGameDAO.getInstance();
 
-    public ListResult listGames(ListRequest req) throws DataAccessException {
+    public ListResult listGames(ListRequest req) {
         if (!authDAO.isValidAuth(req.authToken())) {
             return new ListResult(null, "error: unauthorized");
         }
@@ -37,7 +37,7 @@ public class GameService {
         return new ListResult(gameResults, null);
     }
 
-    public CreateGameResult createGame(CreateGameRequest req, String authToken) throws DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest req, String authToken) {
         if (!authDAO.isValidAuth(authToken)) {
             return new CreateGameResult(null, "error: unauthorized");
         }
@@ -53,7 +53,7 @@ public class GameService {
         return new CreateGameResult(newID, null);
     }
 
-    public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {
+    public JoinResult joinGame(JoinRequest req, String authToken) {
         if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }

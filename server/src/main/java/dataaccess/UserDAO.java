@@ -7,12 +7,6 @@ public interface UserDAO {
 
     UserData getUser(String username);
 
-    void updateUser(UserData u);
-
-    void deleteUser(String username);
-
     void clearAllUserData();
-
-    boolean correctPassword(UserData u);
 
 }

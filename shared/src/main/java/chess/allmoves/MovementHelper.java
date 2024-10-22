@@ -36,4 +36,24 @@ public class MovementHelper {
             }
         }
     }
+
+    protected void calculateKMoves(ChessBoard board, Collection<ChessMove> moves, int row, int col, int[][] directions) {
+        for (int[] direction : directions) {
+            int rowInc = direction[0];
+            int colInc = direction[1];
+            int nextRow = row + rowInc;
+            int nextCol = col + colInc;
+
+            ChessPosition startPosition = new ChessPosition(row, col);
+            ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
+
+            if (inBoard(nextRow, nextCol)) {
+                if (board.isEmpty(newPosition)) {
+                    moves.add(new ChessMove(startPosition, newPosition, null));
+                } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                    moves.add(new ChessMove(startPosition, newPosition, null));
+                }
+            }
+        }
+    }
 }

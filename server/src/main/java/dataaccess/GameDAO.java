@@ -9,11 +9,7 @@ public interface GameDAO {
 
     GameData getGame(int gameID);
 
-    void updateGame(GameData g);
-
     Collection<GameData> listGames();
-
-    void deleteGame(int gameID);
 
     void clearAllGameData();
 

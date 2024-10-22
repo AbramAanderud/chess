@@ -41,28 +41,8 @@ public class MemoryGameDAO implements GameDAO {
         return null;
     }
 
-    public void updateGame(GameData g) {
-        if (isDataEmpty(gameData)) {
-            return;
-        }
-        for (GameData currData : gameData) {
-            if (currData.gameID() == g.gameID()) {
-                gameData.remove(currData);
-                gameData.add(g);
-                return;
-            }
-        }
-    }
-
     public Collection<GameData> listGames() {
         return gameData;
-    }
-
-    public void deleteGame(int gameID) {
-        if (isDataEmpty(gameData)) {
-            return;
-        }
-        gameData.removeIf(currData -> currData.gameID() == gameID);
     }
 
     public boolean isDataEmpty(Collection<GameData> gameData) {

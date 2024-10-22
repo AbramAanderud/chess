@@ -34,37 +34,6 @@ public class MemoryUserDAO implements UserDAO {
         return null;
     }
 
-    public void updateUser(UserData u) {
-        if (userData.isEmpty()) {
-            return;
-        }
-        for (UserData currData : userData) {
-            if (currData.username().equals(u.username())) {
-                userData.remove(currData);
-                userData.add(u);
-            }
-        }
-    }
-
-    public boolean correctPassword(UserData u) {
-        if (userData.isEmpty()) {
-            return false;
-        }
-        for (UserData currData : userData) {
-            if (currData.username().equals(u.username())) {
-                return currData.password().equals(u.password());
-            }
-        }
-        return false;
-    }
-
-    public void deleteUser(String username) {
-        if (userData.isEmpty()) {
-            return;
-        }
-        userData.removeIf(currData -> currData.username().equals(username));
-    }
-
     public void clearAllUserData() {
         userData.clear();
     }

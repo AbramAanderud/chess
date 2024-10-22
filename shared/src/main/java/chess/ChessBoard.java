@@ -154,22 +154,20 @@ public class ChessBoard {
                 if (piece == null) {
                     sb.append(" ");
                 } else {
+                    char firstInitial = piece.getPieceType().toString().charAt(0);
                     if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        char firstInitial = piece.getPieceType().toString().charAt(0);
                         firstInitial = Character.toUpperCase(firstInitial);
                         if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
                             firstInitial = 'n';
                         }
                         firstInitial = Character.toUpperCase(firstInitial);
-                        sb.append(firstInitial);
                     } else {
-                        char firstInitial = piece.getPieceType().toString().charAt(0);
                         if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
                             firstInitial = 'n';
                         }
                         firstInitial = Character.toLowerCase(firstInitial);
-                        sb.append(firstInitial);
                     }
+                    sb.append(firstInitial);
                 }
                 sb.append("|");
             }

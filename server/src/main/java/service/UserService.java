@@ -13,7 +13,7 @@ public class UserService {
     private final UserDAO userDAO = MemoryUserDAO.getInstance();
     private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
 
-    public RegisterResult register(RegisterRequest r) throws DataAccessException {
+    public RegisterResult register(RegisterRequest r) {
 
         if (r.username() == null || r.email() == null || r.password() == null) {
             return new RegisterResult(null, null, "error: bad request");
@@ -32,7 +32,7 @@ public class UserService {
         return new RegisterResult(u.username(), authToken, null);
     }
 
-    public LoginResult login(LoginRequest l) throws DataAccessException {
+    public LoginResult login(LoginRequest l) {
         UserData user = userDAO.getUser(l.username());
 
         if (user == null) {
@@ -48,7 +48,7 @@ public class UserService {
         return new LoginResult(l.username(), newAuthToken, null);
     }
 
-    public LogoutResult logout(LogoutRequest req) throws DataAccessException {
+    public LogoutResult logout(LogoutRequest req) {
 
         if (authDAO.isValidAuth(req.authToken())) {
             authDAO.deleteAuthByAuth(req.authToken());

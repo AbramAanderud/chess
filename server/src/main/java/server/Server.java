@@ -32,7 +32,7 @@ public class Server {
                 (new LoginHandler()).handleRequest(request, response));
 
         Spark.delete("/db", (request, response) ->
-                (new ClearHandler()).handleRequest(request, response));
+                (new ClearHandler()).handleRequest(response));
 
         Spark.delete("/session", (request, response) ->
                 (new LogoutHandler()).handleRequest(request, response));

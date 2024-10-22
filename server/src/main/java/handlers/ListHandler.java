@@ -3,13 +3,11 @@ package handlers;
 import requests.ListRequest;
 import result.ListResult;
 import service.GameService;
-import service.UserService;
 import spark.Request;
 import spark.Response;
 
 public class ListHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
-    private final UserService userService = new UserService();
     private final GameService gameService = new GameService();
 
     public String handleRequest(Request req, Response res) {

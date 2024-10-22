@@ -83,7 +83,7 @@ public class ChessGame {
 
             if (currChessPiece.getPieceType() == ChessPiece.PieceType.KING && currChessPiece.getTeamColor() == teamColor) {
                 ChessPosition newKingPosition = move.getEndPosition();
-                if (!newKingPositionThreat(newKingPosition, teamColor, boardCopy)) {
+                if (!newKingPositionThreat(newKingPosition, teamColor)) {
                     validMoves.add(move);
                 }
             } else if (!isInCheckWithBoard(teamColor, boardCopy)) {
@@ -93,7 +93,7 @@ public class ChessGame {
         return validMoves;
     }
 
-    private boolean newKingPositionThreat(ChessPosition position, TeamColor teamColor, ChessBoard baord) {
+    private boolean newKingPositionThreat(ChessPosition position, TeamColor teamColor) {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));
@@ -126,19 +126,19 @@ public class ChessGame {
         return null;
     }
 
-    private ChessPosition findOppositeKingPosition(TeamColor teamColor, ChessBoard board) {
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                ChessPosition currPos = new ChessPosition(i, j);
-                ChessPiece piece = board.getPiece(currPos);
-
-                if (piece != null && board.getPiece(currPos).getTeamColor() == TeamColor.BLACK && board.getPiece(currPos).getPieceType() == ChessPiece.PieceType.KING) {
-                    return currPos;
-                }
-            }
-        }
-        return null;
-    }
+//    private ChessPosition findOppositeKingPosition(TeamColor teamColor, ChessBoard board) {
+//        for (int i = 1; i <= 8; i++) {
+//            for (int j = 1; j <= 8; j++) {
+//                ChessPosition currPos = new ChessPosition(i, j);
+//                ChessPiece piece = board.getPiece(currPos);
+//
+//                if (piece != null && board.getPiece(currPos).getTeamColor() == TeamColor.BLACK && board.getPiece(currPos).getPieceType() == ChessPiece.PieceType.KING) {
+//                    return currPos;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * Makes a move in a chess game

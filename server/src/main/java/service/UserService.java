@@ -4,8 +4,10 @@ import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
+import requests.LogoutRequest;
 import requests.RegisterRequest;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserService {
@@ -45,10 +47,19 @@ public class UserService {
             return new LoginResult(null, null, "\"message\": \"Error: unauthorized\"");
         }
 
-
-        authDAO.deleteAuth(l.username());
         String newAuthToken = authDAO.createAuth(l.username());
 
         return new LoginResult(l.username(), newAuthToken, null);
+    }
+
+    public LogoutResult logout(LogoutRequest req) throws DataAccessException {
+
+        if(authDAO.isValidAuth(req.authToken())) {
+            authDAO.deleteAuthByAuth(req.authToken());
+            return new LogoutResult(null);
+        } else {
+            return new LogoutResult("error: unauthorized");
+        }
+
     }
 }

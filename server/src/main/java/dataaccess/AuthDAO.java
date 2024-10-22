@@ -11,4 +11,10 @@ public interface AuthDAO {
     void deleteAuth(String username);
 
     void clearAllAuthData();
+
+    boolean isValidAuth(String authToken);
+
+    String getUsernameByAuth(String authToken);
+
+    void deleteAuthByAuth(String authToken);
 }

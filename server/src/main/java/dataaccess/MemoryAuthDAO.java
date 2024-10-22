@@ -27,6 +27,16 @@ public class MemoryAuthDAO implements AuthDAO {
         return newAuthToken;
     }
 
+    public boolean isValidAuth(String authToken) {
+        for(AuthData currData : authData) {
+            if(currData.authToken().equals(authToken)) {
+                return true;
+            }
+        }
+        System.out.println("couldn't find auth");
+        return false;
+    }
+
     public AuthData getAuth(String username) {
         if(authData.isEmpty()) {
             System.out.println("authData is empty");
@@ -47,6 +57,26 @@ public class MemoryAuthDAO implements AuthDAO {
             return;
         }
         authData.removeIf(currData -> currData.username().equals(username));
+    }
+
+    public String getUsernameByAuth(String authToken) {
+        if(authData.isEmpty()) {
+            return null;
+        }
+        for(AuthData currData : authData) {
+            if(currData.authToken().equals(authToken)) {
+                return currData.username();
+            }
+        }
+        return null;
+    }
+
+
+    public void deleteAuthByAuth(String authToken) {
+        if(authData.isEmpty()) {
+            System.out.println("authData is empty");
+        }
+        authData.removeIf(currData -> currData.authToken().equals(authToken));
     }
 
     public void clearAllAuthData() {

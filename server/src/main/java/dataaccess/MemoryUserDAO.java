@@ -31,11 +31,9 @@ public class MemoryUserDAO implements UserDAO {
     public UserData getUser(String username) {
         for(UserData currData : userData) {
             if(currData.username().equals(username)) {
-                System.out.println(currData.username());
                 return currData;
             }
         }
-        System.out.println("didn't find username to get user from");
         return null;
     }
 

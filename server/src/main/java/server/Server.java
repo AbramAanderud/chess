@@ -1,8 +1,6 @@
 package server;
 
-import handlers.ClearHandler;
-import handlers.LoginHandler;
-import handlers.RegisterHandler;
+import handlers.*;
 import spark.*;
 
 public class Server {
@@ -27,13 +25,23 @@ public class Server {
         Spark.post("/user", (request, response) ->
                 (new RegisterHandler()).handleRequest(request, response));
 
+        Spark.post("/game", (request, response) ->
+                (new CreateGameHandler()).handleRequest(request, response));
+
         Spark.post("/session", (request, response) ->
                 (new LoginHandler()).handleRequest(request, response));
 
         Spark.delete("/db", (request, response) ->
                 (new ClearHandler()).handleRequest(request, response));
 
+        Spark.delete("/session", (request, response) ->
+                (new LogoutHandler()).handleRequest(request, response));
 
+        Spark.get("/game", (request, response) ->
+                (new ListHandler()).handleRequest(request, response));
+
+        Spark.put("/game", (request, response) ->
+                (new JoinGameHandler()).handleRequest(request, response));
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 

@@ -16,4 +16,5 @@ public interface UserDAO {
     void clearAllUserData();
 
     boolean correctPassword(UserData u);
+
 }

@@ -1,26 +1,23 @@
 package handlers;
 
-import requests.LoginRequest;
-import requests.LogoutRequest;
-import result.LoginResult;
-import result.LogoutResult;
+import requests.ListRequest;
+import result.ListResult;
+import service.GameService;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class LogoutHandler {
+public class ListHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final UserService userService = new UserService();
+    private final GameService gameService = new GameService();
 
     public String handleRequest(Request req, Response res) {
         try {
-
             String authToken = req.headers("authorization");
 
-            System.out.println(authToken);
-
-            LogoutRequest request = new LogoutRequest(authToken);
-            LogoutResult result = userService.logout(request);
+            ListRequest request = new ListRequest(authToken);
+            ListResult result = gameService.listGames(request);
 
             if(result.message() != null && result.message().contains("unauthorized")) {
                 res.status(401);

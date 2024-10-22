@@ -1,14 +1,15 @@
 package handlers;
 
 import requests.CreateGameRequest;
-import requests.JoinRequest;
+import requests.RegisterRequest;
 import result.CreateGameResult;
-import result.JoinResult;
+import result.RegisterResult;
 import service.GameService;
+import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class JoinGameHandler {
+public class CreateGameHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final GameService gameService = new GameService();
 
@@ -18,17 +19,16 @@ public class JoinGameHandler {
 
             System.out.println(authToken);
 
-            JoinRequest request = jsonHandler.fromJson(req, JoinRequest.class);
-            JoinResult result = gameService.joinGame(request, authToken);
+            CreateGameRequest request = jsonHandler.fromJson(req, CreateGameRequest.class);
+            CreateGameResult result = gameService.createGame(request, authToken);
 
+            System.out.println(request.gameName());
 
             if(result.message() != null && result.message().contains("bad request")) {
                 res.status(400);
             } else if(result.message() != null && result.message().contains("unauthorized")) {
                 res.status(401);
-            } else if(result.message() != null && result.message().contains("already taken")) {
-                res.status(403);
-            } else if(result.message() == null) {
+            } else if(result.gameID() != null) {
                 res.status(200);
             }
             return jsonHandler.toJson(result);

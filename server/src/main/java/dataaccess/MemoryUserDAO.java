@@ -23,8 +23,6 @@ public class MemoryUserDAO implements UserDAO {
     public void createUser(UserData u) {
         if(!userData.contains(u)) {
             userData.add(u);
-        } else {
-            System.out.println("The user already exists");
         }
     }
 
@@ -39,7 +37,6 @@ public class MemoryUserDAO implements UserDAO {
 
     public void updateUser(UserData u) {
         if(userData.isEmpty()) {
-            System.out.println("data is empty");
             return;
         }
         for(UserData currData : userData) {
@@ -48,12 +45,10 @@ public class MemoryUserDAO implements UserDAO {
                 userData.add(u);
             }
         }
-        System.out.println("User with that username isnt found");
     }
 
     public boolean correctPassword(UserData u) {
         if(userData.isEmpty()) {
-            System.out.println("data is empty");
             return false;
         }
         for(UserData currData : userData) {
@@ -65,13 +60,11 @@ public class MemoryUserDAO implements UserDAO {
                 }
             }
         }
-        System.out.println("User with that username isnt found");
         return false;
     }
 
     public void deleteUser(String username) {
         if(userData.isEmpty()) {
-            System.out.println("data is empty when trying to delete");
             return;
         }
         userData.removeIf(currData -> currData.username().equals(username));

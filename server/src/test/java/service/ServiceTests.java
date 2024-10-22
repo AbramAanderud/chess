@@ -20,6 +20,7 @@ public class ServiceTests {
         gameService = new GameService();
         userService = new UserService();
         clearService = new ClearService();
+        clearService.clearAll();
     }
 
     @Test

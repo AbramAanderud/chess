@@ -24,7 +24,6 @@ public class MemoryGameDAO implements GameDAO {
     public void createGame(GameData g) {
         for(GameData currData : gameData) {
             if(currData.gameID() == g.gameID()) {
-                System.out.println("gameID is already taken");
                 return;
             }
         }
@@ -33,7 +32,6 @@ public class MemoryGameDAO implements GameDAO {
 
     public GameData getGame(int gameID) {
         if(isDataEmpty(gameData)) {
-            System.out.println("no game data");
             return null;
         }
         for(GameData currData : gameData) {
@@ -41,25 +39,20 @@ public class MemoryGameDAO implements GameDAO {
                 return currData;
             }
         }
-
-        System.out.println("couldnt find game by gameID");
         return null;
     }
 
     public void updateGame(GameData g) {
         if(isDataEmpty(gameData)) {
-            System.out.println("no game data");
             return;
         }
         for(GameData currData : gameData) {
             if(currData.gameID() == g.gameID()) {
                 gameData.remove(currData);
                 gameData.add(g);
-                System.out.println("updated");
                 return;
             }
         }
-        System.out.println("couldnt find game by gameID when trying to update");
     }
 
     public Collection<GameData> listGames() {
@@ -68,7 +61,6 @@ public class MemoryGameDAO implements GameDAO {
 
     public void deleteGame(int gameID) {
         if(isDataEmpty(gameData)) {
-            System.out.println("no game data");
             return;
         }
         gameData.removeIf(currData -> currData.gameID() == gameID);
@@ -84,7 +76,6 @@ public class MemoryGameDAO implements GameDAO {
 
     public void joinGameRequest(Integer gameID, String username, String color) {
         if(isDataEmpty(gameData)) {
-            System.out.println("no game data");
             return;
         }
         for(GameData currData : gameData) {
@@ -96,13 +87,10 @@ public class MemoryGameDAO implements GameDAO {
                 } else if(Objects.equals(color, "BLACK")) {
                     updatedData = new GameData(currData.gameID(), currData.whiteUsername(), username, currData.gameName(), currData.game());
                 } else {
-                    System.out.println("color is bad");
                     return;
                 }
                 gameData.remove(currData);
                 gameData.add(updatedData);
-                System.out.println("updated");
-                return;
             }
         }
     }

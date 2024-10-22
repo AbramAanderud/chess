@@ -17,12 +17,10 @@ public class UserService {
     public RegisterResult register(RegisterRequest r) throws DataAccessException {
 
         if(r.username() == null || r.email() == null || r.password() == null) {
-            System.out.println("bad request");
             return new RegisterResult(null, null, "error: bad request");
         }
 
         if (userDAO.getUser(r.username()) != null) {
-            System.out.println("alreadyTaken");
             return new RegisterResult(null,null, "error: already taken");
         }
 
@@ -43,7 +41,6 @@ public class UserService {
         }
 
         if(!user.password().equals(l.password())) {
-            System.out.println("passwords don't match");
             return new LoginResult(null, null, "error: unauthorized");
         }
 

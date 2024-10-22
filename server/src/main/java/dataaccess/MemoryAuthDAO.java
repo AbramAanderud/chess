@@ -33,13 +33,11 @@ public class MemoryAuthDAO implements AuthDAO {
                 return true;
             }
         }
-        System.out.println("couldn't find auth");
         return false;
     }
 
     public AuthData getAuth(String username) {
         if(authData.isEmpty()) {
-            System.out.println("authData is empty");
             return null;
         }
         for(AuthData currData : authData) {
@@ -47,13 +45,11 @@ public class MemoryAuthDAO implements AuthDAO {
                 return currData;
             }
         }
-        System.out.println("didn't find username to get auth from");
         return null;
     }
 
     public void deleteAuth(String username) {
         if(authData.isEmpty()) {
-            System.out.println("data is empty when trying to delete");
             return;
         }
         authData.removeIf(currData -> currData.username().equals(username));
@@ -73,9 +69,6 @@ public class MemoryAuthDAO implements AuthDAO {
 
 
     public void deleteAuthByAuth(String authToken) {
-        if(authData.isEmpty()) {
-            System.out.println("authData is empty");
-        }
         authData.removeIf(currData -> currData.authToken().equals(authToken));
     }
 

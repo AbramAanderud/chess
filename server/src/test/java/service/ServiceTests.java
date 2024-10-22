@@ -2,67 +2,144 @@ package service;
 
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.CreateGameRequest;
-import result.CreateGameResult;
+import requests.JoinRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+import result.*;
 
 public class ServiceTests {
+    private GameService gameService;
+    private UserService userService;
+    private ClearService clearService;
+
+    @BeforeEach
+    public void setUp() {
+        gameService = new GameService();
+        userService = new UserService();
+        clearService = new ClearService();
+    }
 
     @Test
-    public void testCreateGame_Success() throws DataAccessException {
-        // Arrange
-        String validAuthToken = "validAuth";
-        CreateGameRequest request = new CreateGameRequest("Chess Game");
+    public void successCreateGame() throws DataAccessException {
+        RegisterRequest registerRequest = new RegisterRequest("TestUser", "password", "email");
+        RegisterResult registerResult = userService.register(registerRequest);
+        String validAuthToken = registerResult.authToken();
 
-        // Act
+        CreateGameRequest request = new CreateGameRequest("New Game");
+
         CreateGameResult result = gameService.createGame(request, validAuthToken);
 
-        // Assert
-        Assertions.assertNotNull(result.getGameID(), "GameID should not be null when game creation succeeds");
-        Assertions.assertNull(result.getMessage(), "Message should be null on successful creation");
+        Assertions.assertNotNull(result.gameID(), "GameID should have been created");
+        Assertions.assertNull(result.message(), "Message should be null on success");
     }
 
     @Test
-    public void testCreateGame_Unauthorized() throws DataAccessException {
-        // Arrange
-        String invalidAuthToken = "invalidAuth";
+    public void badAuthCreateGame() throws DataAccessException {
+        String invalidAuthToken = null;
         CreateGameRequest request = new CreateGameRequest("Chess Game");
 
-        // Act
         CreateGameResult result = gameService.createGame(request, invalidAuthToken);
 
-        // Assert
-        Assertions.assertNull(result.getGameID(), "GameID should be null on failure");
-        Assertions.assertEquals("error: unauthorized", result.getMessage(), "Error message should indicate unauthorized access");
+        Assertions.assertNull(result.gameID(), "GameID should be null with a bad authToken");
+        Assertions.assertEquals("error: unauthorized", result.message(), "should be error unauthorized access");
     }
 
     @Test
-    public void testJoinGame_Success() throws DataAccessException {
-        // Arrange
-        String validAuthToken = "validAuth";
-        JoinRequest request = new JoinRequest(1234, "WHITE");
+    public void successJoinGame() throws DataAccessException {
+        RegisterRequest registerRequest = new RegisterRequest("TestUser", "password", "email");
+        RegisterResult registerResult = userService.register(registerRequest);
+        String validAuthToken = registerResult.authToken();
 
-        // Act
+        CreateGameRequest createGameRequest = new CreateGameRequest("Chess Game");
+        CreateGameResult createGameResult = gameService.createGame(createGameRequest, validAuthToken);
+        Integer gameID = createGameResult.gameID();
+
+        Assertions.assertNotNull(gameID, "Game created");
+
+        JoinRequest request = new JoinRequest("WHITE", gameID);
         JoinResult result = gameService.joinGame(request, validAuthToken);
 
-        // Assert
-        Assertions.assertNull(result.getMessage(), "Message should be null when joining succeeds");
+        Assertions.assertNull(result.message(), "Message should be null on success");
     }
 
     @Test
-    public void testJoinGame_AlreadyTaken() throws DataAccessException {
-        // Arrange
-        String validAuthToken = "validAuth";
-        JoinRequest request = new JoinRequest(1234, "WHITE"); // Assuming WHITE is already taken
+    public void colorTakenJoinGame() throws DataAccessException {
+        RegisterRequest firstUserRegisterRequest = new RegisterRequest("User1", "password", "email");
+        RegisterResult firstUserRegisterResult = userService.register(firstUserRegisterRequest);
+        String validAuthToken1 = firstUserRegisterResult.authToken();
 
-        // Act
-        JoinResult result = gameService.joinGame(request, validAuthToken);
+        CreateGameRequest createGameRequest = new CreateGameRequest("Chess Game");
+        CreateGameResult createGameResult = gameService.createGame(createGameRequest, validAuthToken1);
+        Integer gameID = createGameResult.gameID();
 
-        // Assert
-        Assertions.assertEquals("error: already taken", result.getMessage(), "Error message should indicate that the color is already taken");
+        Assertions.assertNotNull(gameID, "Game created");
+
+        JoinRequest firstUserJoinRequest = new JoinRequest("WHITE", gameID);
+        JoinResult firstUserJoinResult = gameService.joinGame(firstUserJoinRequest, validAuthToken1);
+        Assertions.assertNull(firstUserJoinResult.message(), "First join successful");
+
+        RegisterRequest secondUserRegisterRequest = new RegisterRequest("User2", "password", "email2");
+        RegisterResult secondUserRegisterResult = userService.register(secondUserRegisterRequest);
+        String validAuthToken2 = secondUserRegisterResult.authToken();
+
+        JoinRequest secondUserJoinRequest = new JoinRequest("WHITE", gameID);
+        JoinResult secondUserJoinResult = gameService.joinGame(secondUserJoinRequest, validAuthToken2);
+
+        Assertions.assertEquals("error: already taken", secondUserJoinResult.message(), "should get error already taken");
     }
 
+    @Test
+    public void testRegister_Success() throws DataAccessException {
+        RegisterRequest request = new RegisterRequest("User", "password", "email");
+        RegisterResult result = userService.register(request);
 
+        Assertions.assertNotNull(result.authToken(), "AuthToken should not be null");
+        Assertions.assertNull(result.message(), "Message should be null on success");
+    }
+
+    @Test
+    public void userNameTakenRegister() throws DataAccessException {
+        RegisterRequest firstUserRequest = new RegisterRequest("existingUser", "password", "email");
+        userService.register(firstUserRequest);
+
+        RegisterRequest secondUserRequest = new RegisterRequest("existingUser", "password2", "email2");
+        RegisterResult result = userService.register(secondUserRequest);
+
+        Assertions.assertNull(result.authToken(), "AuthToken should be null");
+        Assertions.assertEquals("error: already taken", result.message(), "should be error already taken");
+
+    }
+
+    @Test
+    public void successLogin() throws DataAccessException {
+        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password", "email");
+        userService.register(registerRequest);
+
+        LoginRequest request = new LoginRequest("existingUser", "password");
+        LoginResult result = userService.login(request);
+
+        Assertions.assertNotNull(result.authToken(), "authToken should not be null");
+        Assertions.assertNull(result.message(), "Message should be null");
+    }
+
+    @Test
+    public void testLogin_Unauthorized() throws DataAccessException {
+        LoginRequest request = new LoginRequest("unregisteredUser", "password");
+
+        LoginResult result = userService.login(request);
+
+        Assertions.assertNull(result.authToken(), "AuthToken should be null");
+        Assertions.assertEquals("error: unauthorized", result.message(), "should be error unauthorized access");
+    }
+
+    @Test
+    public void testClearAll_Success() throws DataAccessException {
+        ClearResult result = clearService.clearAll();
+        Assertions.assertNull(result.message(), "Message should be null on success");
+    }
 
 
 }

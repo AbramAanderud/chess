@@ -1,4 +1,4 @@
-package chess.allMoves;
+package chess.allmoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,18 +8,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMovesCalculator {
-    private static final int[][] diagonals = {
+    private static final int[][] DIAGONALS = {
             {1, 1},
             {1, -1},
             {-1, 1},
-            {-1,-1}
+            {-1, -1}
     };
 
     private static final int[][] straights = {
             {1, 0},
             {0, 1},
             {-1, 0},
-            {0,-1}
+            {0, -1}
     };
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -27,11 +27,11 @@ public class QueenMovesCalculator {
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
 
-        for(int[] direction : diagonals) {
+        for (int[] direction : DIAGONALS) {
             getBishopLike(board, moves, currRow, currCol, direction[0], direction[1]);
         }
-        for(int[] direction : straights) {
-            getRookLike(board,moves, currRow, currCol, direction[0], direction[1]);
+        for (int[] direction : straights) {
+            getRookLike(board, moves, currRow, currCol, direction[0], direction[1]);
         }
 
 
@@ -43,13 +43,13 @@ public class QueenMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(inBoard(nextRow, nextCol)) {
+        while (inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
-            if(board.isEmpty(newPosition)) {
+            if (board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
-            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
                 break;
             } else {
@@ -65,13 +65,13 @@ public class QueenMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(inBoard(nextRow, nextCol)) {
+        while (inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
-            if(board.isEmpty(newPosition)) {
+            if (board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
-            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
                 break;
             } else {

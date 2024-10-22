@@ -1,8 +1,10 @@
 package handlers;
+
 import requests.RegisterRequest;
 import result.RegisterResult;
 import service.UserService;
-import spark.*;
+import spark.Request;
+import spark.Response;
 
 public class RegisterHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
@@ -13,11 +15,11 @@ public class RegisterHandler {
             RegisterRequest request = jsonHandler.fromJson(req, RegisterRequest.class);
             RegisterResult result = userService.register(request);
 
-            if(result.message() != null && result.message().contains("bad request")) {
+            if (result.message() != null && result.message().contains("bad request")) {
                 res.status(400);
-            } else if(result.message() != null && result.message().contains("already taken")) {
+            } else if (result.message() != null && result.message().contains("already taken")) {
                 res.status(403);
-            } else if(result.authToken() != null) {
+            } else if (result.authToken() != null) {
                 res.status(200);
             }
             return jsonHandler.toJson(result);

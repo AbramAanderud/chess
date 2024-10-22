@@ -19,8 +19,8 @@ public class ChessBoard {
     public ChessBoard copyBoard() {
         ChessBoard copy = new ChessBoard();
 
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 ChessPiece piece = this.squares[i][j];
 
                 if (this.squares[i][j] != null) {
@@ -102,13 +102,13 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 squares[i][j] = null;
             }
         }
 
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             squares[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         }
 
@@ -121,7 +121,7 @@ public class ChessBoard {
         squares[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
         squares[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
 
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             squares[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
 
@@ -147,24 +147,24 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 7; i >= 0; i--) {
+        for (int i = 7; i >= 0; i--) {
             sb.append("|");
-            for(int j = 0; j < 8; j++) {
+            for (int j = 0; j < 8; j++) {
                 ChessPiece piece = squares[i][j];
-                if(piece == null) {
+                if (piece == null) {
                     sb.append(" ");
                 } else {
-                    if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
                         char firstInitial = piece.getPieceType().toString().charAt(0);
                         firstInitial = Character.toUpperCase(firstInitial);
-                        if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
                             firstInitial = 'n';
                         }
                         firstInitial = Character.toUpperCase(firstInitial);
                         sb.append(firstInitial);
                     } else {
                         char firstInitial = piece.getPieceType().toString().charAt(0);
-                        if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
                             firstInitial = 'n';
                         }
                         firstInitial = Character.toLowerCase(firstInitial);

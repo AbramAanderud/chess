@@ -18,6 +18,7 @@ public class ChessMoveTests {
     private ChessMove startDifferent;
     private ChessMove endDifferent;
     private ChessMove promoteDifferent;
+
     @BeforeEach
     public void setUp() {
         original = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);

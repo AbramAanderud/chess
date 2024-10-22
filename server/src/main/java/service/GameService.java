@@ -14,12 +14,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class GameService {
+    private static int ogGameID = 1111;
     private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
     private final GameDAO gameDAO = MemoryGameDAO.getInstance();
-    private static int ogGameID = 1111;
 
     public ListResult listGames(ListRequest req) throws DataAccessException {
-        if(!authDAO.isValidAuth(req.authToken())) {
+        if (!authDAO.isValidAuth(req.authToken())) {
             return new ListResult(null, "error: unauthorized");
         }
 
@@ -28,20 +28,20 @@ public class GameService {
 
         for (GameData currData : gameData) {
             gameResults.add(new ListResult.GameInfo(
-                            currData.gameID(),
-                            currData.whiteUsername(),
-                            currData.blackUsername(),
-                            currData.gameName())
+                    currData.gameID(),
+                    currData.whiteUsername(),
+                    currData.blackUsername(),
+                    currData.gameName())
             );
         }
         return new ListResult(gameResults, null);
     }
 
     public CreateGameResult createGame(CreateGameRequest req, String authToken) throws DataAccessException {
-        if(!authDAO.isValidAuth(authToken)) {
+        if (!authDAO.isValidAuth(authToken)) {
             return new CreateGameResult(null, "error: unauthorized");
         }
-        if(req.gameName() == null) {
+        if (req.gameName() == null) {
             return new CreateGameResult(null, "error: bad request");
         }
 
@@ -54,22 +54,22 @@ public class GameService {
     }
 
     public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {
-        if(!authDAO.isValidAuth(authToken)) {
+        if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }
-        if(req.gameID() == null || req.playerColor() == null || (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))) {
+        if (req.gameID() == null || req.playerColor() == null || (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))) {
             return new JoinResult("error: bad request");
         }
 
         GameData gameData = gameDAO.getGame(req.gameID());
 
-        if(req.playerColor().equals("WHITE")) {
-            if(gameData.whiteUsername() != null) {
+        if (req.playerColor().equals("WHITE")) {
+            if (gameData.whiteUsername() != null) {
                 return new JoinResult("error: already taken");
             }
         }
-        if(req.playerColor().equals("BLACK")) {
-            if(gameData.blackUsername() != null) {
+        if (req.playerColor().equals("BLACK")) {
+            if (gameData.blackUsername() != null) {
                 return new JoinResult("error: already taken");
             }
         }

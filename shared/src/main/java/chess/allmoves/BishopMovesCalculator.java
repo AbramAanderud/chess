@@ -1,4 +1,4 @@
-package chess.allMoves;
+package chess.allmoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BishopMovesCalculator {
-    private static final int[][] diagonals = {
+    private static final int[][] DIAGONALS = {
             {1, 1},
             {1, -1},
             {-1, 1},
-            {-1,-1}
+            {-1, -1}
     };
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -22,7 +22,7 @@ public class BishopMovesCalculator {
 
         //System.out.println("Current Row: " + currRow + ", Current Column: " + currCol);
 
-        for(int[] direction : diagonals) {
+        for (int[] direction : DIAGONALS) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
         }
         return moves;
@@ -32,13 +32,13 @@ public class BishopMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(inBoard(nextRow, nextCol)) {
+        while (inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
-            if(board.isEmpty(newPosition)) {
+            if (board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
-            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+            } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
                 break;
             } else {

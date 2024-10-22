@@ -14,6 +14,7 @@ public class ChessPositionTests {
     private ChessPosition original;
     private ChessPosition equal;
     private ChessPosition different;
+
     @BeforeEach
     public void setUp() {
         original = new ChessPositionBuilder().setRow(3).setCol(7).createChessPosition();

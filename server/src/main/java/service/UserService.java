@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.*;
-import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
 import requests.LogoutRequest;
@@ -16,12 +15,12 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest r) throws DataAccessException {
 
-        if(r.username() == null || r.email() == null || r.password() == null) {
+        if (r.username() == null || r.email() == null || r.password() == null) {
             return new RegisterResult(null, null, "error: bad request");
         }
 
         if (userDAO.getUser(r.username()) != null) {
-            return new RegisterResult(null,null, "error: already taken");
+            return new RegisterResult(null, null, "error: already taken");
         }
 
         UserData u = new UserData(r.username(), r.password(), r.email());
@@ -36,11 +35,11 @@ public class UserService {
     public LoginResult login(LoginRequest l) throws DataAccessException {
         UserData user = userDAO.getUser(l.username());
 
-        if(user == null) {
+        if (user == null) {
             return new LoginResult(null, null, "error: unauthorized");
         }
 
-        if(!user.password().equals(l.password())) {
+        if (!user.password().equals(l.password())) {
             return new LoginResult(null, null, "error: unauthorized");
         }
 
@@ -51,7 +50,7 @@ public class UserService {
 
     public LogoutResult logout(LogoutRequest req) throws DataAccessException {
 
-        if(authDAO.isValidAuth(req.authToken())) {
+        if (authDAO.isValidAuth(req.authToken())) {
             authDAO.deleteAuthByAuth(req.authToken());
             return new LogoutResult(null);
         } else {

@@ -1,10 +1,7 @@
 package handlers;
 
-import requests.RegisterRequest;
 import result.ClearResult;
-import result.RegisterResult;
 import service.ClearService;
-import service.UserService;
 import spark.Request;
 import spark.Response;
 
@@ -15,7 +12,7 @@ public class ClearHandler {
     public String handleRequest(Request req, Response res) {
         ClearResult result = clearService.clearAll();
 
-        if(result.message() != null) {
+        if (result.message() != null) {
             res.status(500);
             return jsonHandler.toJson(result);
         } else {

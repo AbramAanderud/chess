@@ -1,4 +1,4 @@
-package chess.allMoves;
+package chess.allmoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -7,16 +7,16 @@ import chess.ChessPosition;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class KnightMovesCalculator {
-    private static final int[][] knightMoves = {
-            {2, 1},
-            {2, -1},
-            {1, 2},
-            {-1, 2},
-            {-2, 1},
-            {-2, -1},
-            {1, -2},
-            {-1, -2},
+public class KingMovesCalculator {
+    private static final int[][] AROUND = {
+            {1, 1},
+            {1, 0},
+            {0, 1},
+            {-1, -1},
+            {-1, 0},
+            {0, -1},
+            {-1, 1},
+            {1, -1}
     };
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -24,7 +24,7 @@ public class KnightMovesCalculator {
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
 
-        for(int[] direction : knightMoves) {
+        for (int[] direction : AROUND) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
         }
 
@@ -38,10 +38,10 @@ public class KnightMovesCalculator {
 
         ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
-        if(inBoard(nextRow, nextCol)) {
-            if(board.isEmpty(newPosition)) {
+        if (inBoard(nextRow, nextCol)) {
+            if (board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
-            } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor())  {
+            } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
             }
         }
@@ -50,4 +50,5 @@ public class KnightMovesCalculator {
     private boolean inBoard(int row, int col) {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
+
 }

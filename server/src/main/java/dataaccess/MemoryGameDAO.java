@@ -1,8 +1,6 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +10,8 @@ public class MemoryGameDAO implements GameDAO {
     private static MemoryGameDAO instance;
     private final Collection<GameData> gameData = new ArrayList<>();
 
-    private MemoryGameDAO() { }
+    private MemoryGameDAO() {
+    }
 
     public static MemoryGameDAO getInstance() {
         if (instance == null) {
@@ -22,8 +21,8 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public void createGame(GameData g) {
-        for(GameData currData : gameData) {
-            if(currData.gameID() == g.gameID()) {
+        for (GameData currData : gameData) {
+            if (currData.gameID() == g.gameID()) {
                 return;
             }
         }
@@ -31,11 +30,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public GameData getGame(int gameID) {
-        if(isDataEmpty(gameData)) {
+        if (isDataEmpty(gameData)) {
             return null;
         }
-        for(GameData currData : gameData) {
-            if(currData.gameID() == gameID) {
+        for (GameData currData : gameData) {
+            if (currData.gameID() == gameID) {
                 return currData;
             }
         }
@@ -43,11 +42,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public void updateGame(GameData g) {
-        if(isDataEmpty(gameData)) {
+        if (isDataEmpty(gameData)) {
             return;
         }
-        for(GameData currData : gameData) {
-            if(currData.gameID() == g.gameID()) {
+        for (GameData currData : gameData) {
+            if (currData.gameID() == g.gameID()) {
                 gameData.remove(currData);
                 gameData.add(g);
                 return;
@@ -60,7 +59,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public void deleteGame(int gameID) {
-        if(isDataEmpty(gameData)) {
+        if (isDataEmpty(gameData)) {
             return;
         }
         gameData.removeIf(currData -> currData.gameID() == gameID);
@@ -75,16 +74,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public void joinGameRequest(Integer gameID, String username, String color) {
-        if(isDataEmpty(gameData)) {
+        if (isDataEmpty(gameData)) {
             return;
         }
-        for(GameData currData : gameData) {
-            if(currData.gameID() == gameID) {
+        for (GameData currData : gameData) {
+            if (currData.gameID() == gameID) {
                 GameData updatedData;
 
-                if(Objects.equals(color, "WHITE")) {
+                if (Objects.equals(color, "WHITE")) {
                     updatedData = new GameData(currData.gameID(), username, currData.blackUsername(), currData.gameName(), currData.game());
-                } else if(Objects.equals(color, "BLACK")) {
+                } else if (Objects.equals(color, "BLACK")) {
                     updatedData = new GameData(currData.gameID(), currData.whiteUsername(), username, currData.gameName(), currData.game());
                 } else {
                     return;

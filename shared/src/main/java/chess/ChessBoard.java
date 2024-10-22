@@ -16,7 +16,7 @@ public class ChessBoard {
 
     }
 
-    public ChessBoard CopyBoard() {
+    public ChessBoard copyBoard() {
         ChessBoard copy = new ChessBoard();
 
         for(int i = 0; i < 8; i++) {

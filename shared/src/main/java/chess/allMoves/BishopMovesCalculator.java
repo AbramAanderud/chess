@@ -1,4 +1,4 @@
-package chess.AllMoves;
+package chess.allMoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BishopMovesCalculator {
-    private static final int[][] Diagonals = {
+    private static final int[][] diagonals = {
             {1, 1},
             {1, -1},
             {-1, 1},
@@ -22,7 +22,7 @@ public class BishopMovesCalculator {
 
         //System.out.println("Current Row: " + currRow + ", Current Column: " + currCol);
 
-        for(int[] direction : Diagonals) {
+        for(int[] direction : diagonals) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
         }
         return moves;
@@ -32,7 +32,7 @@ public class BishopMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(InBoard(nextRow, nextCol)) {
+        while(inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
@@ -60,7 +60,7 @@ public class BishopMovesCalculator {
         }
     }
 
-    private boolean InBoard(int row, int col) {
+    private boolean inBoard(int row, int col) {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
 

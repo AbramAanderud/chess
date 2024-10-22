@@ -93,7 +93,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testRegister_Success() throws DataAccessException {
+    public void successTestRegister() throws DataAccessException {
         RegisterRequest request = new RegisterRequest("User", "password", "email");
         RegisterResult result = userService.register(request);
 
@@ -127,7 +127,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testLogin_Unauthorized() throws DataAccessException {
+    public void unauthorizedLogin() throws DataAccessException {
         LoginRequest request = new LoginRequest("unregisteredUser", "password");
 
         LoginResult result = userService.login(request);
@@ -137,7 +137,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testClearAll_Success() throws DataAccessException {
+    public void successClearAll() throws DataAccessException {
         ClearResult result = clearService.clearAll();
         Assertions.assertNull(result.message(), "Message should be null on success");
     }

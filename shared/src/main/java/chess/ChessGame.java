@@ -77,7 +77,7 @@ public class ChessGame {
         TeamColor teamColor = currChessPiece.getTeamColor();
 
         for(ChessMove move : moves) {
-            ChessBoard boardCopy = board.CopyBoard();
+            ChessBoard boardCopy = board.copyBoard();
 
             if(move.getPromotionPiece() == null) {
                 boardCopy.makeMoveOnBoard(move);
@@ -165,7 +165,7 @@ public class ChessGame {
         }
 
         try {
-            ChessBoard boardCopy = board.CopyBoard();
+            ChessBoard boardCopy = board.copyBoard();
             if(move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
                 boardCopy.makePromoMoveOnBoard(move);
             } else {
@@ -203,7 +203,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPos = findKingPosition(teamColor, board);
-        ChessBoard boardCopy = board.CopyBoard();
+        ChessBoard boardCopy = board.copyBoard();
 
         for(int i = 1; i <= 8; i++) {
             for(int j = 1; j <= 8; j++) {
@@ -240,7 +240,7 @@ public class ChessGame {
                     Collection<ChessMove> moves = validMoves(new ChessPosition(i,j));
 
                     for(ChessMove move : moves) {
-                        ChessBoard boardCopy = board.CopyBoard();
+                        ChessBoard boardCopy = board.copyBoard();
 
 
                         if(move.getPromotionPiece() == null) {

@@ -1,7 +1,7 @@
 package chess;
 
 
-import chess.AllMoves.*;
+import chess.allMoves.*;
 
 import java.util.Collection;
 

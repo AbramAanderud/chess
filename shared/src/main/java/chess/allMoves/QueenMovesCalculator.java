@@ -1,4 +1,4 @@
-package chess.AllMoves;
+package chess.allMoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMovesCalculator {
-    private static final int[][] Diagonals = {
+    private static final int[][] diagonals = {
             {1, 1},
             {1, -1},
             {-1, 1},
             {-1,-1}
     };
 
-    private static final int[][] Straights = {
+    private static final int[][] straights = {
             {1, 0},
             {0, 1},
             {-1, 0},
@@ -27,10 +27,10 @@ public class QueenMovesCalculator {
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
 
-        for(int[] direction : Diagonals) {
+        for(int[] direction : diagonals) {
             getBishopLike(board, moves, currRow, currCol, direction[0], direction[1]);
         }
-        for(int[] direction : Straights) {
+        for(int[] direction : straights) {
             getRookLike(board,moves, currRow, currCol, direction[0], direction[1]);
         }
 
@@ -43,7 +43,7 @@ public class QueenMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(InBoard(nextRow, nextCol)) {
+        while(inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
@@ -65,7 +65,7 @@ public class QueenMovesCalculator {
         int nextRow = row + rowInc;
         int nextCol = col + colInc;
 
-        while(InBoard(nextRow, nextCol)) {
+        while(inBoard(nextRow, nextCol)) {
             ChessPosition startPosition = new ChessPosition(row, col);
             ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
@@ -93,7 +93,7 @@ public class QueenMovesCalculator {
         }
     }
 
-    private boolean InBoard(int row, int col) {
+    private boolean inBoard(int row, int col) {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
 }

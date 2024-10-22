@@ -1,4 +1,4 @@
-package chess.AllMoves;
+package chess.allMoves;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class KingMovesCalculator {
-    private static final int[][] allAround = {
+    private static final int[][] around = {
         {1, 1},
         {1, 0},
         {0, 1},
@@ -24,7 +24,7 @@ public class KingMovesCalculator {
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
 
-        for(int [] direction : allAround) {
+        for(int [] direction : around) {
             getMoves(board, moves, currRow, currCol, direction[0], direction[1]);
         }
 
@@ -38,7 +38,7 @@ public class KingMovesCalculator {
 
         ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
 
-        if(InBoard(nextRow, nextCol)) {
+        if(inBoard(nextRow, nextCol)) {
             if(board.isEmpty(newPosition)) {
                 moves.add(new ChessMove(startPosition, newPosition, null));
             } else if(board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor())  {
@@ -47,7 +47,7 @@ public class KingMovesCalculator {
         }
     }
 
-    private boolean InBoard(int row, int col) {
+    private boolean inBoard(int row, int col) {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
 

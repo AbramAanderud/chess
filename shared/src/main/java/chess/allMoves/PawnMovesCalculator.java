@@ -1,4 +1,4 @@
-package chess.AllMoves;
+package chess.allMoves;
 
 import chess.*;
 
@@ -24,7 +24,7 @@ public class PawnMovesCalculator {
     }
 
     private void getWhiteMoves(ChessBoard board, Collection<ChessMove> moves, int currRow, int currCol) {
-        if(InBoard(currRow + 1, currCol)) {
+        if(inBoard(currRow + 1, currCol)) {
             ChessPosition startPosition = new ChessPosition(currRow, currCol);
             ChessPosition oneInFront = new ChessPosition(currRow + 1, currCol);
             ChessPosition twoInFront = new ChessPosition(currRow + 2, currCol);
@@ -37,7 +37,7 @@ public class PawnMovesCalculator {
             }
             if (board.isEmpty(oneInFront)) {
                 if(oneInFront.getRow() == 8) {
-                    Promotion(startPosition, oneInFront, moves);
+                    promotion(startPosition, oneInFront, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, oneInFront, null));
                 }
@@ -45,14 +45,14 @@ public class PawnMovesCalculator {
 
             if (lefty != null && (!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(lefty.getRow() == 8) {
-                    Promotion(startPosition, lefty, moves);
+                    promotion(startPosition, lefty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, lefty, null));
                 }
             }
             if (righty != null && (!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(righty.getRow() == 8) {
-                    Promotion(startPosition, righty, moves);
+                    promotion(startPosition, righty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, righty, null));
                 }
@@ -61,7 +61,7 @@ public class PawnMovesCalculator {
     }
 
     private void getBlackMoves(ChessBoard board, Collection<ChessMove> moves, int currRow, int currCol) {
-        if(InBoard(currRow - 1, currCol)) {
+        if(inBoard(currRow - 1, currCol)) {
             ChessPosition startPosition = new ChessPosition(currRow, currCol);
             ChessPosition oneInFront = new ChessPosition(currRow - 1, currCol);
             ChessPosition twoInFront = new ChessPosition(currRow - 2, currCol);
@@ -75,7 +75,7 @@ public class PawnMovesCalculator {
             }
             if(board.isEmpty(oneInFront)) {
                 if(oneInFront.getRow() == 1) {
-                    Promotion(startPosition, oneInFront, moves);
+                    promotion(startPosition, oneInFront, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, oneInFront, null));
                 }
@@ -83,14 +83,14 @@ public class PawnMovesCalculator {
 
             if(lefty != null && (!board.isEmpty(lefty)) && board.getPiece(lefty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(lefty.getRow() == 1) {
-                    Promotion(startPosition, lefty, moves);
+                    promotion(startPosition, lefty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, lefty, null));
                 }
             }
             if(righty != null && (!board.isEmpty(righty)) && board.getPiece(righty).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
                 if(righty.getRow() == 1) {
-                    Promotion(startPosition, righty, moves);
+                    promotion(startPosition, righty, moves);
                 } else {
                     moves.add(new ChessMove(startPosition, righty, null));
                 }
@@ -99,11 +99,11 @@ public class PawnMovesCalculator {
 
     }
 
-    private boolean InBoard(int row, int col) {
+    private boolean inBoard(int row, int col) {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
 
-    private void Promotion(ChessPosition startPosition, ChessPosition end, Collection<ChessMove> moves) {
+    private void promotion(ChessPosition startPosition, ChessPosition end, Collection<ChessMove> moves) {
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.KNIGHT));
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.ROOK));
         moves.add(new ChessMove(startPosition, end, ChessPiece.PieceType.QUEEN));

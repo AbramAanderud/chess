@@ -16,7 +16,7 @@ import java.util.List;
 public class GameService {
     private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
     private final GameDAO gameDAO = MemoryGameDAO.getInstance();
-    private static int OgGameID = 1111;
+    private static int ogGameID = 1111;
 
     public ListResult listGames(ListRequest req) throws DataAccessException {
         if(!authDAO.isValidAuth(req.authToken())) {
@@ -45,7 +45,7 @@ public class GameService {
             return new CreateGameResult(null, "error: bad request");
         }
 
-        int newID = ++OgGameID;
+        int newID = ++ogGameID;
         GameData newGame = new GameData(newID, null, null, req.gameName(), null);
 
         gameDAO.createGame(newGame);

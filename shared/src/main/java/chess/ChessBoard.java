@@ -24,7 +24,8 @@ public class ChessBoard {
                 ChessPiece piece = this.squares[i][j];
 
                 if (this.squares[i][j] != null) {
-                    copy.squares[i][j] = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+                    copy.squares[i][j] = new ChessPiece(piece.getTeamColor(),
+                            piece.getPieceType());
                 } else {
                     copy.squares[i][j] = null;
                 }
@@ -61,7 +62,8 @@ public class ChessBoard {
             throw new RuntimeException("No piece at the start pos");
         }
 
-        this.addPiece(endPos, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        this.addPiece(endPos, new ChessPiece(piece.getTeamColor(),
+                move.getPromotionPiece()));
         this.removePiece(startPos, piece);
     }
 
@@ -76,7 +78,11 @@ public class ChessBoard {
     }
 
     public void removePiece(ChessPosition position, ChessPiece piece) {
-        if (squares[position.getRow() - 1][position.getColumn() - 1].getPieceType() == piece.getPieceType() && squares[position.getRow() - 1][position.getColumn() - 1].getTeamColor() == piece.getTeamColor()) {
+        if (squares[position.getRow() - 1]
+                [position.getColumn() - 1].getPieceType()
+                == piece.getPieceType() && squares[position.getRow() - 1]
+                [position.getColumn() - 1].getTeamColor()
+                == piece.getTeamColor()) {
             squares[position.getRow() - 1][position.getColumn() - 1] = null;
         }
     }
@@ -109,30 +115,48 @@ public class ChessBoard {
         }
 
         for (int i = 0; i < 8; i++) {
-            squares[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            squares[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                    ChessPiece.PieceType.PAWN);
         }
 
-        squares[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        squares[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        squares[0][2] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        squares[0][3] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        squares[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-        squares[0][5] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        squares[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        squares[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        squares[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.ROOK);
+        squares[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.KNIGHT);
+        squares[0][2] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.BISHOP);
+        squares[0][3] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.QUEEN);
+        squares[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.KING);
+        squares[0][5] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.BISHOP);
+        squares[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.KNIGHT);
+        squares[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE,
+                ChessPiece.PieceType.ROOK);
 
         for (int i = 0; i < 8; i++) {
-            squares[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            squares[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                    ChessPiece.PieceType.PAWN);
         }
 
-        squares[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        squares[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        squares[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        squares[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        squares[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        squares[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        squares[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.ROOK);
+        squares[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.KNIGHT);
+        squares[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.BISHOP);
+        squares[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.QUEEN);
+        squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.KING);
+        squares[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.BISHOP);
+        squares[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.KNIGHT);
+        squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK,
+                ChessPiece.PieceType.ROOK);
 
     }
 
@@ -151,29 +175,28 @@ public class ChessBoard {
             sb.append("|");
             for (int j = 0; j < 8; j++) {
                 ChessPiece piece = squares[i][j];
-                if (piece == null) {
-                    sb.append(" ");
-                } else {
-                    char firstInitial = piece.getPieceType().toString().charAt(0);
-                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        firstInitial = Character.toUpperCase(firstInitial);
-                        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-                            firstInitial = 'n';
-                        }
-                        firstInitial = Character.toUpperCase(firstInitial);
-                    } else {
-                        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-                            firstInitial = 'n';
-                        }
-                        firstInitial = Character.toLowerCase(firstInitial);
-                    }
-                    sb.append(firstInitial);
-                }
-                sb.append("|");
+                sb.append(getPieceCharacter(piece)).append("|");
             }
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private char getPieceCharacter(ChessPiece piece) {
+        if (piece == null) {
+            return ' ';
+        }
+        char firstInitial = piece.getPieceType().toString().charAt(0);
+
+        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            firstInitial = 'n';
+        }
+
+        if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            return Character.toUpperCase(firstInitial);
+        } else {
+            return Character.toLowerCase(firstInitial);
+        }
     }
 
     @Override

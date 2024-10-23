@@ -62,9 +62,13 @@ public class MemoryGameDAO implements GameDAO {
                 GameData updatedData;
 
                 if (Objects.equals(color, "WHITE")) {
-                    updatedData = new GameData(currData.gameID(), username, currData.blackUsername(), currData.gameName(), currData.game());
+                    updatedData = new GameData(currData.gameID(), username,
+                            currData.blackUsername(), currData.gameName(),
+                            currData.game());
                 } else if (Objects.equals(color, "BLACK")) {
-                    updatedData = new GameData(currData.gameID(), currData.whiteUsername(), username, currData.gameName(), currData.game());
+                    updatedData = new GameData(currData.gameID(),
+                            currData.whiteUsername(), username,
+                            currData.gameName(), currData.game());
                 } else {
                     return;
                 }

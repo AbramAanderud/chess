@@ -1,6 +1,9 @@
 package service;
 
-import dataaccess.*;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
 import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinRequest;
@@ -57,7 +60,9 @@ public class GameService {
         if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }
-        if (req.gameID() == null || req.playerColor() == null || (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))) {
+        if (req.gameID() == null || req.playerColor() == null
+                || (!req.playerColor().equals("WHITE")
+                && !req.playerColor().equals("BLACK"))) {
             return new JoinResult("error: bad request");
         }
 

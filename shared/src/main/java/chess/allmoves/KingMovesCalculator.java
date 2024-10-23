@@ -7,7 +7,7 @@ import chess.ChessPosition;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class KingMovesCalculator extends MovementHelper{
+public class KingMovesCalculator extends MovementHelper {
     private static final int[][] AROUND = {
             {1, 1},
             {1, 0},
@@ -19,7 +19,8 @@ public class KingMovesCalculator extends MovementHelper{
             {1, -1}
     };
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board,
+                                            ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();

@@ -7,7 +7,8 @@ import java.util.Collection;
 
 public class PawnMovesCalculator {
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board,
+                                            ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();

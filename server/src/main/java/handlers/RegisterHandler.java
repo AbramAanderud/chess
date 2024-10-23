@@ -15,9 +15,11 @@ public class RegisterHandler {
             RegisterRequest request = jsonHandler.fromJson(req, RegisterRequest.class);
             RegisterResult result = userService.register(request);
 
-            if (result.message() != null && result.message().contains("bad request")) {
+            if (result.message() != null &&
+                    result.message().contains("bad request")) {
                 res.status(400);
-            } else if (result.message() != null && result.message().contains("already taken")) {
+            } else if (result.message() != null &&
+                    result.message().contains("already taken")) {
                 res.status(403);
             } else if (result.authToken() != null) {
                 res.status(200);

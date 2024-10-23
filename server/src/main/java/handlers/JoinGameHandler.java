@@ -20,11 +20,14 @@ public class JoinGameHandler {
             JoinResult result = gameService.joinGame(request, authToken);
 
 
-            if (result.message() != null && result.message().contains("bad request")) {
+            if (result.message() != null &&
+                    result.message().contains("bad request")) {
                 res.status(400);
-            } else if (result.message() != null && result.message().contains("unauthorized")) {
+            } else if (result.message() != null &&
+                    result.message().contains("unauthorized")) {
                 res.status(401);
-            } else if (result.message() != null && result.message().contains("already taken")) {
+            } else if (result.message() != null &&
+                    result.message().contains("already taken")) {
                 res.status(403);
             } else if (result.message() == null) {
                 res.status(200);

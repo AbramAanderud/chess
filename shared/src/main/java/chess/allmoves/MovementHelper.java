@@ -11,7 +11,8 @@ public class MovementHelper {
         return col <= 8 && row <= 8 && col >= 1 && row >= 1;
     }
 
-    protected void calculateMoves(ChessBoard board, Collection<ChessMove> moves, int row, int col, int[][] directions) {
+    protected void calculateMoves(ChessBoard board, Collection<ChessMove> moves
+            , int row, int col, int[][] directions) {
         for (int[] direction : directions) {
             int rowInc = direction[0];
             int colInc = direction[1];
@@ -24,7 +25,8 @@ public class MovementHelper {
 
                 if (board.isEmpty(newPosition)) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
-                } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                } else if (board.getPiece(newPosition).getTeamColor() !=
+                        board.getPiece(startPosition).getTeamColor()) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
                     break;
                 } else {
@@ -37,7 +39,8 @@ public class MovementHelper {
         }
     }
 
-    protected void calculateKMoves(ChessBoard board, Collection<ChessMove> moves, int row, int col, int[][] directions) {
+    protected void calculateKMoves(ChessBoard board, Collection<ChessMove> moves,
+                                   int row, int col, int[][] directions) {
         for (int[] direction : directions) {
             int rowInc = direction[0];
             int colInc = direction[1];

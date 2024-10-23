@@ -22,6 +22,7 @@ public class BishopMovesCalculator extends MovementHelper {
         int currCol = myPosition.getColumn();
 
         calculateMoves(board, moves, currRow, currCol, DIAGONALS);
+
         return moves;
     }
 }

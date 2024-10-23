@@ -21,11 +21,18 @@ public class ChessMoveTests {
 
     @BeforeEach
     public void setUp() {
-        original = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
-        equal = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
-        startDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(4).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
-        endDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(5).setCol(3).createChessPosition(), null);
-        promoteDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(), new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(),
+        original = new ChessMove(
+                new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(),
+                new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(),
+                null);
+        equal = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(),
+                new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
+        startDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(4).createChessPosition(),
+                new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(), null);
+        endDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(),
+                new ChessPositionBuilder().setRow(5).setCol(3).createChessPosition(), null);
+        promoteDifferent = new ChessMove(new ChessPositionBuilder().setRow(2).setCol(6).createChessPosition(),
+                new ChessPositionBuilder().setRow(1).setCol(5).createChessPosition(),
                 ChessPiece.PieceType.QUEEN);
     }
 

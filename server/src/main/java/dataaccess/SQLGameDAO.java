@@ -16,24 +16,33 @@ public class SQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(GameData g) throws DataAccessException {
-        String sql = "INSERT INTO Game (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+    public int createGame(GameData g) throws DataAccessException {
+        String sql = "INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         String jsonGameBoard = gson.toJson(g.game());
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, g.whiteUsername());
             stmt.setString(2, g.blackUsername());
             stmt.setString(3, g.gameName());
             stmt.setString(4, jsonGameBoard);
+
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new DataAccessException("Failed to make game and get ID");
+                }
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create game: " + e.getMessage());
         }
     }
 
+
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        String sql = "SELECT * FROM Game WHERE gameID = ?";
+        String sql = "SELECT * FROM gameDataTable WHERE gameID = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, gameID);
             ResultSet rs = stmt.executeQuery();
@@ -49,7 +58,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
         Collection<GameData> games = new ArrayList<>();
-        String sql = "SELECT * FROM Game";
+        String sql = "SELECT * FROM gameDataTable";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -65,7 +74,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public void clearAllGameData() throws DataAccessException {
-        String sql = "DELETE FROM Game";
+        String sql = "DELETE FROM gameDataTable";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -75,7 +84,7 @@ public class SQLGameDAO implements GameDAO {
 
     public void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException {
         if (gameID == null || username == null || color == null) {
-            throw new DataAccessException("Game ID, username, and color must not be null.");
+            throw new DataAccessException("GameID, username, and color must not be null.");
         }
 
         String updateStatement;

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class GameService {
-    private static int ogGameID = 1111;
     AuthDAO authDAO = new SQLAuthDAO();
     GameDAO gameDAO = new SQLGameDAO();
 
@@ -48,12 +47,11 @@ public class GameService {
             return new CreateGameResult(null, "error: bad request");
         }
 
-        int newID = ++ogGameID;
-        GameData newGame = new GameData(newID, null, null, req.gameName(), null);
+        GameData newGame = new GameData(null, null, null, req.gameName(), null);
 
-        gameDAO.createGame(newGame);
+        int newGameID = gameDAO.createGame(newGame);
 
-        return new CreateGameResult(newID, null);
+        return new CreateGameResult(newGameID, null);
     }
 
     public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {

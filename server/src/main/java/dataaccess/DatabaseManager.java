@@ -60,21 +60,28 @@ public class DatabaseManager {
 
     static void createTables() throws DataAccessException {
         String createUsersTable = """
-            CREATE TABLE IF NOT EXISTS Users (
-                username VARCHAR(50) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                email VARCHAR(100) NOT NULL UNIQUE
+            CREATE TABLE IF NOT EXISTS userDataTable(
+                username VARCHAR(256) NOT NULL PRIMARY KEY,
+                password VARCHAR(256) NOT NULL,
+                email VARCHAR(256) NOT NULL UNIQUE
             );
         """;
 
         String createGamesTable = """
-            CREATE TABLE IF NOT EXISTS Games (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                whitePlayerId INT,
-                blackPlayerId INT,
-                FOREIGN KEY (whitePlayerId) REFERENCES Users(id),
-                FOREIGN KEY (blackPlayerId) REFERENCES Users(id)
+            CREATE TABLE IF NOT EXISTS gameDataTable(
+                gameID int NOT NULL AUTO_INCREMENT,
+                whiteUsername VARCHAR(256),
+                blackUsername VARCHAR(256),
+                gameName VARCHAR(256),
+                game TEXT DEFAULT NULL,
+                PRIMARY KEY (ID)
+            );
+        """;
+
+        String createAuthTable = """
+            CREATE TABLE IF NOT EXISTS authDataTable(
+                authtoken varchar(256) NOT NULL PRIMARY KEY,
+                username varchar(256) NOT NULL
             );
         """;
 
@@ -82,10 +89,12 @@ public class DatabaseManager {
              var statement = conn.createStatement()) {
             statement.executeUpdate(createUsersTable);
             statement.executeUpdate(createGamesTable);
+            statement.executeUpdate(createAuthTable);
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
+
     /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should

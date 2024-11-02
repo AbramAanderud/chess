@@ -13,7 +13,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public String createAuth(String username) throws DataAccessException {
         String newAuthToken = UUID.randomUUID().toString();
-        String sql = "INSERT INTO auth (auth_token, username) VALUES (?, ?)";
+        String sql = "INSERT INTO authDataTable (authtoken, username) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, newAuthToken);
@@ -28,7 +28,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public boolean isValidAuth(String authToken) throws DataAccessException {
-        String sql = "SELECT COUNT(*) FROM auth WHERE auth_token = ?";
+        String sql = "SELECT COUNT(*) FROM authDataTable WHERE authtoken = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, authToken);
             ResultSet rs = pstmt.executeQuery();
@@ -43,7 +43,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public String getUsernameByAuth(String authToken) throws DataAccessException {
-        String sql = "SELECT username FROM auth WHERE auth_token = ?";
+        String sql = "SELECT username FROM authDataTable WHERE authtoken = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, authToken);
             ResultSet rs = pstmt.executeQuery();
@@ -58,7 +58,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuthByAuth(String authToken) throws DataAccessException {
-        String sql = "DELETE FROM auth WHERE auth_token = ?";
+        String sql = "DELETE FROM authDataTable WHERE authtoken = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, authToken);
             pstmt.executeUpdate();
@@ -69,7 +69,7 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void clearAllAuthData() throws DataAccessException {
-        String sql = "DELETE FROM auth";
+        String sql = "DELETE FROM authDataTable";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.executeUpdate();
         } catch (SQLException e) {

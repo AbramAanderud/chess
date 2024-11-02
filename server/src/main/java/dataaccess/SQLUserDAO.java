@@ -1,66 +1,64 @@
 package dataaccess;
+
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class SQLUserDAO {
+public class SQLUserDAO implements UserDAO {
+    private final Connection connection;
 
+    public SQLUserDAO() throws DataAccessException {
+        this.connection = DatabaseManager.getConnection();
+    }
+
+    @Override
     public void createUser(UserData u) throws DataAccessException {
-        String sql = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
+        String hashedPassword = hashPassword(u.password());
+        String sql = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, u.username());
-            stmt.setString(2, u.password());
+            stmt.setString(2, hashedPassword); // Store hashed password
             stmt.setString(3, u.email());
             stmt.executeUpdate();
-
         } catch (SQLException e) {
-            throw new DataAccessException("Error inserting user: " + e.getMessage());
+            throw new DataAccessException("Failed to create user: " + e.getMessage());
         }
     }
 
+    @Override
     public UserData getUser(String username) throws DataAccessException {
-        String sql = "SELECT username, password, email FROM Users WHERE username = ?";
-        UserData user = null;
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        String sql = "SELECT * FROM User WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
-                String password = rs.getString("password");
-                String email = rs.getString("email");
-                user = new UserData(username, password, email);
+                return new UserData(
+                        rs.getString("username"),
+                        rs.getString("password"), // Store hashed password
+                        rs.getString("email")
+                );
             }
-
         } catch (SQLException e) {
-            throw new DataAccessException("Error finding user: " + e.getMessage());
+            throw new DataAccessException("Failed to retrieve user: " + e.getMessage());
         }
-
-        return user;
+        return null;
     }
 
+    @Override
     public void clearAllUserData() throws DataAccessException {
-        String sql = "DELETE FROM Users";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        String sql = "DELETE FROM User";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.executeUpdate();
-
         } catch (SQLException e) {
-            throw new DataAccessException("Error clearing user data: " + e.getMessage());
+            throw new DataAccessException("Failed to clear user data: " + e.getMessage());
         }
     }
 
-
-
-
+    private String hashPassword(String clearTextPassword) {
+        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
+    }
 }

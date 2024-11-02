@@ -5,13 +5,13 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDAO {
-    void createGame(GameData g);
+    void createGame(GameData g) throws DataAccessException;
 
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws DataAccessException;
 
-    Collection<GameData> listGames();
+    Collection<GameData> listGames() throws DataAccessException;
 
-    void clearAllGameData();
+    void clearAllGameData() throws DataAccessException;
 
-    void joinGameRequest(Integer gameID, String username, String color);
+    void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException;
 }

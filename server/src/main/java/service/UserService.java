@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.UserData;
 import requests.LoginRequest;
 import requests.LogoutRequest;
@@ -13,8 +10,8 @@ import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserService {
-    private final UserDAO userDAO = MemoryUserDAO.getInstance();
-    private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
+    private final UserDAO SQLUserDAO;
+    private final AuthDAO MemoryAuthDAO;
 
     public RegisterResult register(RegisterRequest r) {
 

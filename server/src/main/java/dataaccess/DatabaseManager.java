@@ -66,7 +66,7 @@ public class DatabaseManager {
                         blackUsername VARCHAR(256),
                         gameName VARCHAR(256),
                         game TEXT DEFAULT NULL,
-                        PRIMARY KEY (ID)
+                        PRIMARY KEY (gameID)
                     );
                 """;
 
@@ -85,6 +85,11 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+    }
+
+    public static void initializeDB() throws DataAccessException {
+        createDatabase();
+        createTables();
     }
 
     /**
@@ -118,4 +123,5 @@ public class DatabaseManager {
             }
         }
     }
+
 }

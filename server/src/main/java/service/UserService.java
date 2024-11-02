@@ -18,7 +18,6 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest r) throws DataAccessException {
-
         if (r.username()==null || r.email()==null || r.password()==null) {
             return new RegisterResult(null, null, "error: bad request");
         }

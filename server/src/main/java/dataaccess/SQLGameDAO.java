@@ -20,14 +20,14 @@ public class SQLGameDAO implements GameDAO {
         String sql = "INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         String jsonGameBoard = gson.toJson(g.game());
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, g.whiteUsername());
-            stmt.setString(2, g.blackUsername());
-            stmt.setString(3, g.gameName());
-            stmt.setString(4, jsonGameBoard);
+        try (PreparedStatement prepstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            prepstmt.setString(1, g.whiteUsername());
+            prepstmt.setString(2, g.blackUsername());
+            prepstmt.setString(3, g.gameName());
+            prepstmt.setString(4, jsonGameBoard);
 
-            stmt.executeUpdate();
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            prepstmt.executeUpdate();
+            try (ResultSet generatedKeys = prepstmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
                 } else {

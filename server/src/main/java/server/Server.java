@@ -1,13 +1,23 @@
 package server;
 
+import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import handlers.*;
 import spark.Spark;
 
+import javax.xml.crypto.Data;
+
+
 public class Server {
-    DatabaseManager databaseManager = new DatabaseManager();
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.initializeDB();
+        } catch (DataAccessException e) {
+            System.err.println("couldnt make database" + e.getMessage());
+        }
+
+
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
 

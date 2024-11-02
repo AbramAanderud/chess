@@ -58,6 +58,8 @@ public class GameService {
         if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }
+        System.out.println("gameID requested " + req.gameID());
+        System.out.println(req.playerColor());
         if (req.gameID()==null || req.playerColor()==null
                 || (!req.playerColor().equals("WHITE")
                 && !req.playerColor().equals("BLACK"))) {

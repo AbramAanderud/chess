@@ -16,7 +16,7 @@ public class ClearService {
             gameDAO.clearAllGameData();
             userDAO.clearAllUserData();
             authDAO.clearAllAuthData();
-
+            System.out.println("CLEARED");
             return new ClearResult(null);
         } catch (Exception e) {
             return new ClearResult("Error: " + e.getMessage());

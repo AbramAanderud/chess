@@ -20,11 +20,11 @@ public class SQLUserDAO implements UserDAO {
         String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
         String sql = "INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, u.username());
-            stmt.setString(2, hashedPassword); // Store hashed password
-            stmt.setString(3, u.email());
-            stmt.executeUpdate();
+        try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {
+            prepstmt.setString(1, u.username());
+            prepstmt.setString(2, hashedPassword); // Store hashed password
+            prepstmt.setString(3, u.email());
+            prepstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create user: " + e.getMessage());
         }

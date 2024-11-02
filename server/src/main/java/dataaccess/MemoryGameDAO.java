@@ -20,13 +20,14 @@ public class MemoryGameDAO implements GameDAO {
         return instance;
     }
 
-    public void createGame(GameData g) {
+    public int createGame(GameData g) {
         for (GameData currData : gameData) {
-            if (currData.gameID()==g.gameID()) {
-                return;
+            if (currData.gameID() == g.gameID()) {
+                return currData.gameID();
             }
         }
         gameData.add(g);
+        return g.gameID();
     }
 
     public GameData getGame(int gameID) {

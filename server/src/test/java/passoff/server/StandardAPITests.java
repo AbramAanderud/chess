@@ -279,7 +279,7 @@ public class StandardAPITests {
         TestListResult result = serverFacade.listGames(existingAuth);
 
         assertHttpOk(result);
-        Assertions.assertTrue(result.getGames() == null || result.getGames().length == 0,
+        Assertions.assertTrue(result.getGames()==null || result.getGames().length==0,
                 "Found games when none should be there");
     }
 
@@ -443,7 +443,7 @@ public class StandardAPITests {
     private void assertHttpOk(TestResult result) {
         Assertions.assertEquals(HttpURLConnection.HTTP_OK, serverFacade.getStatusCode(),
                 "Server response code was not 200 OK (message: %s)".formatted(result.getMessage()));
-        Assertions.assertFalse(result.getMessage() != null &&
+        Assertions.assertFalse(result.getMessage()!=null &&
                         result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Result returned an error message");
     }
@@ -463,7 +463,7 @@ public class StandardAPITests {
     private void assertHttpError(TestResult result, int statusCode, String message) {
         Assertions.assertEquals(statusCode, serverFacade.getStatusCode(),
                 "Server response code was not %d %s (message: %s)".formatted(statusCode, message, result.getMessage()));
-        Assertions.assertTrue(result.getMessage() != null &&
+        Assertions.assertTrue(result.getMessage()!=null &&
                         result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Invalid Request didn't return an error message");
     }

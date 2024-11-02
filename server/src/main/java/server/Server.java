@@ -5,8 +5,6 @@ import dataaccess.DatabaseManager;
 import handlers.*;
 import spark.Spark;
 
-import javax.xml.crypto.Data;
-
 
 public class Server {
 

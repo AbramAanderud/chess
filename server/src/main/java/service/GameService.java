@@ -76,12 +76,12 @@ public class GameService {
         System.out.println(gameData); //its getting null
 
         if (req.playerColor().equals("WHITE")) {
-            if (gameData.whiteUsername() != null) {
+            if (gameData.whiteUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }
         if (req.playerColor().equals("BLACK")) {
-            if (gameData.blackUsername() != null) {
+            if (gameData.blackUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }

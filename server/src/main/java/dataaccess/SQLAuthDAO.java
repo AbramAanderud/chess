@@ -22,7 +22,7 @@ public class SQLAuthDAO implements AuthDAO {
             prepstmt.setString(2, username);
             prepstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to create auth token: " + e.getMessage());
+            throw new DataAccessException("Failed to create auth token " + e.getMessage());
         }
 
         return newAuthToken;
@@ -37,7 +37,7 @@ public class SQLAuthDAO implements AuthDAO {
                 return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to check auth token validity: " + e.getMessage());
+            throw new DataAccessException("Failed to check auth token validity " + e.getMessage());
         }
         return false;
     }
@@ -51,7 +51,7 @@ public class SQLAuthDAO implements AuthDAO {
                 return rs.getString("username");
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to retrieve username by auth token: " + e.getMessage());
+            throw new DataAccessException("Failed to get username by auth token " + e.getMessage());
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class SQLAuthDAO implements AuthDAO {
             prepstmt.setString(1, authToken);
             prepstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to delete auth token: " + e.getMessage());
+            throw new DataAccessException("Failed to delete auth token " + e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class SQLAuthDAO implements AuthDAO {
         try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {
             prepstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to clear all auth data: " + e.getMessage());
+            throw new DataAccessException("Failed to clear " + e.getMessage());
         }
     }
 }

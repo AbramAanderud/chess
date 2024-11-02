@@ -38,7 +38,7 @@ public class SQLGameDAO implements GameDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to create game: " + e.getMessage());
+            throw new DataAccessException("Failed to create new game " + e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class SQLGameDAO implements GameDAO {
                 return readGame(rs);
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to retrieve game: " + e.getMessage());
+            throw new DataAccessException("Failed to get game " + e.getMessage());
         }
         return null;
     }
@@ -69,7 +69,7 @@ public class SQLGameDAO implements GameDAO {
                 games.add(readGame(rs));
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to list games: " + e.getMessage());
+            throw new DataAccessException("Failed to list all games " + e.getMessage());
         }
 
         return games;
@@ -84,7 +84,7 @@ public class SQLGameDAO implements GameDAO {
             stmt.executeUpdate();
             resetStmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to clear game data: " + e.getMessage());
+            throw new DataAccessException("Failed to clear " + e.getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ public class SQLGameDAO implements GameDAO {
                 throw new DataAccessException("No game with that game ID");
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Error updating the game: " + e.getMessage());
+            throw new DataAccessException("Error updating game " + e.getMessage());
         }
     }
 

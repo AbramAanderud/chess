@@ -65,7 +65,7 @@ public class ServiceTests {
 
     @Test
     public void colorTakenJoinGame() throws DataAccessException {
-        RegisterRequest firstUserRegisterRequest = new RegisterRequest("User1", "password", "email");
+        RegisterRequest firstUserRegisterRequest = new RegisterRequest("TestUser", "password", "email");
         RegisterResult firstUserRegisterResult = userService.register(firstUserRegisterRequest);
         String validAuthToken1 = firstUserRegisterResult.authToken();
 

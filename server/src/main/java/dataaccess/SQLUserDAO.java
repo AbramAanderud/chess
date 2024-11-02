@@ -21,11 +21,11 @@ public class SQLUserDAO implements UserDAO {
 
         try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {
             prepstmt.setString(1, u.username());
-            prepstmt.setString(2, hashedPassword); // Store hashed password
+            prepstmt.setString(2, hashedPassword);
             prepstmt.setString(3, u.email());
             prepstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to create user: " + e.getMessage());
+            throw new DataAccessException("Failed to create user " + e.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public class SQLUserDAO implements UserDAO {
                 );
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to retrieve user: " + e.getMessage());
+            throw new DataAccessException("Failed to get user by username " + e.getMessage());
         }
         return null;
     }
@@ -52,7 +52,7 @@ public class SQLUserDAO implements UserDAO {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Failed to clear user data: " + e.getMessage());
+            throw new DataAccessException("Failed to clear " + e.getMessage());
         }
     }
 

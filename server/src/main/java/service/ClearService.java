@@ -4,9 +4,12 @@ import dataaccess.*;
 import result.ClearResult;
 
 public class ClearService {
-    private final UserDAO userDAO = MemoryUserDAO.getInstance();
-    private final AuthDAO authDAO = MemoryAuthDAO.getInstance();
-    private final GameDAO gameDAO = MemoryGameDAO.getInstance();
+    private final UserDAO userDAO = new SQLUserDAO();
+    private final AuthDAO authDAO = new SQLAuthDAO();
+    private final GameDAO gameDAO = new SQLGameDAO();
+
+    public ClearService() throws DataAccessException {
+    }
 
     public ClearResult clearAll() {
         try {

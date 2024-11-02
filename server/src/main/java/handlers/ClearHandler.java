@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DataAccessException;
 import result.ClearResult;
 import service.ClearService;
 import spark.Response;
@@ -7,6 +8,9 @@ import spark.Response;
 public class ClearHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final ClearService clearService = new ClearService();
+
+    public ClearHandler() throws DataAccessException {
+    }
 
     public String handleRequest(Response res) {
         ClearResult result = clearService.clearAll();

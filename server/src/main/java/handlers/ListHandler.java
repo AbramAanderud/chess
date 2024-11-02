@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DataAccessException;
 import requests.ListRequest;
 import result.ListResult;
 import service.GameService;
@@ -9,6 +10,9 @@ import spark.Response;
 public class ListHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final GameService gameService = new GameService();
+
+    public ListHandler() throws DataAccessException {
+    }
 
     public String handleRequest(Request req, Response res) {
         try {

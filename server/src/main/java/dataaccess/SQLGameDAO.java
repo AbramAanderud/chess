@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class SQLGameDAO implements GameDAO {
     private final Connection connection;
-    private final Gson gson = new Gson(); // Gson instance for JSON serialization/deserialization
+    private final Gson gson = new Gson();
 
     public SQLGameDAO() throws DataAccessException {
         this.connection = DatabaseManager.getConnection();

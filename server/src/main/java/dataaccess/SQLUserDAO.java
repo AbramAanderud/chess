@@ -16,7 +16,7 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData u) throws DataAccessException {
-        String hashedPassword = hashPassword(u.password());
+        String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
         String sql = "INSERT INTO User (username, password, email) VALUES (?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

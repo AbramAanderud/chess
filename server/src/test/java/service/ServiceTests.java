@@ -13,7 +13,7 @@ public class ServiceTests {
     private ClearService clearService;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         gameService = new GameService();
         userService = new UserService();
         clearService = new ClearService();

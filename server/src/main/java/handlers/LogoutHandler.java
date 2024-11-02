@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DataAccessException;
 import requests.LogoutRequest;
 import result.LogoutResult;
 import service.UserService;
@@ -9,6 +10,9 @@ import spark.Response;
 public class LogoutHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final UserService userService = new UserService();
+
+    public LogoutHandler() throws DataAccessException {
+    }
 
     public String handleRequest(Request req, Response res) {
         try {

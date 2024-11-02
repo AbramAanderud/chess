@@ -1,5 +1,6 @@
 package handlers;
 
+import dataaccess.DataAccessException;
 import requests.RegisterRequest;
 import result.RegisterResult;
 import service.UserService;
@@ -9,6 +10,9 @@ import spark.Response;
 public class RegisterHandler {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final UserService userService = new UserService();
+
+    public RegisterHandler() throws DataAccessException {
+    }
 
     public String handleRequest(Request req, Response res) {
         try {

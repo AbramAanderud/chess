@@ -41,7 +41,7 @@ public class SQLAuthDAO implements AuthDAO {
         }
         return false;
     }
-    
+
     public String getUsernameByAuth(String authToken) throws DataAccessException {
         String sql = "SELECT username FROM authDataTable WHERE authtoken = ?";
         try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {

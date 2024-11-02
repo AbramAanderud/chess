@@ -18,13 +18,13 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public int createGame(GameData g) throws DataAccessException {
         String sql = "INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
-        String jsonGameBoard = gson.toJson(g.game());
+        String jsonGame = gson.toJson(g.game());
 
         try (PreparedStatement prepstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             prepstmt.setString(1, g.whiteUsername());
             prepstmt.setString(2, g.blackUsername());
             prepstmt.setString(3, g.gameName());
-            prepstmt.setString(4, jsonGameBoard);
+            prepstmt.setString(4, jsonGame);
 
             prepstmt.executeUpdate();
             try (ResultSet generatedKeys = prepstmt.getGeneratedKeys()) {
@@ -75,8 +75,11 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void clearAllGameData() throws DataAccessException {
         String sql = "DELETE FROM gameDataTable";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String resetIdSql = "ALTER TABLE gameDataTable AUTO_INCREMENT = 1";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             PreparedStatement resetStmt = connection.prepareStatement(resetIdSql)) {
             stmt.executeUpdate();
+            resetStmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to clear game data: " + e.getMessage());
         }

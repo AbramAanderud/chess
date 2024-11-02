@@ -11,8 +11,8 @@ import java.sql.SQLException;
 public class SQLUserDAO implements UserDAO {
     private final Connection connection;
 
-    public SQLUserDAO() throws DataAccessException {
-        this.connection = DatabaseManager.getConnection();
+    public SQLUserDAO(Connection connection) throws DataAccessException {
+        this.connection = connection;
     }
 
     public void createUser(UserData u) throws DataAccessException {

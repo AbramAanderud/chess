@@ -9,8 +9,8 @@ import java.util.UUID;
 public class SQLAuthDAO implements AuthDAO {
     private final Connection connection;
 
-    public SQLAuthDAO() throws DataAccessException {
-        this.connection = DatabaseManager.getConnection();
+    public SQLAuthDAO(Connection connection) throws DataAccessException {
+        this.connection = connection;
     }
 
     public String createAuth(String username) throws DataAccessException {

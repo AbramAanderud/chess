@@ -9,15 +9,19 @@ import result.CreateGameResult;
 import result.JoinResult;
 import result.ListResult;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class GameService {
-    AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO gameDAO = new SQLGameDAO();
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
     public GameService() throws DataAccessException {
+        Connection connection = DatabaseManager.DAOconnectors(); // Obtain a connection
+        this.authDAO = new SQLAuthDAO(connection);
+        this.gameDAO = new SQLGameDAO(connection);
     }
 
     public ListResult listGames(ListRequest req) throws DataAccessException {

@@ -12,8 +12,8 @@ public class SQLGameDAO implements GameDAO {
     private final Connection connection;
     private final Gson gson = new Gson();
 
-    public SQLGameDAO() throws DataAccessException {
-        this.connection = DatabaseManager.getConnection();
+    public SQLGameDAO(Connection connection) throws DataAccessException {
+        this.connection = connection;
     }
 
     @Override

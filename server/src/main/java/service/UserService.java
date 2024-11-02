@@ -10,11 +10,16 @@ import result.LoginResult;
 import result.LogoutResult;
 import result.RegisterResult;
 
+import java.sql.Connection;
+
 public class UserService {
-    UserDAO userDAO = new SQLUserDAO();
-    AuthDAO authDAO = new SQLAuthDAO();
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public UserService() throws DataAccessException {
+        Connection connection = DatabaseManager.DAOconnectors(); // Obtain a connection
+        this.userDAO = new SQLUserDAO(connection);
+        this.authDAO = new SQLAuthDAO(connection);
     }
 
     public RegisterResult register(RegisterRequest r) throws DataAccessException {

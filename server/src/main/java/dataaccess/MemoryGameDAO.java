@@ -14,7 +14,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public static MemoryGameDAO getInstance() {
-        if (instance == null) {
+        if (instance==null) {
             instance = new MemoryGameDAO();
         }
         return instance;
@@ -22,7 +22,7 @@ public class MemoryGameDAO implements GameDAO {
 
     public void createGame(GameData g) {
         for (GameData currData : gameData) {
-            if (currData.gameID() == g.gameID()) {
+            if (currData.gameID()==g.gameID()) {
                 return;
             }
         }
@@ -34,7 +34,7 @@ public class MemoryGameDAO implements GameDAO {
             return null;
         }
         for (GameData currData : gameData) {
-            if (currData.gameID() == gameID) {
+            if (currData.gameID()==gameID) {
                 return currData;
             }
         }
@@ -58,7 +58,7 @@ public class MemoryGameDAO implements GameDAO {
             return;
         }
         for (GameData currData : gameData) {
-            if (currData.gameID() == gameID) {
+            if (currData.gameID()==gameID) {
                 GameData updatedData;
 
                 if (Objects.equals(color, "WHITE")) {

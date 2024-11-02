@@ -1,7 +1,7 @@
 package dataaccess;
 
-import model.GameData;
 import com.google.gson.Gson;
+import model.GameData;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class SQLGameDAO implements GameDAO {
     }
 
     public void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException {
-        if (gameID == null || username == null || color == null) {
+        if (gameID==null || username==null || color==null) {
             throw new DataAccessException("GameID, username, and color must not be null.");
         }
 
@@ -101,7 +101,7 @@ public class SQLGameDAO implements GameDAO {
             ps.setInt(2, gameID);
             int rowsUpdated = ps.executeUpdate();
 
-            if (rowsUpdated == 0) {
+            if (rowsUpdated==0) {
                 throw new DataAccessException("No game found with the provided game ID.");
             }
         } catch (SQLException e) {

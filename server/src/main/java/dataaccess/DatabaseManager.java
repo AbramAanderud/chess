@@ -1,6 +1,8 @@
 package dataaccess;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -15,7 +17,7 @@ public class DatabaseManager {
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
-                if (propStream == null) {
+                if (propStream==null) {
                     throw new Exception("Unable to load db.properties");
                 }
                 Properties props = new Properties();
@@ -30,16 +32,6 @@ public class DatabaseManager {
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
-        }
-    }
-
-    public void example() throws Exception {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                System.out.println(rs.getInt(1));
-            }
         }
     }
 
@@ -60,30 +52,30 @@ public class DatabaseManager {
 
     static void createTables() throws DataAccessException {
         String createUsersTable = """
-            CREATE TABLE IF NOT EXISTS userDataTable(
-                username VARCHAR(256) NOT NULL PRIMARY KEY,
-                password VARCHAR(256) NOT NULL,
-                email VARCHAR(256) NOT NULL UNIQUE
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS userDataTable(
+                        username VARCHAR(256) NOT NULL PRIMARY KEY,
+                        password VARCHAR(256) NOT NULL,
+                        email VARCHAR(256) NOT NULL UNIQUE
+                    );
+                """;
 
         String createGamesTable = """
-            CREATE TABLE IF NOT EXISTS gameDataTable(
-                gameID int NOT NULL AUTO_INCREMENT,
-                whiteUsername VARCHAR(256),
-                blackUsername VARCHAR(256),
-                gameName VARCHAR(256),
-                game TEXT DEFAULT NULL,
-                PRIMARY KEY (ID)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS gameDataTable(
+                        gameID int NOT NULL AUTO_INCREMENT,
+                        whiteUsername VARCHAR(256),
+                        blackUsername VARCHAR(256),
+                        gameName VARCHAR(256),
+                        game TEXT DEFAULT NULL,
+                        PRIMARY KEY (ID)
+                    );
+                """;
 
         String createAuthTable = """
-            CREATE TABLE IF NOT EXISTS authDataTable(
-                authtoken varchar(256) NOT NULL PRIMARY KEY,
-                username varchar(256) NOT NULL
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS authDataTable(
+                        authtoken varchar(256) NOT NULL PRIMARY KEY,
+                        username varchar(256) NOT NULL
+                    );
+                """;
 
         try (var conn = getConnection();
              var statement = conn.createStatement()) {
@@ -114,6 +106,16 @@ public class DatabaseManager {
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public void example() throws Exception {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                System.out.println(rs.getInt(1));
+            }
         }
     }
 }

@@ -21,10 +21,10 @@ public class ListHandler {
             ListRequest request = new ListRequest(authToken);
             ListResult result = gameService.listGames(request);
 
-            if (result.message() != null &&
+            if (result.message()!=null &&
                     result.message().contains("unauthorized")) {
                 res.status(401);
-            } else if (result.message() == null) {
+            } else if (result.message()==null) {
                 res.status(200);
             }
             return jsonHandler.toJson(result);

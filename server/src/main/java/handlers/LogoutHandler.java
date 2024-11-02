@@ -24,10 +24,10 @@ public class LogoutHandler {
             LogoutRequest request = new LogoutRequest(authToken);
             LogoutResult result = userService.logout(request);
 
-            if (result.message() != null &&
+            if (result.message()!=null &&
                     result.message().contains("unauthorized")) {
                 res.status(401);
-            } else if (result.message() == null) {
+            } else if (result.message()==null) {
                 res.status(200);
             }
             return jsonHandler.toJson(result);

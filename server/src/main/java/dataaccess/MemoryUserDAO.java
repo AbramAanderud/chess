@@ -13,7 +13,7 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     public static MemoryUserDAO getInstance() {
-        if (instance == null) {
+        if (instance==null) {
             instance = new MemoryUserDAO();
         }
         return instance;

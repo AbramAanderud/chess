@@ -43,7 +43,7 @@ public class GameService {
         if (!authDAO.isValidAuth(authToken)) {
             return new CreateGameResult(null, "error: unauthorized");
         }
-        if (req.gameName() == null) {
+        if (req.gameName()==null) {
             return new CreateGameResult(null, "error: bad request");
         }
 
@@ -58,7 +58,7 @@ public class GameService {
         if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }
-        if (req.gameID() == null || req.playerColor() == null
+        if (req.gameID()==null || req.playerColor()==null
                 || (!req.playerColor().equals("WHITE")
                 && !req.playerColor().equals("BLACK"))) {
             return new JoinResult("error: bad request");
@@ -67,12 +67,12 @@ public class GameService {
         GameData gameData = gameDAO.getGame(req.gameID());
 
         if (req.playerColor().equals("WHITE")) {
-            if (gameData.whiteUsername() != null) {
+            if (gameData.whiteUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }
         if (req.playerColor().equals("BLACK")) {
-            if (gameData.blackUsername() != null) {
+            if (gameData.blackUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }

@@ -19,11 +19,11 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest r) throws DataAccessException {
 
-        if (r.username() == null || r.email() == null || r.password() == null) {
+        if (r.username()==null || r.email()==null || r.password()==null) {
             return new RegisterResult(null, null, "error: bad request");
         }
 
-        if (userDAO.getUser(r.username()) != null) {
+        if (userDAO.getUser(r.username())!=null) {
             return new RegisterResult(null, null, "error: already taken");
         }
 
@@ -39,7 +39,7 @@ public class UserService {
     public LoginResult login(LoginRequest l) throws DataAccessException {
         UserData user = userDAO.getUser(l.username());
 
-        if (user == null) {
+        if (user==null) {
             return new LoginResult(null, null, "error: unauthorized");
         }
 

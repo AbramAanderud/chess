@@ -25,13 +25,13 @@ public class CreateGameHandler {
 
             System.out.println(request.gameName());
 
-            if (result.message() != null &&
+            if (result.message()!=null &&
                     result.message().contains("bad request")) {
                 res.status(400);
-            } else if (result.message() != null &&
+            } else if (result.message()!=null &&
                     result.message().contains("unauthorized")) {
                 res.status(401);
-            } else if (result.gameID() != null) {
+            } else if (result.gameID()!=null) {
                 res.status(200);
             }
             return jsonHandler.toJson(result);

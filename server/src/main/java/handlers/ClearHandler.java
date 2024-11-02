@@ -15,7 +15,7 @@ public class ClearHandler {
     public String handleRequest(Response res) {
         ClearResult result = clearService.clearAll();
 
-        if (result.message() != null) {
+        if (result.message()!=null) {
             res.status(500);
         } else {
             res.status(200);

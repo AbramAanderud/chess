@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import requests.LoginRequest;
 import requests.LogoutRequest;
 import requests.RegisterRequest;
@@ -42,7 +43,7 @@ public class UserService {
             return new LoginResult(null, null, "error: unauthorized");
         }
 
-        if (!user.password().equals(l.password())) {
+        if (!BCrypt.checkpw(l.password(), user.password())) {
             return new LoginResult(null, null, "error: unauthorized");
         }
 

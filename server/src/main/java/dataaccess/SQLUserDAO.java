@@ -38,7 +38,7 @@ public class SQLUserDAO implements UserDAO {
             if (rs.next()) {
                 return new UserData(
                         rs.getString("username"),
-                        rs.getString("password"), // Store hashed password
+                        rs.getString("password"),
                         rs.getString("email")
                 );
             }

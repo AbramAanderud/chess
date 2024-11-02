@@ -1,13 +1,14 @@
 package server;
 
+import dataaccess.DataAccessException;
 import handlers.*;
 import spark.Spark;
+import  dataaccess.DatabaseManager
 
 public class Server {
-
+    DatabaseManager databaseManager = new DatabaseManager();
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.

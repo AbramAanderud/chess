@@ -18,14 +18,13 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void createGame(GameData g) throws DataAccessException {
         String sql = "INSERT INTO Game (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-        String json = gson.toJson(g); // Serialize GameData to JSON
+        String jsonGameBoard = gson.toJson(g.game());
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, g.gameID());
-            stmt.setString(2, g.whiteUsername());
-            stmt.setString(3, g.blackUsername());
-            stmt.setString(4, g.gameName());
-            stmt.setString(5, json); // Store JSON string in the database
+            stmt.setString(1, g.whiteUsername());
+            stmt.setString(2, g.blackUsername());
+            stmt.setString(3, g.gameName());
+            stmt.setString(4, jsonGameBoard);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create game: " + e.getMessage());

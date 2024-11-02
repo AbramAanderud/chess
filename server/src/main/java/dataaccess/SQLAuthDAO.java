@@ -56,7 +56,6 @@ public class SQLAuthDAO implements AuthDAO {
         return null;
     }
 
-    @Override
     public void deleteAuthByAuth(String authToken) throws DataAccessException {
         String sql = "DELETE FROM authDataTable WHERE authtoken = ?";
         try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {
@@ -67,7 +66,6 @@ public class SQLAuthDAO implements AuthDAO {
         }
     }
 
-    @Override
     public void clearAllAuthData() throws DataAccessException {
         String sql = "DELETE FROM authDataTable";
         try (PreparedStatement prepstmt = connection.prepareStatement(sql)) {

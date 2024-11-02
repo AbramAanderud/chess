@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
@@ -19,6 +20,8 @@ public class SQLGameDAO implements GameDAO {
     public int createGame(GameData g) throws DataAccessException {
         String sql = "INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         String jsonGame = gson.toJson(g.game());
+
+        System.out.println("game name to be made " + g.gameName());
 
         try (PreparedStatement prepstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             prepstmt.setString(1, g.whiteUsername());
@@ -86,17 +89,13 @@ public class SQLGameDAO implements GameDAO {
     }
 
     public void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException {
-        if (gameID==null || username==null || color==null) {
-            throw new DataAccessException("GameID, username, and color must not be null.");
-        }
-
         String updateStatement;
-        if (color.equalsIgnoreCase("WHITE")) {
-            updateStatement = "UPDATE Game SET whiteUsername = ? WHERE gameID = ?";
-        } else if (color.equalsIgnoreCase("BLACK")) {
-            updateStatement = "UPDATE Game SET blackUsername = ? WHERE gameID = ?";
+        if (color.equals("WHITE")) {
+            updateStatement = "UPDATE gameDataTable SET whiteUsername = ? WHERE gameID = ?";
+        } else if (color.equals("BLACK")) {
+            updateStatement = "UPDATE gameDataTable SET blackUsername = ? WHERE gameID = ?";
         } else {
-            throw new DataAccessException("Invalid color provided.");
+            throw new DataAccessException("Invalid color");
         }
 
         try (PreparedStatement ps = connection.prepareStatement(updateStatement)) {
@@ -105,7 +104,7 @@ public class SQLGameDAO implements GameDAO {
             int rowsUpdated = ps.executeUpdate();
 
             if (rowsUpdated==0) {
-                throw new DataAccessException("No game found with the provided game ID.");
+                throw new DataAccessException("No game with that game ID");
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error updating the game: " + e.getMessage());
@@ -118,7 +117,8 @@ public class SQLGameDAO implements GameDAO {
         String blackUsername = rs.getString("blackUsername");
         String gameName = rs.getString("gameName");
         String gameJson = rs.getString("game");
+        ChessGame game = gson.fromJson(gameJson, ChessGame.class);
 
-        return gson.fromJson(gameJson, GameData.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 }

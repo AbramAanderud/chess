@@ -15,7 +15,6 @@ public class SQLUserDAO implements UserDAO {
         this.connection = DatabaseManager.getConnection();
     }
 
-    @Override
     public void createUser(UserData u) throws DataAccessException {
         String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
         String sql = "INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)";
@@ -30,7 +29,6 @@ public class SQLUserDAO implements UserDAO {
         }
     }
 
-    @Override
     public UserData getUser(String username) throws DataAccessException {
         String sql = "SELECT * FROM userDataTable WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -49,7 +47,6 @@ public class SQLUserDAO implements UserDAO {
         return null;
     }
 
-    @Override
     public void clearAllUserData() throws DataAccessException {
         String sql = "DELETE FROM userDataTable";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

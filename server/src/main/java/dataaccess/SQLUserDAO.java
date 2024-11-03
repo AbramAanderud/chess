@@ -56,7 +56,4 @@ public class SQLUserDAO implements UserDAO {
         }
     }
 
-    private String hashPassword(String clearTextPassword) {
-        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
-    }
 }

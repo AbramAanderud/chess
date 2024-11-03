@@ -13,12 +13,12 @@ public class MemoryAuthDAO implements AuthDAO {
     private MemoryAuthDAO() {
     }
 
-    public static MemoryAuthDAO getInstance() {
+    /*public static MemoryAuthDAO getInstance() {
         if (instance==null) {
             instance = new MemoryAuthDAO();
         }
         return instance;
-    }
+    }*/
 
     public String createAuth(String username) {
         String newAuthToken = UUID.randomUUID().toString();

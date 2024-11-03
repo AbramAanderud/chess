@@ -14,12 +14,12 @@ public class MemoryGameDAO implements GameDAO {
     private MemoryGameDAO() {
     }
 
-    public static MemoryGameDAO getInstance() {
+    /*public static MemoryGameDAO getInstance() {
         if (instance==null) {
             instance = new MemoryGameDAO();
         }
         return instance;
-    }
+    }*/
 
     public int createGame(GameData g) {
         for (GameData currData : gameData) {

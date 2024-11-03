@@ -17,7 +17,7 @@ public class UserService {
     private final AuthDAO authDAO;
 
     public UserService() throws DataAccessException {
-        Connection connection = DatabaseManager.DAOconnectors(); // Obtain a connection
+        Connection connection = DatabaseManager.daoConnectors(); // Obtain a connection
         this.userDAO = new SQLUserDAO(connection);
         this.authDAO = new SQLAuthDAO(connection);
     }

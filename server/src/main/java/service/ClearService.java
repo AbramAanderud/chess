@@ -11,7 +11,7 @@ public class ClearService {
     private final GameDAO gameDAO;
 
     public ClearService() throws DataAccessException {
-        Connection connection = DatabaseManager.DAOconnectors(); // Obtain a connection
+        Connection connection = DatabaseManager.daoConnectors(); // Obtain a connection
         this.userDAO = new SQLUserDAO(connection);
         this.authDAO = new SQLAuthDAO(connection);
         this.gameDAO = new SQLGameDAO(connection);

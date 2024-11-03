@@ -12,12 +12,12 @@ public class MemoryUserDAO implements UserDAO {
     private MemoryUserDAO() {
     }
 
-    public static MemoryUserDAO getInstance() {
+    /*public static MemoryUserDAO getInstance() {
         if (instance==null) {
             instance = new MemoryUserDAO();
         }
         return instance;
-    }
+    }*/
 
     public void createUser(UserData u) {
         if (!userData.contains(u)) {

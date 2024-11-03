@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -78,5 +79,9 @@ public class MemoryGameDAO implements GameDAO {
             }
         }
     }
+
+    public void updateGame(int gameID, ChessGame updatedGame) throws DataAccessException {
+    }
+
 
 }

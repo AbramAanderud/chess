@@ -18,6 +18,10 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public int createGame(GameData g) throws DataAccessException {
+        if(g.gameName() == null || g.game() == null) {
+            throw new DataAccessException("Failed to create new game because name is null");
+        }
+
         String sql = "INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         String jsonGame = gson.toJson(g.game());
 

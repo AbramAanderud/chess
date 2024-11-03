@@ -18,7 +18,7 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public int createGame(GameData g) throws DataAccessException {
-        if(g.gameName() == null || g.game() == null) {
+        if (g.gameName()==null) {
             throw new DataAccessException("Failed to create new game because name is null");
         }
 
@@ -124,7 +124,7 @@ public class SQLGameDAO implements GameDAO {
             prepstmt.setInt(2, gameID);
 
             int rowsUpdated = prepstmt.executeUpdate();
-            if (rowsUpdated == 0) {
+            if (rowsUpdated==0) {
                 throw new DataAccessException("No game found with the specified game ID to update.");
             }
         } catch (SQLException e) {

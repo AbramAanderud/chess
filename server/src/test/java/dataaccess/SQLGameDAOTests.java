@@ -38,7 +38,7 @@ public class SQLGameDAOTests {
 
         Assertions.assertThrows(DataAccessException.class, () -> {
             gameDAO.createGame(gameData);
-        }, "Making a game with null name or game should give DataAccessException");
+        }, "Making a game with null name should give DataAccessException");
     }
 
     @Test
@@ -49,7 +49,7 @@ public class SQLGameDAOTests {
 
         GameData retrievedGame = gameDAO.getGame(gameID);
         Assertions.assertNotNull(retrievedGame, "Game should not be null");
-        Assertions.assertEquals("Game2", retrievedGame.gameName(), "Game name should match");
+        Assertions.assertEquals("testGame", retrievedGame.gameName(), "Game name should match");
     }
 
     @Test

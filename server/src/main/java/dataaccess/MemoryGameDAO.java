@@ -22,7 +22,7 @@ public class MemoryGameDAO implements GameDAO {
 
     public int createGame(GameData g) {
         for (GameData currData : gameData) {
-            if (currData.gameID()==g.gameID()) {
+            if (currData.gameID() == g.gameID()) {
                 return currData.gameID();
             }
         }

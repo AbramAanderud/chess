@@ -2,6 +2,7 @@ package chessClient;
 
 import com.sun.nio.sctp.NotificationHandler;
 import repl.State;
+import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
 import java.util.Arrays;
@@ -9,13 +10,11 @@ import java.util.Arrays;
 public class ChessClient {
     private final ServerFacade server;
     private final String serverUrl;
-    private final NotificationHandler notificationHandler;
     private State state = State.SIGNEDOUT;
 
-    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
+    public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        this.notificationHandler = notificationHandler;
     }
 
     public String evalUnsignedIn(String input) {
@@ -34,7 +33,26 @@ public class ChessClient {
         }
     }
 
-    
+    public String login(String... params) throws ResponseException {
+        if (params.length >= 1) {
+            state = State.SIGNEDIN;
+
+            server.login();
+            return String.format("You signed in as %s.", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <yourname>");
+    }
+
+    public String register(String... params) throws ResponseException {
+        if (params.length >= 1) {
+            state = State.SIGNEDIN;
+
+            return String.format("You signed in as %s.", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <yourname>");
+    }
+
+
 
     public String help() {
         if (state == State.SIGNEDOUT) {

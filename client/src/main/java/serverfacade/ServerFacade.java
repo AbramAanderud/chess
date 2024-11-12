@@ -4,7 +4,6 @@ package serverfacade;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import handlers.JoinGameHandler;
-import handlers.RegisterHandler;
 import requests.ListRequest;
 import requests.LoginRequest;
 import requests.LogoutRequest;

@@ -3,13 +3,13 @@ package serverfacade;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import handlers.JoinGameHandler;
 import handlers.RegisterHandler;
+import requests.ListRequest;
 import requests.LoginRequest;
 import requests.LogoutRequest;
 import requests.RegisterRequest;
-import result.LoginResult;
-import result.LogoutResult;
-import result.RegisterResult;
+import result.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +43,14 @@ public class ServerFacade {
         return this.makeRequest("DELETE", path, l, LogoutResult.class);
     }
 
-    public RegisterResult register(RegisterRequest r) throws DataAccessException, ResponseException {
-        var path = "/user";
-        return this.makeRequest("POST", path, r, RegisterResult.class);
+    public ListResult listGames(ListRequest l) throws DataAccessException, ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, l, ListResult.class);
+    }
+
+    public JoinResult joinGame(JoinGameHandler j) throws DataAccessException, ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, j, JoinResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

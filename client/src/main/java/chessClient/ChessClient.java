@@ -3,14 +3,8 @@ package chessClient;
 import com.sun.nio.sctp.NotificationHandler;
 import dataaccess.DataAccessException;
 import repl.State;
-import requests.CreateGameRequest;
-import requests.ListRequest;
-import requests.LoginRequest;
-import requests.RegisterRequest;
-import result.CreateGameResult;
-import result.ListResult;
-import result.LoginResult;
-import result.RegisterResult;
+import requests.*;
+import result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
@@ -54,12 +48,18 @@ public class ChessClient {
                 case "join" -> join(params);
                 case "observer" -> observe(params);
                 case "logout" -> logout(params);
-                case "quit" -> "quit";
+                case "quit" -> quitSignedIn();
                 default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    public String quitSignedIn() {
+        state = SIGNEDOUT;
+        help();
+        return "quit";
     }
 
     public String login(String... params) throws ResponseException {
@@ -142,7 +142,14 @@ public class ChessClient {
                 ListResult listResult = server.listGames(listRequest);
 
                 if(listResult.games() != null) {
-                    return "Games: " + listResult.games().toString();
+                    StringBuilder sb = new StringBuilder();
+
+                    for(ListResult.GameInfo games : listResult.games()) {
+                        sb.append(games);
+                        sb.append("\n");
+                    }
+                    return "Games: \n" + sb;
+
                 } else {
                     return "No games yet";
                 }
@@ -154,27 +161,27 @@ public class ChessClient {
     }
 
     public String join(String... params) throws ResponseException {
-        if (params.length >= 3) {
-            String username = params[0];
-            String password = params[1];
-            String email = params[2];
+        if (params.length >= 2) {
+            String gameIDString = params[0];
+            String teamColor = params[1];
 
-            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+            int gameID = Integer.parseInt(gameIDString);
+
+            JoinRequest joinRequest = new JoinRequest(teamColor, gameID);
 
             try {
-                RegisterResult registerResult = server.register(registerRequest);
+                JoinResult joinResult = server.joinGame(joinRequest);
 
-                if(registerResult.authToken() != null) {
-                    state = SIGNEDIN;
-                    return String.format("Logged in as %s.", username);
+                if(joinResult.message() != null) {
+                    return String.format("Error joining due to %s.", joinResult.message());
                 } else {
-                    return "Login failed: " + (registerResult.message());
+                    return "Game joined";
                 }
             } catch (DataAccessException e) {
-                return "Error signing in" + e.getMessage();
+                return "Error joining game" + e.getMessage();
             }
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Expected: <gameID> <[BLACK][WHITE]>");
     }
 
     public String observe(String... params) throws ResponseException {

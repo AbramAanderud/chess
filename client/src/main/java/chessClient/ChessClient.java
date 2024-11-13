@@ -3,9 +3,14 @@ package chessClient;
 import com.sun.nio.sctp.NotificationHandler;
 import dataaccess.DataAccessException;
 import repl.State;
+import requests.CreateGameRequest;
+import requests.ListRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import result.CreateGameResult;
+import result.ListResult;
 import result.LoginResult;
+import result.RegisterResult;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
@@ -16,6 +21,7 @@ import static repl.State.*;
 public class ChessClient {
     private final ServerFacade server;
     private State state = SIGNEDOUT;
+    private String currAuthToken;
 
     public ChessClient(String serverURL) {
         server = new ServerFacade(serverURL);
@@ -37,6 +43,25 @@ public class ChessClient {
         }
     }
 
+    public String evalSignedIn(String input) {
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "create" -> create(params);
+                case "list" -> list();
+                case "join" -> join(params);
+                case "observer" -> observe(params);
+                case "logout" -> logout(params);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
+    }
+
     public String login(String... params) throws ResponseException {
         if (params.length >= 2) {
             String username = params[0];
@@ -48,13 +73,14 @@ public class ChessClient {
                 LoginResult loginResult = server.login(loginRequest);
 
                 if (loginResult.authToken() != null) {
+                    currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
-                    return String.format("You signed in as %s.", username);
+                    return String.format("Logged in as %s. \n", username);
                 } else {
                     return "Login failed: " + (loginResult.message());
                 }
             } catch (DataAccessException e) {
-                return "Error signing in";
+                return "Error logged in";
             }
         }
         throw new ResponseException(400, "Expected: <yourname>");
@@ -69,11 +95,130 @@ public class ChessClient {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
 
             try {
-                
-            }
-            state = SIGNEDIN;
+                RegisterResult registerResult = server.register(registerRequest);
 
-            return String.format("You signed in as %s.", params[0]);
+                if(registerResult.authToken() != null) {
+                    currAuthToken = registerResult.authToken();
+                    state = SIGNEDIN;
+                    return String.format("Logged in as %s.", username);
+                } else {
+                    return "Login failed: " + (registerResult.message());
+                }
+            } catch (DataAccessException e) {
+                return "Error signing in" + e.getMessage();
+            }
+        }
+        throw new ResponseException(400, "Expected: <yourname>");
+    }
+
+    public String create(String... params) throws ResponseException {
+        if (params.length >= 1) {
+            String gameName = params[0];
+
+            CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
+
+            try {
+                CreateGameResult gameResult = server.createGame(createGameRequest);
+
+                if(gameResult.gameID() != null) {
+                    return String.format("Created game named %s.", gameName);
+                } else {
+                    return "Creation failed: " + (gameResult.message());
+                }
+            } catch (DataAccessException e) {
+                return "Error creating game" + e.getMessage();
+            }
+        }
+        throw new ResponseException(400, "Expected: <gameName>");
+    }
+
+    public String list(String... params) throws ResponseException {
+        if (params.length == 0) {
+            ListRequest listRequest = new ListRequest(currAuthToken);
+
+            try {
+                ListResult listResult = server.listGames(listRequest);
+
+                if(listResult.games() != null) {
+                    return "Games: " + listResult.games().toString();
+                } else {
+                    return "No games yet";
+                }
+            } catch (DataAccessException e) {
+                return "Error listing" + e.getMessage();
+            }
+        }
+        return null;
+    }
+
+    public String join(String... params) throws ResponseException {
+        if (params.length >= 3) {
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+
+            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+
+            try {
+                RegisterResult registerResult = server.register(registerRequest);
+
+                if(registerResult.authToken() != null) {
+                    state = SIGNEDIN;
+                    return String.format("Logged in as %s.", username);
+                } else {
+                    return "Login failed: " + (registerResult.message());
+                }
+            } catch (DataAccessException e) {
+                return "Error signing in" + e.getMessage();
+            }
+        }
+        throw new ResponseException(400, "Expected: <yourname>");
+    }
+
+    public String observe(String... params) throws ResponseException {
+        if (params.length >= 3) {
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+
+            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+
+            try {
+                RegisterResult registerResult = server.register(registerRequest);
+
+                if(registerResult.authToken() != null) {
+                    state = SIGNEDIN;
+                    return String.format("Logged in as %s.", username);
+                } else {
+                    return "Login failed: " + (registerResult.message());
+                }
+            } catch (DataAccessException e) {
+                return "Error signing in" + e.getMessage();
+            }
+        }
+        throw new ResponseException(400, "Expected: <yourname>");
+    }
+
+    public String logout(String... params) throws ResponseException {
+        if (params.length >= 3) {
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+
+            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+
+            try {
+                RegisterResult registerResult = server.register(registerRequest);
+
+                if(registerResult.authToken() != null) {
+                    state = SIGNEDIN;
+                    return String.format("Logged in as %s.", username);
+                } else {
+                    return "Login failed: " + (registerResult.message());
+                }
+            } catch (DataAccessException e) {
+                return "Error signing in" + e.getMessage();
+            }
         }
         throw new ResponseException(400, "Expected: <yourname>");
     }

@@ -75,6 +75,7 @@ public class ChessClient {
                 if (loginResult.authToken() != null) {
                     currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
+                    server.setLastStoredAuth(currAuthToken);
                     return String.format("Logged in as %s. \n", username);
                 } else {
                     return "Login failed: " + (loginResult.message());
@@ -100,7 +101,8 @@ public class ChessClient {
                 if(registerResult.authToken() != null) {
                     currAuthToken = registerResult.authToken();
                     state = SIGNEDIN;
-                    return String.format("Logged in as %s.", username);
+                    server.setLastStoredAuth(currAuthToken);
+                    return String.format("Logged in as %s. \n", username);
                 } else {
                     return "Login failed: " + (registerResult.message());
                 }

@@ -73,7 +73,7 @@ public class GameService {
         }
 
         GameData gameData = gameDAO.getGame(req.gameID());
-        System.out.println(gameData); //its getting null
+        System.out.println(gameData);
 
         if (req.playerColor().equals("WHITE")) {
             if (gameData.whiteUsername()!=null) {

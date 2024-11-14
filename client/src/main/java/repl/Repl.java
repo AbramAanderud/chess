@@ -5,6 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chessClient.ChessClient;
+
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -28,7 +29,7 @@ public class Repl {
             try {
                 result = client.evalUnsignedIn(line);
                 System.out.print(SET_TEXT_COLOR_WHITE + result);
-                if(result.startsWith("Logged in as")) {
+                if (result.startsWith("Logged in as")) {
                     runSignedIn();
                 }
             } catch (Throwable e) {
@@ -51,9 +52,9 @@ public class Repl {
             try {
                 result = client.evalSignedIn(line);
                 System.out.print(SET_TEXT_COLOR_WHITE + result);
-                if(result.startsWith("Logged out")) {
+                if (result.startsWith("Logged out")) {
                     runUnsignedIn();
-                } else if (result.startsWith("Game joined") || (result.startsWith("observing game")) ){
+                } else if (result.startsWith("Game joined") || (result.startsWith("observing game"))) {
                     runPlayGame();
                 }
             } catch (Throwable e) {
@@ -93,7 +94,7 @@ public class Repl {
             sb.append(" " + (i) + " ");
 
             for (int j = 1; j <= 8; j++) {
-                if((i + j) % 2 == 0) {
+                if ((i + j) % 2==0) {
                     sb.append(SET_BG_COLOR_DARK_GREEN);
                 } else {
                     sb.append(SET_BG_COLOR_LIGHT_GREY);
@@ -149,7 +150,7 @@ public class Repl {
             sb.append(" " + (i) + " ");
 
             for (int j = 1; j <= 8; j++) {
-                if((i + j) % 2 == 0) {
+                if ((i + j) % 2==0) {
                     sb.append(SET_BG_COLOR_DARK_GREEN);
                 } else {
                     sb.append(SET_BG_COLOR_LIGHT_GREY);
@@ -185,13 +186,13 @@ public class Repl {
     }
 
     private String getPrintPiece(ChessPiece piece) {
-        if (piece == null) {
+        if (piece==null) {
             return "   ";
         }
         ChessPiece.PieceType pieceType = piece.getPieceType();
         String pieceDesign = getReturnPiece(pieceType);
 
-        if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+        if (piece.getTeamColor()==ChessGame.TeamColor.WHITE) {
             return SET_TEXT_COLOR_WHITE + pieceDesign + RESET_TEXT_COLOR;
         } else {
             return SET_TEXT_COLOR_BLACK + pieceDesign + RESET_TEXT_COLOR;
@@ -200,17 +201,17 @@ public class Repl {
     }
 
     private String getReturnPiece(ChessPiece.PieceType pieceType) {
-        if(pieceType == ChessPiece.PieceType.KING) {
+        if (pieceType==ChessPiece.PieceType.KING) {
             return BLACK_KING;
-        } else if(pieceType == ChessPiece.PieceType.QUEEN) {
+        } else if (pieceType==ChessPiece.PieceType.QUEEN) {
             return BLACK_QUEEN;
-        } else if(pieceType == ChessPiece.PieceType.ROOK) {
+        } else if (pieceType==ChessPiece.PieceType.ROOK) {
             return BLACK_ROOK;
-        } else if(pieceType == ChessPiece.PieceType.PAWN) {
+        } else if (pieceType==ChessPiece.PieceType.PAWN) {
             return BLACK_PAWN;
-        } else if(pieceType == ChessPiece.PieceType.BISHOP) {
+        } else if (pieceType==ChessPiece.PieceType.BISHOP) {
             return BLACK_BISHOP;
-        } else if(pieceType == ChessPiece.PieceType.KNIGHT) {
+        } else if (pieceType==ChessPiece.PieceType.KNIGHT) {
             return BLACK_KNIGHT;
         }
         return "";

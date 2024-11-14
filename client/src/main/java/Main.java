@@ -1,6 +1,6 @@
-import chess.*;
+import chess.ChessGame;
+import chess.ChessPiece;
 import repl.Repl;
-import serverfacade.ServerFacade;
 
 public class Main {
     public static void main(String[] args) {

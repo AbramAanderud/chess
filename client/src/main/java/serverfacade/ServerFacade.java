@@ -3,7 +3,6 @@ package serverfacade;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-
 import requests.*;
 import result.*;
 
@@ -23,8 +22,31 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        T response = null;
+        if (http.getContentLength() < 0) {
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                if (responseClass!=null) {
+                    response = new Gson().fromJson(reader, responseClass);
+                }
+            }
+        }
+        return response;
+    }
+
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (request!=null) {
+            http.addRequestProperty("Content-Type", "application/json");
+            String reqData = new Gson().toJson(request);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
+        }
+    }
+
     public void setLastStoredAuth(String auth) {
-         authToken = auth;
+        authToken = auth;
     }
 
     public RegisterResult register(RegisterRequest r) throws DataAccessException, ResponseException {
@@ -64,11 +86,11 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(!method.equals("GET"));
 
-            if (authToken != null) {
+            if (authToken!=null) {
                 http.setRequestProperty("Authorization", authToken);
             }
 
-            if (request != null && !method.equals("GET")) {
+            if (request!=null && !method.equals("GET")) {
                 writeBody(request, http);
             }
 
@@ -81,29 +103,6 @@ public class ServerFacade {
         }
     }
 
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0) {
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
-                }
-            }
-        }
-        return response;
-    }
-
-    private static void writeBody(Object request, HttpURLConnection http) throws IOException, IOException {
-        if (request != null) {
-            http.addRequestProperty("Content-Type", "application/json");
-            String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
-            }
-        }
-    }
-
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
@@ -112,7 +111,7 @@ public class ServerFacade {
     }
 
     private boolean isSuccessful(int status) {
-        return status / 100 == 2;
+        return status / 100==2;
     }
 
 }

@@ -1,6 +1,5 @@
 package chessClient;
 
-import com.sun.nio.sctp.NotificationHandler;
 import dataaccess.DataAccessException;
 import repl.State;
 import requests.*;
@@ -10,7 +9,8 @@ import serverfacade.ServerFacade;
 
 import java.util.Arrays;
 
-import static repl.State.*;
+import static repl.State.SIGNEDIN;
+import static repl.State.SIGNEDOUT;
 
 public class ChessClient {
     private final ServerFacade server;
@@ -24,7 +24,7 @@ public class ChessClient {
     public String evalUnsignedIn(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var cmd = (tokens.length > 0) ? tokens[0]:"help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
@@ -40,7 +40,7 @@ public class ChessClient {
     public String evalSignedIn(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var cmd = (tokens.length > 0) ? tokens[0]:"help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(params);
@@ -58,7 +58,7 @@ public class ChessClient {
     public String evalGamePlay(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var cmd = (tokens.length > 0) ? tokens[0]:"help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(params);
@@ -83,7 +83,7 @@ public class ChessClient {
             try {
                 LoginResult loginResult = server.login(loginRequest);
 
-                if (loginResult.authToken() != null) {
+                if (loginResult.authToken()!=null) {
                     currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
@@ -109,7 +109,7 @@ public class ChessClient {
             try {
                 RegisterResult registerResult = server.register(registerRequest);
 
-                if(registerResult.authToken() != null) {
+                if (registerResult.authToken()!=null) {
                     currAuthToken = registerResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
@@ -133,7 +133,7 @@ public class ChessClient {
             try {
                 CreateGameResult gameResult = server.createGame(createGameRequest);
 
-                if(gameResult.gameID() != null) {
+                if (gameResult.gameID()!=null) {
                     return String.format("Created game named %s", gameName);
                 } else {
                     return "Creation failed: " + (gameResult.message());
@@ -146,17 +146,22 @@ public class ChessClient {
     }
 
     public String list(String... params) throws ResponseException {
-        if (params.length == 0) {
+        if (params.length==0) {
             ListRequest listRequest = new ListRequest(currAuthToken);
 
             try {
                 ListResult listResult = server.listGames(listRequest);
 
-                if(listResult.games() != null) {
+                if (listResult.games()!=null) {
                     StringBuilder sb = new StringBuilder();
 
-                    for(ListResult.GameInfo games : listResult.games()) {
-                        sb.append(games);
+                    for (ListResult.GameInfo games : listResult.games()) {
+
+                        sb.append(" * game: " + games.gameID() + " - name: "
+                                + games.gameName() + " - white player: "
+                                + games.whiteUsername() + " - black player: "
+                                + games.blackUsername());
+
                         sb.append("\n");
                     }
                     return "Games: \n" + sb;
@@ -183,7 +188,7 @@ public class ChessClient {
             try {
                 JoinResult joinResult = server.joinGame(joinRequest);
 
-                if(joinResult.message() != null) {
+                if (joinResult.message()!=null) {
                     return String.format("Error joining due to %s", joinResult.message());
                 } else {
                     return "Game joined \n";
@@ -204,14 +209,14 @@ public class ChessClient {
     }
 
     public String logout(String... params) throws ResponseException {
-        if (params.length == 0) {
+        if (params.length==0) {
 
             LogoutRequest logoutRequest = new LogoutRequest(currAuthToken);
 
             try {
                 LogoutResult logoutResult = server.logout(logoutRequest);
 
-                if(logoutResult.message() == null) {
+                if (logoutResult.message()==null) {
                     state = SIGNEDOUT;
                     return "Logged out \n";
                 }
@@ -223,9 +228,8 @@ public class ChessClient {
     }
 
 
-
     public String help() {
-        if (state == State.SIGNEDOUT) {
+        if (state==State.SIGNEDOUT) {
             return """
                     Options:
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account

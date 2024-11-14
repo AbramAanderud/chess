@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import static repl.State.SIGNEDIN;
 import static repl.State.SIGNEDOUT;
+import static ui.EscapeSequences.RESET_TEXT_COLOR;
 
 public class ChessClient {
     private final ServerFacade server;
@@ -47,24 +48,6 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
-                case "logout" -> logout(params);
-                default -> help();
-            };
-        } catch (ResponseException ex) {
-            return ex.getMessage();
-        }
-    }
-
-    public String evalGamePlay(String input) {
-        try {
-            var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0]:"help";
-            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                case "create" -> create(params);
-                case "list" -> list();
-                case "join" -> join(params);
-                case "observer" -> observe(params);
                 case "logout" -> logout(params);
                 default -> help();
             };
@@ -218,7 +201,8 @@ public class ChessClient {
 
                 if (logoutResult.message()==null) {
                     state = SIGNEDOUT;
-                    return "Logged out \n";
+                    return "Logged out \n" ;
+
                 }
             } catch (DataAccessException e) {
                 return "Error signing in" + e.getMessage();
@@ -229,6 +213,7 @@ public class ChessClient {
 
 
     public String help() {
+        System.out.println(RESET_TEXT_COLOR);
         if (state==State.SIGNEDOUT) {
             return """
                     Options:
@@ -238,6 +223,7 @@ public class ChessClient {
                     help - with possible commands
                     """;
         }
+        System.out.println(RESET_TEXT_COLOR);
         return """
                 Options:
                 create <NAME> - a game

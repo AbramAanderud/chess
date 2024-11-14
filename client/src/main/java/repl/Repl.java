@@ -38,6 +38,7 @@ public class Repl {
             }
         }
         System.out.println();
+        System.exit(0);
     }
 
     public void runSignedIn() {
@@ -45,16 +46,14 @@ public class Repl {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!result.startsWith("Logged out")) {
             printPrompt();
             String line = scanner.nextLine();
 
             try {
                 result = client.evalSignedIn(line);
                 System.out.print(SET_TEXT_COLOR_WHITE + result);
-                if (result.startsWith("Logged out")) {
-                    runUnsignedIn();
-                } else if (result.startsWith("Game joined") || (result.startsWith("observing game"))) {
+                if (result.startsWith("Game joined") || (result.startsWith("observing game"))) {
                     runPlayGame();
                 }
             } catch (Throwable e) {
@@ -62,6 +61,7 @@ public class Repl {
                 System.out.print(msg);
             }
         }
+        runUnsignedIn();
         System.out.println();
     }
 

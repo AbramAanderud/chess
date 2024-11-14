@@ -66,6 +66,7 @@ public class GameService {
         if(req.playerColor() == null) {
             return new JoinResult("error: bad request");
         }
+
         String playerColor = req.playerColor();
         playerColor = playerColor.toUpperCase();
 
@@ -82,13 +83,14 @@ public class GameService {
         GameData gameData = gameDAO.getGame(req.gameID());
         System.out.println(gameData);
 
-        if (req.playerColor().equals("WHITE")) {
-            if (gameData.whiteUsername()!=null) {
+        if (playerColor.equals("WHITE")) {
+            System.out.println("reached");
+            if (gameData.whiteUsername()!= null) {
                 return new JoinResult("error: already taken");
             }
         }
-        if (req.playerColor().equals("BLACK")) {
-            if (gameData.blackUsername()!=null) {
+        if (playerColor.equals("BLACK")) {
+            if (gameData.blackUsername()!= null) {
                 return new JoinResult("error: already taken");
             }
         }

@@ -186,7 +186,7 @@ public class ChessClient {
                 if(joinResult.message() != null) {
                     return String.format("Error joining due to %s", joinResult.message());
                 } else {
-                    return "Game joined";
+                    return "Game joined \n";
                 }
             } catch (DataAccessException e) {
                 return "Error joining game" + e.getMessage();
@@ -197,7 +197,7 @@ public class ChessClient {
 
     public String observe(String... params) throws ResponseException {
         if (params.length >= 1) {
-            return "observing game " + params[0];
+            return "observing game " + params[0] + '\n';
         } else {
             return "Bad Arguments";
         }

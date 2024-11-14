@@ -39,7 +39,7 @@ public class ServerFacade {
 
     public LogoutResult logout(LogoutRequest l) throws DataAccessException, ResponseException {
         var path = "/session";
-        return this.makeRequest("DELETE", path, l, LogoutResult.class, null);
+        return this.makeRequest("DELETE", path, l, LogoutResult.class, authToken);
     }
 
     public ListResult listGames(ListRequest l) throws DataAccessException, ResponseException {

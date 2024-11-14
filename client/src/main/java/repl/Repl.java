@@ -47,6 +47,9 @@ public class Repl {
             try {
                 result = client.evalSignedIn(line);
                 System.out.print(SET_TEXT_COLOR_WHITE + result);
+                if(result.startsWith("Logged out")) {
+                    runUnsignedIn();
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

@@ -76,12 +76,12 @@ public class ChessClient {
                     currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
-                    return String.format("Logged in as %s. \n", username);
+                    return String.format("Logged in as %s \n", username);
                 } else {
                     return "Login failed: " + (loginResult.message());
                 }
             } catch (DataAccessException e) {
-                return "Error logged in";
+                return "Error logging in";
             }
         }
         throw new ResponseException(400, "Expected: <yourname>");
@@ -102,7 +102,7 @@ public class ChessClient {
                     currAuthToken = registerResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
-                    return String.format("Logged in as %s. \n", username);
+                    return String.format("Logged in as %s \n", username);
                 } else {
                     return "Login failed: " + (registerResult.message());
                 }
@@ -123,7 +123,7 @@ public class ChessClient {
                 CreateGameResult gameResult = server.createGame(createGameRequest);
 
                 if(gameResult.gameID() != null) {
-                    return String.format("Created game named %s.", gameName);
+                    return String.format("Created game named %s", gameName);
                 } else {
                     return "Creation failed: " + (gameResult.message());
                 }
@@ -173,7 +173,7 @@ public class ChessClient {
                 JoinResult joinResult = server.joinGame(joinRequest);
 
                 if(joinResult.message() != null) {
-                    return String.format("Error joining due to %s.", joinResult.message());
+                    return String.format("Error joining due to %s", joinResult.message());
                 } else {
                     return "Game joined";
                 }
@@ -209,21 +209,16 @@ public class ChessClient {
     }
 
     public String logout(String... params) throws ResponseException {
-        if (params.length >= 3) {
-            String username = params[0];
-            String password = params[1];
-            String email = params[2];
+        if (params.length == 0) {
 
-            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+            LogoutRequest logoutRequest = new LogoutRequest(currAuthToken);
 
             try {
-                RegisterResult registerResult = server.register(registerRequest);
+                LogoutResult logoutResult = server.logout(logoutRequest);
 
-                if(registerResult.authToken() != null) {
-                    state = SIGNEDIN;
-                    return String.format("Logged in as %s.", username);
-                } else {
-                    return "Login failed: " + (registerResult.message());
+                if(logoutResult.message() == null) {
+                    state = SIGNEDOUT;
+                    return "Logged out \n";
                 }
             } catch (DataAccessException e) {
                 return "Error signing in" + e.getMessage();

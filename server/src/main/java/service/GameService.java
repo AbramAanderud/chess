@@ -59,16 +59,18 @@ public class GameService {
     }
 
     public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {
-        System.out.println("trying to join from join game service");
         System.out.println("gameID requested " + req.gameID());
+
+        String playerColor = req.playerColor();
+        playerColor = playerColor.toUpperCase();
+
+        System.out.println("color requested " + playerColor);
 
         if (!authDAO.isValidAuth(authToken)) {
             return new JoinResult("error: unauthorized");
         }
 
-        if (req.gameID()==null || req.playerColor()==null
-                || (!req.playerColor().equals("WHITE")
-                && !req.playerColor().equals("BLACK"))) {
+        if (req.gameID()==null || !playerColor.equals("WHITE") && !playerColor.equals("BLACK")) {
             return new JoinResult("error: bad request");
         }
 
@@ -88,7 +90,7 @@ public class GameService {
 
         String username = authDAO.getUsernameByAuth(authToken);
 
-        gameDAO.joinGameRequest(req.gameID(), username, req.playerColor());
+        gameDAO.joinGameRequest(req.gameID(), username, playerColor);
 
         return new JoinResult(null);
     }

@@ -93,6 +93,10 @@ public class SQLGameDAO implements GameDAO {
     }
 
     public void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException {
+        System.out.println("ID passed in: " + gameID);
+        System.out.println("user passed in: " + username);
+        System.out.println("color passed in: " + color);
+
         String updateStatement;
         if (color.equals("WHITE")) {
             updateStatement = "UPDATE gameDataTable SET whiteUsername = ? WHERE gameID = ?";

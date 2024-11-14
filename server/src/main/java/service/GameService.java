@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
 import model.GameData;
 import requests.CreateGameRequest;
@@ -51,7 +52,9 @@ public class GameService {
             return new CreateGameResult(null, "error: bad request");
         }
 
-        GameData newGame = new GameData(null, null, null, req.gameName(), null);
+        ChessGame game = new ChessGame();
+
+        GameData newGame = new GameData(null, null, null, req.gameName(), game);
 
         int newGameID = gameDAO.createGame(newGame);
 
@@ -60,7 +63,9 @@ public class GameService {
 
     public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {
         System.out.println("gameID requested " + req.gameID());
-
+        if(req.playerColor() == null) {
+            return new JoinResult("error: bad request");
+        }
         String playerColor = req.playerColor();
         playerColor = playerColor.toUpperCase();
 

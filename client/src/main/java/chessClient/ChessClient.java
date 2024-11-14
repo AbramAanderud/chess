@@ -46,9 +46,8 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> join(params);
-                case "observer" -> observe(params);
+                case "observe" -> observe(params);
                 case "logout" -> logout(params);
-                case "quit" -> quitSignedIn();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -56,10 +55,22 @@ public class ChessClient {
         }
     }
 
-    public String quitSignedIn() {
-        state = SIGNEDOUT;
-        help();
-        return "quit";
+    public String evalGamePlay(String input) {
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "create" -> create(params);
+                case "list" -> list();
+                case "join" -> join(params);
+                case "observer" -> observe(params);
+                case "logout" -> logout(params);
+                default -> help();
+            };
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
     }
 
     public String login(String... params) throws ResponseException {
@@ -185,27 +196,11 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
-        if (params.length >= 3) {
-            String username = params[0];
-            String password = params[1];
-            String email = params[2];
-
-            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-
-            try {
-                RegisterResult registerResult = server.register(registerRequest);
-
-                if(registerResult.authToken() != null) {
-                    state = SIGNEDIN;
-                    return String.format("Logged in as %s.", username);
-                } else {
-                    return "Login failed: " + (registerResult.message());
-                }
-            } catch (DataAccessException e) {
-                return "Error signing in" + e.getMessage();
-            }
+        if (params.length >= 1) {
+            return "observing game " + params[0];
+        } else {
+            return "Bad Arguments";
         }
-        throw new ResponseException(400, "Expected: <yourname>");
     }
 
     public String logout(String... params) throws ResponseException {

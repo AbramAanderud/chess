@@ -1,5 +1,6 @@
 package repl;
 
+import chess.ChessBoard;
 import chessClient.ChessClient;
 import java.util.Scanner;
 
@@ -49,6 +50,9 @@ public class Repl {
                 System.out.print(SET_TEXT_COLOR_WHITE + result);
                 if(result.startsWith("Logged out")) {
                     runUnsignedIn();
+                } else if (result.startsWith("Game joined") || (result.startsWith("observing game")) ){
+                    new ChessBoard();
+
                 }
             } catch (Throwable e) {
                 var msg = e.toString();
@@ -76,6 +80,10 @@ public class Repl {
             }
         }
         System.out.println();
+    }
+
+    private String toStringBoard(ChessBoard board) {
+        SET_BG_COLOR
     }
 
     private void printPrompt() {

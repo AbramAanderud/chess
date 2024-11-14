@@ -94,9 +94,9 @@ public class Repl {
 
             for (int j = 1; j <= 8; j++) {
                 if((i + j) % 2 == 0) {
-                    sb.append(SET_BG_COLOR_LIGHT_GREY);
-                } else {
                     sb.append(SET_BG_COLOR_DARK_GREEN);
+                } else {
+                    sb.append(SET_BG_COLOR_LIGHT_GREY);
                 }
 
                 ChessPosition pos = new ChessPosition(i, j);
@@ -150,9 +150,9 @@ public class Repl {
 
             for (int j = 1; j <= 8; j++) {
                 if((i + j) % 2 == 0) {
-                    sb.append(SET_BG_COLOR_LIGHT_GREY);
-                } else {
                     sb.append(SET_BG_COLOR_DARK_GREEN);
+                } else {
+                    sb.append(SET_BG_COLOR_LIGHT_GREY);
                 }
 
                 ChessPosition pos = new ChessPosition(i, j);
@@ -213,7 +213,7 @@ public class Repl {
         } else if(pieceType == ChessPiece.PieceType.KNIGHT) {
             return BLACK_KNIGHT;
         }
-        return "4";
+        return "";
     }
 
     private void printPrompt() {

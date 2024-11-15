@@ -14,12 +14,12 @@ import static repl.State.SIGNEDOUT;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
-    private final ServerFacade server;
+    private final ServerFacade serverFacade;
     private State state = SIGNEDOUT;
     private String currAuthToken;
 
     public ChessClient(String serverURL) {
-        server = new ServerFacade(serverURL);
+        serverFacade = new ServerFacade(serverURL);
     }
 
     public String evalUnsignedIn(String input) {
@@ -64,7 +64,7 @@ public class ChessClient {
             LoginRequest loginRequest = new LoginRequest(username, password);
 
             try {
-                LoginResult loginResult = server.login(loginRequest);
+                LoginResult loginResult = serverFacade.login(loginRequest);
 
                 if (loginResult.message()!=null) {
                     return loginResult.message();
@@ -72,7 +72,7 @@ public class ChessClient {
                 if (loginResult.authToken()!=null) {
                     currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
-                    server.setLastStoredAuth(currAuthToken);
+                    serverFacade.setLastStoredAuth(currAuthToken);
                     return String.format("Logged in as %s", username);
                 }
             } catch (DataAccessException e) {
@@ -91,7 +91,7 @@ public class ChessClient {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
 
             try {
-                RegisterResult registerResult = server.register(registerRequest);
+                RegisterResult registerResult = serverFacade.register(registerRequest);
 
                 if (registerResult.message()!=null) {
                     return registerResult.message();
@@ -99,7 +99,7 @@ public class ChessClient {
                 if (registerResult.authToken()!=null) {
                     currAuthToken = registerResult.authToken();
                     state = SIGNEDIN;
-                    server.setLastStoredAuth(currAuthToken);
+                    serverFacade.setLastStoredAuth(currAuthToken);
                     return String.format("Logged in as %s ", username);
                 }
             } catch (DataAccessException e) {
@@ -116,7 +116,7 @@ public class ChessClient {
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
 
             try {
-                CreateGameResult gameResult = server.createGame(createGameRequest);
+                CreateGameResult gameResult = serverFacade.createGame(createGameRequest);
 
                 if (gameResult.message()!=null) {
                     System.out.println(SET_TEXT_COLOR_RED);
@@ -138,7 +138,7 @@ public class ChessClient {
             ListRequest listRequest = new ListRequest(currAuthToken);
 
             try {
-                ListResult listResult = server.listGames(listRequest);
+                ListResult listResult = serverFacade.listGames(listRequest);
 
                 if (!listResult.games().isEmpty() && listResult.message()==null) {
                     StringBuilder sb = new StringBuilder();
@@ -173,7 +173,7 @@ public class ChessClient {
             JoinRequest joinRequest = new JoinRequest(teamColor, gameID);
 
             try {
-                JoinResult joinResult = server.joinGame(joinRequest);
+                JoinResult joinResult = serverFacade.joinGame(joinRequest);
 
 
                 if (joinResult.message()!=null) {
@@ -203,7 +203,7 @@ public class ChessClient {
             LogoutRequest logoutRequest = new LogoutRequest(currAuthToken);
 
             try {
-                LogoutResult logoutResult = server.logout(logoutRequest);
+                LogoutResult logoutResult = serverFacade.logout(logoutRequest);
 
                 if (logoutResult.message()==null) {
                     state = SIGNEDOUT;

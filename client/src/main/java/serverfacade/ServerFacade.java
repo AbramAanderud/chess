@@ -70,7 +70,7 @@ public class ServerFacade {
     }
 
     public JoinResult joinGame(JoinRequest j) throws DataAccessException, ResponseException {
-        var path = "/delete";
+        var path = "/game";
         return this.makeRequest("PUT", path, j, JoinResult.class, authToken);
     }
 

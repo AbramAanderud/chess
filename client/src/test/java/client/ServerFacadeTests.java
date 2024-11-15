@@ -18,19 +18,19 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(1024);
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade("http://localhost:" + port);
-    }
-
-    @BeforeEach
-    public void clearDatabase() throws ResponseException, DataAccessException {
-        facade.clear();
     }
 
     @AfterAll
     static void stopServer() {
         server.stop();
+    }
+
+    @BeforeEach
+    public void clearDatabase() throws ResponseException, DataAccessException {
+        facade.clear();
     }
 
     @Test

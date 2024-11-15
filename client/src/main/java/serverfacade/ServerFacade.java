@@ -4,7 +4,6 @@ package serverfacade;
 import com.google.gson.Gson;
 import requests.*;
 import result.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

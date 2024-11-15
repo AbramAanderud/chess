@@ -70,13 +70,18 @@ public class ServerFacade {
     }
 
     public JoinResult joinGame(JoinRequest j) throws DataAccessException, ResponseException {
-        var path = "/game";
+        var path = "/delete";
         return this.makeRequest("PUT", path, j, JoinResult.class, authToken);
     }
 
     public CreateGameResult createGame(CreateGameRequest g) throws DataAccessException, ResponseException {
         var path = "/game";
         return this.makeRequest("POST", path, g, CreateGameResult.class, authToken);
+    }
+
+    public ClearResult clear() throws DataAccessException, ResponseException {
+        var path = "/db";
+        return this.makeRequest("DELETE", path, null, ClearResult.class, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {

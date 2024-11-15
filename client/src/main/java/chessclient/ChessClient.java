@@ -164,27 +164,31 @@ public class ChessClient {
 
     public String join(String... params) throws ResponseException {
         if (params.length==2) {
+
             String gameIDString = params[0];
             String teamColor = params[1];
+            int gameID;
 
-            int gameID = Integer.parseInt(gameIDString);
+            try {
+                gameID = Integer.parseInt(gameIDString);
+            } catch (NumberFormatException e) {
+                return "join expects: <gameID> <[BLACK][WHITE]>";
+            }
 
             JoinRequest joinRequest = new JoinRequest(teamColor, gameID);
 
             try {
                 JoinResult joinResult = serverFacade.joinGame(joinRequest);
-
-
                 if (joinResult.message()!=null) {
                     return "Error joining due to " + joinResult.message();
                 } else {
                     return "Game joined \n";
                 }
             } catch (ResponseException e) {
-                return "Error joining game" + e.getMessage();
+                return e.getMessage();
             }
         }
-        throw new ResponseException(400, "Expected: <gameID> <[BLACK][WHITE]>");
+        throw new ResponseException(400, "join expects: <gameID> <[BLACK][WHITE]>");
     }
 
     public String observe(String... params) throws ResponseException {

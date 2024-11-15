@@ -83,7 +83,10 @@ public class Repl {
                     } else if (result.contains("403")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println("already taken");
-                    } else if (result.contains("Expected")) {
+                    } else if (result.contains("400")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("Invalid color");
+                    } else if (result.contains("Expected") || result.contains("expects")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println(result);
                         System.out.print(RESET_TEXT_COLOR);
@@ -116,11 +119,11 @@ public class Repl {
 
         if (isWhite) {
             for (int i = 8; i >= 1; i--) {
-                pieceLoop(sb, board, i);
+                pieceLoop(sb, board, i, true);
             }
         } else {
             for (int i = 1; i <= 8; i++) {
-                pieceLoop(sb, board, i);
+                pieceLoop(sb, board, i, false);
             }
         }
         printBottAlpha(sb);
@@ -128,11 +131,17 @@ public class Repl {
         return sb;
     }
 
-    private void pieceLoop(StringBuilder sb, ChessBoard board, int i) {
+    private void pieceLoop(StringBuilder sb, ChessBoard board, int i, boolean isWhite) {
         sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
 
-        for (int j = 1; j <= 8; j++) {
-            appendPiece(board, sb, i, j);
+        if (isWhite) {
+            for (int j = 1; j <= 8; j++) {
+                appendPiece(board, sb, i, j);
+            }
+        } else {
+            for (int j = 8; j >= 1; j--) {
+                appendPiece(board, sb, i, j);
+            }
         }
 
         sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
@@ -151,7 +160,7 @@ public class Repl {
         sb.append(getPrintPiece(piece));
     }
 
-    private StringBuilder printTopAlpha(StringBuilder sb) {
+    private void printTopAlpha(StringBuilder sb) {
         sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
         sb.append("    a ");
         sb.append(" b ");
@@ -164,10 +173,9 @@ public class Repl {
         sb.append("   ");
         sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
         sb.append("\n");
-        return sb;
     }
 
-    private StringBuilder printBottAlpha(StringBuilder sb) {
+    private void printBottAlpha(StringBuilder sb) {
         sb.append(SET_BG_COLOR_BLACK + "   ");
         sb.append(" a " + SET_TEXT_COLOR_WHITE);
         sb.append(" b ");
@@ -180,7 +188,6 @@ public class Repl {
         sb.append("   ");
         sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
         sb.append("\n");
-        return sb;
     }
 
     private String getPrintPiece(ChessPiece piece) {

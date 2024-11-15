@@ -3,12 +3,12 @@ package service;
 import chess.ChessGame;
 import dataaccess.*;
 import model.GameData;
-import reqres.requests.CreateGameRequest;
-import reqres.requests.JoinRequest;
-import reqres.requests.ListRequest;
-import reqres.result.CreateGameResult;
-import reqres.result.JoinResult;
-import reqres.result.ListResult;
+import client.requests.CreateGameRequest;
+import client.requests.JoinRequest;
+import client.requests.ListRequest;
+import client.result.CreateGameResult;
+import client.result.JoinResult;
+import client.result.ListResult;
 
 import java.sql.Connection;
 import java.util.ArrayList;

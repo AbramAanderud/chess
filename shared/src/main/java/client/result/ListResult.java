@@ -1,4 +1,4 @@
-package reqres.result;
+package client.result;
 
 import java.util.List;
 

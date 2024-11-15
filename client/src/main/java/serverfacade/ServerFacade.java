@@ -2,8 +2,8 @@ package serverfacade;
 
 
 import com.google.gson.Gson;
-import reqres.requests.*;
-import reqres.result.*;
+import client.requests.*;
+import client.result.*;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,7 +1,7 @@
 package handlers;
 
 import dataaccess.DataAccessException;
-import reqres.result.ClearResult;
+import client.result.ClearResult;
 import service.ClearService;
 import spark.Response;
 

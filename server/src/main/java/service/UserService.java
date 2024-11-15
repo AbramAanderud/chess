@@ -3,12 +3,12 @@ package service;
 import dataaccess.*;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-import reqres.requests.LoginRequest;
-import reqres.requests.LogoutRequest;
-import reqres.requests.RegisterRequest;
-import reqres.result.LoginResult;
-import reqres.result.LogoutResult;
-import reqres.result.RegisterResult;
+import client.requests.LoginRequest;
+import client.requests.LogoutRequest;
+import client.requests.RegisterRequest;
+import client.result.LoginResult;
+import client.result.LogoutResult;
+import client.result.RegisterResult;
 
 import java.sql.Connection;
 

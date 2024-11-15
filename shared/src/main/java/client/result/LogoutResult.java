@@ -1,4 +1,4 @@
-package reqres.result;
+package client.result;
 
 public record LogoutResult(String message) {
 }

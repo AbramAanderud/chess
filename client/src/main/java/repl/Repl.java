@@ -123,11 +123,7 @@ public class Repl {
                 for (int j = 1; j <= 8; j++) {
                     appendPiece(board, sb, i, j);
                 }
-
-                sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
-                sb.append(" " + i + " ");
-                sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
-                sb.append("\n");
+                sb.append(edges(sb, i));
             }
             sb.append(printTopAlpha(sb));
         } else {
@@ -138,15 +134,19 @@ public class Repl {
                 for (int j = 1; j <= 8; j++) {
                     appendPiece(board, sb, i, j);
                 }
-
-                sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
-                sb.append(" " + i + " ");
-                sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
-                sb.append("\n");
+                sb.append(edges(sb, i));
             }
             sb.append(printBottAlpha(sb));
         }
 
+        return sb;
+    }
+
+    private StringBuilder edges(StringBuilder sb, int i) {
+        sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
+        sb.append(" " + i + " ");
+        sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
+        sb.append("\n");
         return sb;
     }
 

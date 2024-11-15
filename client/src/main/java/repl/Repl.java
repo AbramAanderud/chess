@@ -115,19 +115,21 @@ public class Repl {
 
     private StringBuilder toStringBoard(ChessBoard board, boolean isWhite) {
         StringBuilder sb = new StringBuilder();
-        printTopAlpha(sb);
+
 
         if (isWhite) {
+            printTopAlphaWHITE(sb);
             for (int i = 8; i >= 1; i--) {
                 pieceLoop(sb, board, i, true);
             }
+            printBottAlphaWHITE(sb);
         } else {
+            printTopAlphaBLACK(sb);
             for (int i = 1; i <= 8; i++) {
                 pieceLoop(sb, board, i, false);
             }
+            printBottAlphaBlACK(sb);
         }
-        printBottAlpha(sb);
-
         return sb;
     }
 
@@ -160,7 +162,7 @@ public class Repl {
         sb.append(getPrintPiece(piece));
     }
 
-    private void printTopAlpha(StringBuilder sb) {
+    private void printTopAlphaWHITE(StringBuilder sb) {
         sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
         sb.append("    a ");
         sb.append(" b ");
@@ -175,9 +177,9 @@ public class Repl {
         sb.append("\n");
     }
 
-    private void printBottAlpha(StringBuilder sb) {
-        sb.append(SET_BG_COLOR_BLACK + "   ");
-        sb.append(" a " + SET_TEXT_COLOR_WHITE);
+    private void printBottAlphaWHITE(StringBuilder sb) {
+        sb.append(SET_BG_COLOR_BLACK + "   " + SET_TEXT_COLOR_WHITE);
+        sb.append(" a ");
         sb.append(" b ");
         sb.append(" c ");
         sb.append(" d ");
@@ -185,6 +187,36 @@ public class Repl {
         sb.append(" f ");
         sb.append(" g ");
         sb.append(" h ");
+        sb.append("   ");
+        sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
+        sb.append("\n");
+    }
+
+    private void printTopAlphaBLACK(StringBuilder sb) {
+        sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
+        sb.append("    h ");
+        sb.append(" g ");
+        sb.append(" f ");
+        sb.append(" e ");
+        sb.append(" d ");
+        sb.append(" c ");
+        sb.append(" b ");
+        sb.append(" a ");
+        sb.append("   ");
+        sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
+        sb.append("\n");
+    }
+
+    private void printBottAlphaBlACK(StringBuilder sb) {
+        sb.append(SET_BG_COLOR_BLACK + "   " + SET_TEXT_COLOR_WHITE);
+        sb.append(" h " );
+        sb.append(" g ");
+        sb.append(" f ");
+        sb.append(" e ");
+        sb.append(" d ");
+        sb.append(" c ");
+        sb.append(" b ");
+        sb.append(" a ");
         sb.append("   ");
         sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
         sb.append("\n");

@@ -75,7 +75,7 @@ public class ChessClient {
                     return String.format("Logged in as %s", username);
                 }
             } catch (ResponseException e) {
-                return "Error logging in";
+                return "Error logging in " + e.getMessage();
             }
         }
         throw new ResponseException(400, "Expects <username> <passsword>");
@@ -102,7 +102,7 @@ public class ChessClient {
                     return String.format("Logged in as %s ", username);
                 }
             } catch (ResponseException e) {
-                return "Error signing in" + e.getMessage();
+                return "Error signing in " + e.getMessage();
             }
         }
         throw new ResponseException(400, "Expects <username> <password> <email>");

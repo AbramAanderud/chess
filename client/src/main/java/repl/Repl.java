@@ -112,34 +112,31 @@ public class Repl {
 
     private StringBuilder toStringBoard(ChessBoard board, boolean isWhite) {
         StringBuilder sb = new StringBuilder();
-
-        sb.append(printTopAlpha(sb));
+        printTopAlpha(sb);
 
         if (isWhite) {
             for (int i = 8; i >= 1; i--) {
-                sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
-                sb.append(" " + i + " ");
-
-                for (int j = 1; j <= 8; j++) {
-                    appendPiece(board, sb, i, j);
-                }
-                sb.append(edges(sb, i));
+                pieceLoop(sb, board, i);
             }
-            sb.append(printTopAlpha(sb));
         } else {
             for (int i = 1; i <= 8; i++) {
-                sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
-                sb.append(" " + i + " ");
-
-                for (int j = 1; j <= 8; j++) {
-                    appendPiece(board, sb, i, j);
-                }
-                sb.append(edges(sb, i));
+                pieceLoop(sb, board, i);
             }
-            sb.append(printBottAlpha(sb));
         }
+        printBottAlpha(sb);
 
         return sb;
+    }
+
+    private void pieceLoop(StringBuilder sb, ChessBoard board, int i) {
+        sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
+
+        for (int j = 1; j <= 8; j++) {
+            appendPiece(board, sb, i, j);
+        }
+
+        sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
+        sb.append(RESET_BG_COLOR).append(RESET_TEXT_COLOR).append("\n");
     }
 
     private StringBuilder edges(StringBuilder sb, int i) {

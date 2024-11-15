@@ -28,16 +28,29 @@ public class Repl {
 
             try {
                 result = client.evalUnsignedIn(line);
-                System.out.print(SET_TEXT_COLOR_WHITE + result);
+
                 if (result.startsWith("Logged in as")) {
+                    System.out.println(SET_TEXT_COLOR_WHITE + result + " ");
                     runSignedIn();
+                } else if (!result.startsWith("Options")){
+                    if(result.contains("401")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("Can't find user with that username/password");
+                    } else {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println(result);
+                        System.out.print(RESET_TEXT_COLOR);
+                    }
+
+                } else {
+                    System.out.print(RESET_TEXT_COLOR + result);
                 }
+
             } catch (Throwable e) {
-                var msg = e.toString();
-                System.out.print(msg);
+                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
+                System.out.print(e.getMessage());
             }
         }
-        System.out.println();
         System.exit(0);
     }
 
@@ -52,17 +65,33 @@ public class Repl {
 
             try {
                 result = client.evalSignedIn(line);
-                System.out.print(SET_TEXT_COLOR_WHITE + result);
+
                 if (result.startsWith("Game joined") || (result.startsWith("observing game"))) {
                     runPlayGame();
                 }
+                
+                if(!result.startsWith("Options")) {
+                    if (result.startsWith("Game") || result.startsWith("Observing")
+                            || result.startsWith("Created")) {
+                        System.out.println(SET_TEXT_COLOR_WHITE + result);
+                    }
+
+                    if(result.contains("500")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("Game doesn't exist");
+                    } else {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println(result);
+                        System.out.print(RESET_TEXT_COLOR);
+                    }
+                } else {
+                    System.out.println(RESET_TEXT_COLOR + result);
+                }
             } catch (Throwable e) {
-                var msg = e.toString();
-                System.out.print(msg);
+                System.out.println(e.getMessage());
             }
         }
         runUnsignedIn();
-        System.out.println();
     }
 
     public void runPlayGame() {

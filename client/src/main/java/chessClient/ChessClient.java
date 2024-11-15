@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import static repl.State.SIGNEDIN;
 import static repl.State.SIGNEDOUT;
-import static ui.EscapeSequences.RESET_TEXT_COLOR;
+import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private final ServerFacade server;
@@ -57,7 +57,7 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length >= 2) {
+        if (params.length == 2) {
             String username = params[0];
             String password = params[1];
 
@@ -66,23 +66,24 @@ public class ChessClient {
             try {
                 LoginResult loginResult = server.login(loginRequest);
 
+                if(loginResult.message() != null) {
+                    return loginResult.message();
+                }
                 if (loginResult.authToken()!=null) {
                     currAuthToken = loginResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
-                    return String.format("Logged in as %s \n", username);
-                } else {
-                    return "Login failed: " + (loginResult.message());
+                    return String.format("Logged in as %s", username);
                 }
             } catch (DataAccessException e) {
                 return "Error logging in";
             }
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Expects <username> <passsword>");
     }
 
     public String register(String... params) throws ResponseException {
-        if (params.length >= 3) {
+        if (params.length == 3) {
             String username = params[0];
             String password = params[1];
             String email = params[2];
@@ -92,23 +93,24 @@ public class ChessClient {
             try {
                 RegisterResult registerResult = server.register(registerRequest);
 
+                if(registerResult.message() != null) {
+                    return registerResult.message();
+                }
                 if (registerResult.authToken()!=null) {
                     currAuthToken = registerResult.authToken();
                     state = SIGNEDIN;
                     server.setLastStoredAuth(currAuthToken);
-                    return String.format("Logged in as %s \n", username);
-                } else {
-                    return "Login failed: " + (registerResult.message());
+                    return String.format("Logged in as %s ", username);
                 }
             } catch (DataAccessException e) {
                 return "Error signing in" + e.getMessage();
             }
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Expects <username> <password> <email>");
     }
 
     public String create(String... params) throws ResponseException {
-        if (params.length >= 1) {
+        if (params.length == 1) {
             String gameName = params[0];
 
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
@@ -116,10 +118,12 @@ public class ChessClient {
             try {
                 CreateGameResult gameResult = server.createGame(createGameRequest);
 
+                if(gameResult.message() != null) {
+                    System.out.println(SET_TEXT_COLOR_RED);
+                    return gameResult.message();
+                }
                 if (gameResult.gameID()!=null) {
                     return String.format("Created game named %s", gameName);
-                } else {
-                    return "Creation failed: " + (gameResult.message());
                 }
             } catch (DataAccessException e) {
                 return "Error creating game" + e.getMessage();
@@ -135,32 +139,29 @@ public class ChessClient {
             try {
                 ListResult listResult = server.listGames(listRequest);
 
-                if (listResult.games()!=null) {
+                if (!listResult.games().isEmpty() && listResult.message() == null) {
                     StringBuilder sb = new StringBuilder();
-
                     for (ListResult.GameInfo games : listResult.games()) {
 
-                        sb.append(" * game: " + games.gameID() + " - name: "
-                                + games.gameName() + " - white player: "
-                                + games.whiteUsername() + " - black player: "
-                                + games.blackUsername());
+                        sb.append(" * game: ").append(games.gameID()).append(" - name: ")
+                                .append(games.gameName()).append(" - white player: ").append(games.whiteUsername()).append(" - black player: ").
+                                append(games.blackUsername());
 
                         sb.append("\n");
                     }
                     return "Games: \n" + sb;
-
                 } else {
-                    return "No games yet";
+                    return "no games yet";
                 }
             } catch (DataAccessException e) {
-                return "Error listing" + e.getMessage();
+                return "Error listing due to" + e.getMessage();
             }
         }
-        return null;
+        throw new ResponseException(400, "Bad request");
     }
 
     public String join(String... params) throws ResponseException {
-        if (params.length >= 2) {
+        if (params.length == 2) {
             String gameIDString = params[0];
             String teamColor = params[1];
 
@@ -171,7 +172,8 @@ public class ChessClient {
             try {
                 JoinResult joinResult = server.joinGame(joinRequest);
 
-                if (joinResult.message()!=null) {
+
+                if (joinResult.message() != null) {
                     return String.format("Error joining due to %s", joinResult.message());
                 } else {
                     return "Game joined \n";
@@ -184,37 +186,38 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
-        if (params.length >= 1) {
-            return "observing game " + params[0] + '\n';
+        if (params.length == 1) {
+            return "Observing game: " + params[0];
         } else {
-            return "Bad Arguments";
+            throw new ResponseException(400, "Expected: <gameID>");
         }
+
     }
 
     public String logout(String... params) throws ResponseException {
-        if (params.length==0) {
+        if (params.length == 0) {
 
             LogoutRequest logoutRequest = new LogoutRequest(currAuthToken);
 
             try {
                 LogoutResult logoutResult = server.logout(logoutRequest);
 
-                if (logoutResult.message()==null) {
+                if (logoutResult.message() == null) {
                     state = SIGNEDOUT;
-                    return "Logged out \n" ;
-
+                    return "Logged out" ;
                 }
+                return logoutResult.message();
             } catch (DataAccessException e) {
-                return "Error signing in" + e.getMessage();
+                return "Can't logout" + e.getMessage();
             }
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Bad request");
     }
 
 
     public String help() {
-        System.out.println(RESET_TEXT_COLOR);
         if (state==State.SIGNEDOUT) {
+            System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account
@@ -223,7 +226,7 @@ public class ChessClient {
                     help - with possible commands
                     """;
         }
-        System.out.println(RESET_TEXT_COLOR);
+        System.out.print(RESET_TEXT_COLOR);
         return """
                 Options:
                 create <NAME> - a game

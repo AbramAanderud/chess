@@ -1,4 +1,4 @@
-package result;
+package reqres.result;
 
 import java.util.List;
 

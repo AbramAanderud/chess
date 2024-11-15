@@ -1,8 +1,8 @@
 package handlers;
 
 import dataaccess.DataAccessException;
-import requests.LoginRequest;
-import result.LoginResult;
+import reqres.requests.LoginRequest;
+import reqres.result.LoginResult;
 import service.UserService;
 import spark.Request;
 import spark.Response;

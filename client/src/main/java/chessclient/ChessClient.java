@@ -1,8 +1,8 @@
-package chessClient;
+package chessclient;
 
 import repl.State;
-import requests.*;
-import result.*;
+import reqres.requests.*;
+import reqres.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 

@@ -1,4 +1,4 @@
-package result;
+package reqres.result;
 
 public record JoinResult(String message) {
 }

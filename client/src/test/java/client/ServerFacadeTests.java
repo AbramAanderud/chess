@@ -2,8 +2,8 @@ package client;
 
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
-import requests.*;
-import result.*;
+import reqres.requests.*;
+import reqres.result.*;
 import server.Server;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;

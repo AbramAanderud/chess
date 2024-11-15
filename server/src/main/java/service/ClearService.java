@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.*;
-import result.ClearResult;
+import reqres.result.ClearResult;
 
 import java.sql.Connection;
 

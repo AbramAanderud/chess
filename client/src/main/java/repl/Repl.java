@@ -4,7 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import chessClient.ChessClient;
+import chessclient.ChessClient;
 
 import java.util.Scanner;
 

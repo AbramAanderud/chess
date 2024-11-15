@@ -1,8 +1,8 @@
 package handlers;
 
 import dataaccess.DataAccessException;
-import requests.ListRequest;
-import result.ListResult;
+import reqres.requests.ListRequest;
+import reqres.result.ListResult;
 import service.GameService;
 import spark.Request;
 import spark.Response;

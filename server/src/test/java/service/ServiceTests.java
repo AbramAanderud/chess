@@ -4,8 +4,8 @@ import dataaccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.*;
-import result.*;
+import reqres.requests.*;
+import reqres.result.*;
 
 public class ServiceTests {
     private GameService gameService;

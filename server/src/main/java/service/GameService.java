@@ -63,7 +63,7 @@ public class GameService {
 
     public JoinResult joinGame(JoinRequest req, String authToken) throws DataAccessException {
         System.out.println("gameID requested " + req.gameID());
-        if(req.playerColor() == null) {
+        if (req.playerColor()==null) {
             return new JoinResult("error: bad request");
         }
 
@@ -85,12 +85,12 @@ public class GameService {
 
         if (playerColor.equals("WHITE")) {
             System.out.println("reached");
-            if (gameData.whiteUsername()!= null) {
+            if (gameData.whiteUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }
         if (playerColor.equals("BLACK")) {
-            if (gameData.blackUsername()!= null) {
+            if (gameData.blackUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }

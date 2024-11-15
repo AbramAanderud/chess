@@ -139,14 +139,6 @@ public class Repl {
         sb.append(RESET_BG_COLOR).append(RESET_TEXT_COLOR).append("\n");
     }
 
-    private StringBuilder edges(StringBuilder sb, int i) {
-        sb.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE);
-        sb.append(" " + i + " ");
-        sb.append(RESET_BG_COLOR + RESET_TEXT_COLOR);
-        sb.append("\n");
-        return sb;
-    }
-
     private void appendPiece(ChessBoard board, StringBuilder sb, int i, int j) {
         if ((i + j) % 2 == 0) {
             sb.append(SET_BG_COLOR_DARK_GREEN);

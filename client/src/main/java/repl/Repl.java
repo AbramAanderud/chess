@@ -33,15 +33,15 @@ public class Repl {
                 if (result.startsWith("Logged in as")) {
                     System.out.println(SET_TEXT_COLOR_WHITE + result + " ");
                     runSignedIn();
-                } else if (!result.startsWith("Options")){
-                    if(result.contains("401")) {
+                } else if (!result.startsWith("Options")) {
+                    if (result.contains("401")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println("Can't find user with that username/password");
 
-                    } else if(result.contains("403")) {
-                            System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                            System.out.println("username taken");
-                    }else {
+                    } else if (result.contains("403")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("username taken");
+                    } else {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println(result);
                         System.out.print(RESET_TEXT_COLOR);
@@ -77,13 +77,13 @@ public class Repl {
                     System.out.println(result);
                     runPlayGame();
                 } else {
-                    if(result.contains("500")) {
+                    if (result.contains("500")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println("Doesn't exist");
-                    } else if(result.contains("403")) {
+                    } else if (result.contains("403")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println("already taken");
-                    } else if (result.contains("Expected")){
+                    } else if (result.contains("Expected")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println(result);
                         System.out.print(RESET_TEXT_COLOR);

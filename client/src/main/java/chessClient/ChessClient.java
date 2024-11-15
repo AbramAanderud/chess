@@ -57,7 +57,7 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length == 2) {
+        if (params.length==2) {
             String username = params[0];
             String password = params[1];
 
@@ -66,7 +66,7 @@ public class ChessClient {
             try {
                 LoginResult loginResult = server.login(loginRequest);
 
-                if(loginResult.message() != null) {
+                if (loginResult.message()!=null) {
                     return loginResult.message();
                 }
                 if (loginResult.authToken()!=null) {
@@ -83,7 +83,7 @@ public class ChessClient {
     }
 
     public String register(String... params) throws ResponseException {
-        if (params.length == 3) {
+        if (params.length==3) {
             String username = params[0];
             String password = params[1];
             String email = params[2];
@@ -93,7 +93,7 @@ public class ChessClient {
             try {
                 RegisterResult registerResult = server.register(registerRequest);
 
-                if(registerResult.message() != null) {
+                if (registerResult.message()!=null) {
                     return registerResult.message();
                 }
                 if (registerResult.authToken()!=null) {
@@ -110,7 +110,7 @@ public class ChessClient {
     }
 
     public String create(String... params) throws ResponseException {
-        if (params.length == 1) {
+        if (params.length==1) {
             String gameName = params[0];
 
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
@@ -118,7 +118,7 @@ public class ChessClient {
             try {
                 CreateGameResult gameResult = server.createGame(createGameRequest);
 
-                if(gameResult.message() != null) {
+                if (gameResult.message()!=null) {
                     System.out.println(SET_TEXT_COLOR_RED);
                     return gameResult.message();
                 }
@@ -140,7 +140,7 @@ public class ChessClient {
             try {
                 ListResult listResult = server.listGames(listRequest);
 
-                if (!listResult.games().isEmpty() && listResult.message() == null) {
+                if (!listResult.games().isEmpty() && listResult.message()==null) {
                     StringBuilder sb = new StringBuilder();
                     for (ListResult.GameInfo games : listResult.games()) {
 
@@ -164,7 +164,7 @@ public class ChessClient {
     }
 
     public String join(String... params) throws ResponseException {
-        if (params.length == 2) {
+        if (params.length==2) {
             String gameIDString = params[0];
             String teamColor = params[1];
 
@@ -176,7 +176,7 @@ public class ChessClient {
                 JoinResult joinResult = server.joinGame(joinRequest);
 
 
-                if (joinResult.message() != null) {
+                if (joinResult.message()!=null) {
                     return "Error joining due to " + joinResult.message();
                 } else {
                     return "Game joined \n";
@@ -189,7 +189,7 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
-        if (params.length == 1) {
+        if (params.length==1) {
             return "Observing game: " + params[0];
         } else {
             throw new ResponseException(400, "Expected: <gameID>");
@@ -198,16 +198,16 @@ public class ChessClient {
     }
 
     public String logout(String... params) throws ResponseException {
-        if (params.length == 0) {
+        if (params.length==0) {
 
             LogoutRequest logoutRequest = new LogoutRequest(currAuthToken);
 
             try {
                 LogoutResult logoutResult = server.logout(logoutRequest);
 
-                if (logoutResult.message() == null) {
+                if (logoutResult.message()==null) {
                     state = SIGNEDOUT;
-                    return "Logged out" ;
+                    return "Logged out";
                 }
                 return logoutResult.message();
             } catch (DataAccessException e) {

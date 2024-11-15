@@ -1,6 +1,5 @@
 package chessClient;
 
-import dataaccess.DataAccessException;
 import repl.State;
 import requests.*;
 import result.*;
@@ -75,7 +74,7 @@ public class ChessClient {
                     serverFacade.setLastStoredAuth(currAuthToken);
                     return String.format("Logged in as %s", username);
                 }
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Error logging in";
             }
         }
@@ -102,7 +101,7 @@ public class ChessClient {
                     serverFacade.setLastStoredAuth(currAuthToken);
                     return String.format("Logged in as %s ", username);
                 }
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Error signing in" + e.getMessage();
             }
         }
@@ -125,7 +124,7 @@ public class ChessClient {
                 if (gameResult.gameID()!=null) {
                     return String.format("Created game named %s", gameName);
                 }
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Error creating game" + e.getMessage();
             }
         }
@@ -156,7 +155,7 @@ public class ChessClient {
                 } else {
                     return "no games yet";
                 }
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Error listing due to" + e.getMessage();
             }
         }
@@ -181,7 +180,7 @@ public class ChessClient {
                 } else {
                     return "Game joined \n";
                 }
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Error joining game" + e.getMessage();
             }
         }
@@ -210,7 +209,7 @@ public class ChessClient {
                     return "Logged out";
                 }
                 return logoutResult.message();
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return "Can't logout" + e.getMessage();
             }
         }

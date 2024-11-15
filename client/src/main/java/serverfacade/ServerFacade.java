@@ -2,7 +2,6 @@ package serverfacade;
 
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import requests.*;
 import result.*;
 
@@ -49,37 +48,37 @@ public class ServerFacade {
         authToken = auth;
     }
 
-    public RegisterResult register(RegisterRequest r) throws DataAccessException, ResponseException {
+    public RegisterResult register(RegisterRequest r) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, r, RegisterResult.class, null);
     }
 
-    public LoginResult login(LoginRequest l) throws DataAccessException, ResponseException {
+    public LoginResult login(LoginRequest l) throws ResponseException {
         var path = "/session";
         return this.makeRequest("POST", path, l, LoginResult.class, null);
     }
 
-    public LogoutResult logout(LogoutRequest l) throws DataAccessException, ResponseException {
+    public LogoutResult logout(LogoutRequest l) throws ResponseException {
         var path = "/session";
         return this.makeRequest("DELETE", path, l, LogoutResult.class, authToken);
     }
 
-    public ListResult listGames(ListRequest l) throws DataAccessException, ResponseException {
+    public ListResult listGames(ListRequest l) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, l, ListResult.class, authToken);
     }
 
-    public JoinResult joinGame(JoinRequest j) throws DataAccessException, ResponseException {
+    public JoinResult joinGame(JoinRequest j) throws ResponseException {
         var path = "/game";
         return this.makeRequest("PUT", path, j, JoinResult.class, authToken);
     }
 
-    public CreateGameResult createGame(CreateGameRequest g) throws DataAccessException, ResponseException {
+    public CreateGameResult createGame(CreateGameRequest g) throws ResponseException {
         var path = "/game";
         return this.makeRequest("POST", path, g, CreateGameResult.class, authToken);
     }
 
-    public ClearResult clear() throws DataAccessException, ResponseException {
+    public ClearResult clear() throws ResponseException {
         var path = "/db";
         return this.makeRequest("DELETE", path, null, ClearResult.class, null);
     }

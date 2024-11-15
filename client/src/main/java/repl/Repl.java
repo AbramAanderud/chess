@@ -66,29 +66,22 @@ public class Repl {
             try {
                 result = client.evalSignedIn(line);
 
-                if (result.startsWith("Game joined") || (result.startsWith("observing game"))) {
+                if (result.startsWith("Game joined") || result.startsWith("observing game")) {
                     runPlayGame();
-                }
-                
-                if(!result.startsWith("Options")) {
-                    if (result.startsWith("Game") || result.startsWith("Observing")
-                            || result.startsWith("Created")) {
-                        System.out.println(SET_TEXT_COLOR_WHITE + result);
-                    }
-
-                    if(result.contains("500")) {
-                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                        System.out.println("Game doesn't exist");
-                    } else {
-                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                        System.out.println(result);
-                        System.out.print(RESET_TEXT_COLOR);
-                    }
+                } else if(result.contains("500")) {
+                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                    System.out.println("Doesn't exist");
+                } else if(result.contains("403")) {
+                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                    System.out.println("already taken");
                 } else {
-                    System.out.println(RESET_TEXT_COLOR + result);
+                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                    System.out.print(RESET_TEXT_COLOR + result);
                 }
+
             } catch (Throwable e) {
-                System.out.println(e.getMessage());
+                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
+                System.out.print(e.getMessage());
             }
         }
         runUnsignedIn();
@@ -97,6 +90,7 @@ public class Repl {
     public void runPlayGame() {
         ChessBoard board = new ChessBoard();
         board.resetBoard();
+
         System.out.println(toStringBoardWhite(board));
         System.out.println(toStringBoardBlack(board));
 

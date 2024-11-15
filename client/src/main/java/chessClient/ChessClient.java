@@ -129,6 +129,7 @@ public class ChessClient {
                 return "Error creating game" + e.getMessage();
             }
         }
+        System.out.print(SET_TEXT_COLOR_RED);
         throw new ResponseException(400, "Expected: <gameName>");
     }
 
@@ -144,8 +145,10 @@ public class ChessClient {
                     for (ListResult.GameInfo games : listResult.games()) {
 
                         sb.append(" * game: ").append(games.gameID()).append(" - name: ")
-                                .append(games.gameName()).append(" - white player: ").append(games.whiteUsername()).append(" - black player: ").
-                                append(games.blackUsername());
+                                .append(games.gameName()).append(" - white player: " + SET_TEXT_COLOR_WHITE + SET_TEXT_BOLD)
+                                .append(games.whiteUsername())
+                                .append(RESET_TEXT_COLOR + " - black player: " + SET_TEXT_COLOR_WHITE + SET_TEXT_BOLD)
+                                .append(games.blackUsername() + RESET_TEXT_COLOR);
 
                         sb.append("\n");
                     }
@@ -174,7 +177,7 @@ public class ChessClient {
 
 
                 if (joinResult.message() != null) {
-                    return String.format("Error joining due to %s", joinResult.message());
+                    return "Error joining due to " + joinResult.message();
                 } else {
                     return "Game joined \n";
                 }

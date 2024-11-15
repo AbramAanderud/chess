@@ -23,7 +23,8 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            printPrompt();
+            System.out.print(RESET_TEXT_ITALIC);
+            printPromptUnsignedIn();
             String line = scanner.nextLine();
 
             try {
@@ -36,7 +37,11 @@ public class Repl {
                     if(result.contains("401")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println("Can't find user with that username/password");
-                    } else {
+
+                    } else if(result.contains("403")) {
+                            System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                            System.out.println("username taken");
+                    }else {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
                         System.out.println(result);
                         System.out.print(RESET_TEXT_COLOR);
@@ -60,25 +65,33 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.startsWith("Logged out")) {
-            printPrompt();
+            System.out.print(RESET_TEXT_ITALIC);
+            printPrompSignedIn();
             String line = scanner.nextLine();
 
             try {
                 result = client.evalSignedIn(line);
 
-                if (result.startsWith("Game joined") || result.startsWith("observing game")) {
+                if (result.startsWith("Game joined") || result.contains("Observing game")) {
+                    System.out.print(RESET_TEXT_COLOR);
+                    System.out.println(result);
                     runPlayGame();
-                } else if(result.contains("500")) {
-                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                    System.out.println("Doesn't exist");
-                } else if(result.contains("403")) {
-                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                    System.out.println("already taken");
                 } else {
-                    System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
-                    System.out.print(RESET_TEXT_COLOR + result);
+                    if(result.contains("500")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("Doesn't exist");
+                    } else if(result.contains("403")) {
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println("already taken");
+                    } else if (result.contains("Expected")){
+                        System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
+                        System.out.println(result);
+                        System.out.print(RESET_TEXT_COLOR);
+                    } else {
+                        System.out.print(RESET_TEXT_COLOR);
+                        System.out.println(result);
+                    }
                 }
-
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
                 System.out.print(e.getMessage());
@@ -90,10 +103,11 @@ public class Repl {
     public void runPlayGame() {
         ChessBoard board = new ChessBoard();
         board.resetBoard();
-
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.print(RESET_BG_COLOR);
+        System.out.print(RESET_TEXT_ITALIC);
         System.out.println(toStringBoardWhite(board));
         System.out.println(toStringBoardBlack(board));
-
     }
 
     private StringBuilder toStringBoardWhite(ChessBoard board) {
@@ -240,7 +254,11 @@ public class Repl {
         return "";
     }
 
-    private void printPrompt() {
-        System.out.print("\n" + SET_TEXT_COLOR_BLACK);
+    private void printPromptUnsignedIn() {
+        System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed out] >>> " + SET_TEXT_COLOR_BLACK);
+    }
+
+    private void printPrompSignedIn() {
+        System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
     }
 }

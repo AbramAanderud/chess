@@ -104,13 +104,33 @@ public class Repl {
     }
 
     public void runPlayGame() {
-        ChessBoard board = new ChessBoard();
+        System.out.print(client.help());
+
+        Scanner scanner = new Scanner(System.in);
+        var result = "";
+        while (!result.startsWith("resign")) {
+            System.out.print(RESET_TEXT_ITALIC);
+            printPrompSignedIn();
+            String line = scanner.nextLine();
+
+            try {
+                result = client.evalPlayGame(line);
+
+            } catch (Throwable e) {
+                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
+                System.out.print(e.getMessage());
+            }
+        }
+
+        runSignedIn();
+
+        /*ChessBoard board = new ChessBoard();
         board.resetBoard();
         System.out.print(RESET_TEXT_COLOR);
         System.out.print(RESET_BG_COLOR);
         System.out.print(RESET_TEXT_ITALIC);
         System.out.println(toStringBoard(board, true));
-        System.out.println(toStringBoard(board, false));
+        System.out.println(toStringBoard(board, false));*/
     }
 
     private StringBuilder toStringBoard(ChessBoard board, boolean isWhite) {

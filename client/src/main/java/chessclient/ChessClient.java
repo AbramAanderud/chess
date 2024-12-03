@@ -8,8 +8,7 @@ import serverfacade.ServerFacade;
 
 import java.util.Arrays;
 
-import static repl.State.SIGNEDIN;
-import static repl.State.SIGNEDOUT;
+import static repl.State.*;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -48,6 +47,24 @@ public class ChessClient {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "logout" -> logout(params);
+                default -> help();
+            };
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
+    }
+
+    public String evalPlayGame(String input) {
+        state = PLAYINGGAME;
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0]:"help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "redraw chess board" -> create(params);
+                case "leave" -> list();
+                case "make move" -> join(params);
+                case "resign" -> observe(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -147,7 +164,7 @@ public class ChessClient {
                                 .append(games.gameName()).append(" - white player: " + SET_TEXT_COLOR_WHITE + SET_TEXT_BOLD)
                                 .append(games.whiteUsername())
                                 .append(RESET_TEXT_COLOR + " - black player: " + SET_TEXT_COLOR_WHITE + SET_TEXT_BOLD)
-                                .append(games.blackUsername() + RESET_TEXT_COLOR);
+                                .append(games.blackUsername() + RESET_TEXT_COLOR + RESET_TEXT_BOLD_FAINT);
 
                         sb.append("\n");
                     }
@@ -222,7 +239,18 @@ public class ChessClient {
 
 
     public String help() {
-        if (state==State.SIGNEDOUT) {
+        if (state== State.PLAYINGGAME) {
+            System.out.print(RESET_TEXT_COLOR);
+            return """
+                    Options:
+                    redraw - the chessboard
+                    leave - the game
+                    make move <CHESS MOVE> - to make a move
+                    resign - to resign
+                    highlight legal moves <CHESS PIECE> - to show possible moves
+                    help - with possible commands
+                    """;
+        } if (state==State.SIGNEDOUT) {
             System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:
@@ -240,7 +268,6 @@ public class ChessClient {
                 join <ID> [WHITE|BLACK] - a game
                 observe <ID> - a game
                 logout - when you are done
-                quit - playing chess
                 help - with possible commands
                 """;
     }

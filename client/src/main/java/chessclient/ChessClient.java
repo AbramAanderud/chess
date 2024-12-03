@@ -62,7 +62,7 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "redraw chess board" -> create(params);
-                case "leave" -> list();
+                case "leave" -> leave(params);
                 case "make move" -> join(params);
                 case "resign" -> observe(params);
                 default -> help();
@@ -70,6 +70,16 @@ public class ChessClient {
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    
+
+    public String leave(String... params) throws ResponseException {
+        if (params.length==0) {
+            state = SIGNEDIN;
+            return "game left";
+        }
+        throw new ResponseException(400, "Bad request");
     }
 
     public String login(String... params) throws ResponseException {

@@ -108,7 +108,7 @@ public class Repl {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.startsWith("resign")) {
+        while (!result.startsWith("game left")) {
             System.out.print(RESET_TEXT_ITALIC);
             printPrompSignedIn();
             String line = scanner.nextLine();

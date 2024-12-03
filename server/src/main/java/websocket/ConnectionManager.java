@@ -11,20 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionManager {
     public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
-    public void add(String userName, Session session) {
-        var connection = new Connection(userName, session);
-        connections.put(userName, connection);
+    public void add(String username, Session session) {
+        var connection = new Connection(username, session);
+        connections.put(username, connection);
     }
 
-    public void remove(String visitorName) {
-        connections.remove(visitorName);
+    public void remove(String username) {
+        connections.remove(username);
     }
 
     public void broadcast(String excludeVisitorName, ServerMessage message) throws IOException, IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
-                if (!c.userName.equals(excludeVisitorName)) {
+                if (!c.username.equals(excludeVisitorName)) {
                     c.send(message.toString());
                 }
             } else {
@@ -32,9 +32,8 @@ public class ConnectionManager {
             }
         }
 
-        // Clean up any connections that were left open.
         for (var c : removeList) {
-            connections.remove(c.userName);
+            connections.remove(c.username);
         }
     }
 }

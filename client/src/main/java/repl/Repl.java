@@ -6,13 +6,13 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import chessclient.ChessClient;
 import websocket.messages.ServerMessage;
-import websocketfacade.ServerMessageHandler;
+import websocketfacade.ServerMessageObserver;
 
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Repl implements ServerMessageHandler {
+public class Repl implements ServerMessageObserver {
     private final ChessClient client;
 
     public Repl(String serverUrl) {

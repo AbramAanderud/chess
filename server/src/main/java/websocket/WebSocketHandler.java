@@ -5,6 +5,7 @@ import dataaccess.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -48,11 +49,11 @@ public class WebSocketHandler {
         }
     }
 
-    private void connect(Session session, ConnectCommand userGameCommand) {
-        connections.add(visitorName, session);
-        var message = String.format("%s is in the shop", visitorName);
-        var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(visitorName, notification);
+    private void connect(Session session, String username, ConnectCommand userGameCommand) {
+        connections.add(username, session);
+        var message = String.format("%s has been connected", username);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        connections.broadcast(username, message);
     }
 
 

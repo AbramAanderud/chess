@@ -5,7 +5,8 @@ import client.requests.*;
 import client.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
-import websocketfacade.ServerMessageHandler;
+import websocket.messages.ServerMessage;
+import websocketfacade.ServerMessageObserver;
 import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
@@ -13,18 +14,18 @@ import java.util.Arrays;
 import static repl.State.*;
 import static ui.EscapeSequences.*;
 
-public class ChessClient {
+public class ChessClient implements ServerMessageObserver{
     private final ServerFacade serverFacade;
     private State state = SIGNEDOUT;
     private String currAuthToken;
     private Integer currGameID;
     private final String serverURL;
     private WebSocketFacade ws;
-    private final ServerMessageHandler notificationHandler;
+    private final ServerMessageObserver serverMessageObserver;
 
-    public ChessClient(String serverURL, ServerMessageHandler notificationHandler) {
+    public ChessClient(String serverURL, ServerMessageObserver notificationHandler) {
         this.serverURL = serverURL;
-        this.notificationHandler = notificationHandler;
+        this.serverMessageObserver = notificationHandler;
         serverFacade = new ServerFacade(serverURL);
     }
 
@@ -83,7 +84,7 @@ public class ChessClient {
 
     public String resign(String... params) throws ResponseException {
         if (params.length==0) {
-            ws = new WebSocketFacade(serverURL, notificationHandler);
+            ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.resign(currAuthToken, currGameID);
             state = SIGNEDIN;
             return "game resigned";
@@ -93,7 +94,7 @@ public class ChessClient {
 
     public String leave(String... params) throws ResponseException {
         if (params.length==0) {
-            ws = new WebSocketFacade(serverURL, notificationHandler);
+            ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.leave(currAuthToken, currGameID);
             state = SIGNEDIN;
             return "game left";
@@ -304,5 +305,10 @@ public class ChessClient {
                 logout - when you are done
                 help - with possible commands
                 """;
+    }
+
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        System.out.println(serverMessage);
     }
 }

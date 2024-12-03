@@ -73,7 +73,7 @@ public class ChessClient implements ServerMessageObserver{
                 case "redraw chess board" -> create(params);
                 case "leave" -> leave(params);
                 case "make move" -> leave(params);
-                case "resign" -> observe(params);
+                case "resign" -> resign(params);
                 default -> help();
             };
         } catch (ResponseException ex) {

@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import websocket.commands.ConnectCommand;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -33,10 +36,20 @@ public class WebSocketHandler {
                 }
 
                 switch (userGameCommand.getCommandType()) {
-                    case CONNECT -> connect(session, username, (ConnectCommand) userGameCommand);
-                    case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) userGameCommand);
-                    case LEAVE -> leaveGame(session, username, (LeaveGameCommand) userGameCommand);
-                    case RESIGN -> resign(session, username, (ResignCommand) userGameCommand);
+                    case CONNECT -> {
+                        ConnectCommand connectCommand = new Gson().fromJson(message, ConnectCommand.class);
+                        connect(session, username, connectCommand);
+                    }
+                    case MAKE_MOVE -> {
+                        MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
+                        makeMove(username, makeMoveCommand);
+                    }
+                    case LEAVE -> {
+                        leaveGame(username, userGameCommand);
+                    }
+                    case RESIGN -> {
+                        resign(username, userGameCommand);
+                    }
                     default -> throw new IllegalArgumentException("Unsupported command type: " + userGameCommand.getCommandType());
                 }
             }
@@ -49,11 +62,42 @@ public class WebSocketHandler {
         }
     }
 
-    private void connect(Session session, String username, ConnectCommand userGameCommand) {
+    private void connect(Session session, String username, ConnectCommand userGameCommand) throws IOException {
         connections.add(username, session);
-        var message = String.format("%s has been connected", username);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        connections.broadcast(username, message);
+
+        String message;
+        if (!userGameCommand.isObserver()) {
+            message = username + " has been connected as the " + userGameCommand.getPlayerColor() + " player";
+        } else {
+            message = username + " has been connected as an observer";
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
+
+        connections.broadcast(username, notificationMessage);
+    }
+
+    private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {
+        String message = username + " has left the game";
+
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
+        connections.broadcast(username, notificationMessage);
+        connections.remove(username);
+    }
+
+    private void resign(String username, UserGameCommand userGameCommand) throws IOException {
+        String message = username + " has resigned from the game";
+
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
+        connections.broadcast(username, notificationMessage);
+        connections.remove(username);
+    }
+
+    private void makeMove(String username, MakeMoveCommand makeMoveCommand) throws IOException {
+        String message = username + " has made move " + makeMoveCommand.getMove();
+
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
+        connections.broadcast(username, notificationMessage);
     }
 
 

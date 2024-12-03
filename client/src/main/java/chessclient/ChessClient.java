@@ -5,6 +5,8 @@ import client.requests.*;
 import client.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
+import websocketfacade.ServerMessageHandler;
+import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
 
@@ -15,8 +17,14 @@ public class ChessClient {
     private final ServerFacade serverFacade;
     private State state = SIGNEDOUT;
     private String currAuthToken;
+    private Integer currGameID;
+    private final String serverURL;
+    private WebSocketFacade ws;
+    private final ServerMessageHandler notificationHandler;
 
-    public ChessClient(String serverURL) {
+    public ChessClient(String serverURL, ServerMessageHandler notificationHandler) {
+        this.serverURL = serverURL;
+        this.notificationHandler = notificationHandler;
         serverFacade = new ServerFacade(serverURL);
     }
 
@@ -63,7 +71,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "redraw chess board" -> create(params);
                 case "leave" -> leave(params);
-                case "make move" -> join(params);
+                case "make move" -> leave(params);
                 case "resign" -> observe(params);
                 default -> help();
             };
@@ -72,15 +80,30 @@ public class ChessClient {
         }
     }
 
-    
+
+    public String resign(String... params) throws ResponseException {
+        if (params.length==0) {
+            ws = new WebSocketFacade(serverURL, notificationHandler);
+            ws.resign(currAuthToken, currGameID);
+            state = SIGNEDIN;
+            return "game resigned";
+        }
+        throw new ResponseException(400, "Bad request");
+    }
 
     public String leave(String... params) throws ResponseException {
         if (params.length==0) {
+            ws = new WebSocketFacade(serverURL, notificationHandler);
+            ws.leave(currAuthToken, currGameID);
             state = SIGNEDIN;
             return "game left";
         }
         throw new ResponseException(400, "Bad request");
     }
+
+
+
+    //from here down are my http
 
     public String login(String... params) throws ResponseException {
         if (params.length==2) {
@@ -209,6 +232,7 @@ public class ChessClient {
                 if (joinResult.message()!=null) {
                     return "Error joining due to " + joinResult.message();
                 } else {
+                    currGameID = gameID;
                     return "Game joined \n";
                 }
             } catch (ResponseException e) {

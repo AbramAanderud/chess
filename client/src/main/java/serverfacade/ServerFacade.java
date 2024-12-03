@@ -21,6 +21,7 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {

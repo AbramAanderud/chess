@@ -5,16 +5,18 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chessclient.ChessClient;
+import websocket.messages.ServerMessage;
+import websocketfacade.ServerMessageHandler;
 
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements ServerMessageHandler {
     private final ChessClient client;
 
     public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+        client = new ChessClient(serverUrl, this);
     }
 
     public void runUnsignedIn() {
@@ -280,5 +282,10 @@ public class Repl {
 
     private void printPrompSignedIn() {
         System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
+    }
+
+    @Override
+    public void notify(ServerMessage message) {
+        System.out.println(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_RED + message.toString());
     }
 }

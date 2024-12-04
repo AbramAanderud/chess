@@ -1,7 +1,10 @@
 package websocket;
 
+import chess.ChessGame;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.*;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import websocket.commands.ConnectCommand;
@@ -13,6 +16,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
@@ -63,6 +67,25 @@ public class WebSocketHandler {
         }
     }
 
+    private void loadGame(int gameID) {
+        try(Connection connection = DatabaseManager.daoConnectors()) {
+            GameDAO gameDAO = new SQLGameDAO(connection);
+            GameData gameData = gameDAO.getGame(gameID);
+
+            if (gameData == null) {
+                throw new DataAccessException("Game not found for ID: " + gameID);
+            }
+
+            LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
+            connections.broadcast(null, loadGameMessage);
+
+        } catch (DataAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void connect(Session session, String username, ConnectCommand userGameCommand) throws IOException {
         connections.add(username, session);
 
@@ -76,8 +99,6 @@ public class WebSocketHandler {
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
         connections.broadcast(username, notificationMessage);
 
-        LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, getCurrentGameState(userGameCommand.getGameID()));
-        session.getRemote().sendString(new Gson().toJson(loadGameMessage));
     }
 
     private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {
@@ -97,10 +118,19 @@ public class WebSocketHandler {
     }
 
     private void makeMove(String username, MakeMoveCommand makeMoveCommand) throws IOException {
-        String message = username + " has made move " + makeMoveCommand.getMove();
+        try (Connection connection = DatabaseManager.daoConnectors()) {
+            SQLGameDAO gameDAO = new SQLGameDAO(connection);
+            GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
+            ChessGame currentGame = gameData.game();
 
-        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
-        connections.broadcast(username, notificationMessage);
+            currentGame.makeMove(makeMoveCommand.getMove());
+
+            gameDAO.updateGame(makeMoveCommand.getGameID(), currentGame);
+        } catch (DataAccessException | InvalidMoveException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        loadGame(makeMoveCommand.getGameID());
     }
 
 

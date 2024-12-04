@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import handlers.*;
 import spark.Spark;
+import websocket.WebSocketHandler;
 
 
 public class Server {
@@ -12,7 +13,7 @@ public class Server {
         try {
             DatabaseManager.initializeDB();
         } catch (DataAccessException e) {
-            System.err.println("couldnt make database" + e.getMessage());
+            System.err.println("couldn't make database" + e.getMessage());
         }
 
 
@@ -29,6 +30,7 @@ public class Server {
         //CreateGame
         //JoinGame
 
+        Spark.webSocket("/ws", WebSocketHandler.class);
 
         //for register
         Spark.post("/user", (request, response) ->

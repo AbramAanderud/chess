@@ -1,8 +1,11 @@
 package websocket;
 
 import com.google.gson.Gson;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import server.Server;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -21,18 +24,35 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void broadcast(String excludeUsername, ServerMessage message) throws IOException, IOException {
+    public void broadcast(String excludeUsername, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         Gson gson = new Gson();
-        String messageJson = gson.toJson(message);
 
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (!c.username.equals(excludeUsername)) {
-                    c.send(messageJson);
+                    try {
+                        String messageJson;
+
+                        if (message instanceof NotificationMessage notification) {
+                            messageJson = gson.toJson(notification.getMessage());
+                        } else if (message instanceof LoadGameMessage loadGame) {
+                            String role = getRole(c.username, loadGame.getGameData());
+                            String customLoadGameMessage = String.format(
+                                    "Game loaded for %s: %s",
+                                    role,
+                                    gson.toJson(loadGame.getGameData())
+                            );
+                            messageJson = gson.toJson(customLoadGameMessage);
+                        } else {
+                            messageJson = gson.toJson(message);
+                        }
+
+                        c.send(messageJson);
+                    } catch (IOException e) {
+                        removeList.add(c);
+                    }
                 }
-            } else {
-                removeList.add(c);
             }
         }
 
@@ -40,4 +60,18 @@ public class ConnectionManager {
             connections.remove(c.username);
         }
     }
+
+
+    private String getRole(String username, GameData gameData) {
+        if (username.equals(gameData.whiteUsername())) {
+            return "White Player";
+        } else if (username.equals(gameData.blackUsername())) {
+            return "Black Player";
+        } else {
+            return "Observer";
+        }
+    }
+
+
+
 }

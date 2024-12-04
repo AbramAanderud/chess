@@ -7,6 +7,8 @@ import dataaccess.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import server.Server;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
@@ -18,16 +20,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
+        System.out.println("Received message: " + message);
         try {
-            if (session==null || !session.isOpen()) {
-                throw new IOException("Session not opened");
-            }
-
             UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
             if (userGameCommand==null || userGameCommand.getAuthToken()==null) {
                 throw new IllegalArgumentException("Bad request");
@@ -96,6 +96,7 @@ public class WebSocketHandler {
 
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
         connections.broadcast(username, notificationMessage);
+
         loadGame(userGameCommand.getGameID());
     }
 
@@ -124,8 +125,11 @@ public class WebSocketHandler {
             currentGame.makeMove(makeMoveCommand.getMove());
 
             gameDAO.updateGame(makeMoveCommand.getGameID(), currentGame);
-        } catch (DataAccessException | InvalidMoveException | SQLException e) {
+        } catch (DataAccessException | SQLException e) {
             throw new RuntimeException(e);
+        } catch (InvalidMoveException e) {
+            ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            connections.broadcast(null, errorMessage);
         }
 
         loadGame(makeMoveCommand.getGameID());

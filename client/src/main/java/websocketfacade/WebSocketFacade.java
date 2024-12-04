@@ -20,7 +20,10 @@ public class WebSocketFacade extends Endpoint {
     public WebSocketFacade(String url, ServerMessageObserver serverMessageObserver) throws ResponseException {
         try {
             url = url.replace("http", "ws");
-            URI socketURI = new URI(url + "/ws");
+            URI socketURI = new URI(url + "ws");
+            System.out.println(socketURI);
+
+
             this.serverMessageObserver = serverMessageObserver;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -39,9 +42,10 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-
+        System.out.println("WebSocket started with session: " + session);
     }
 
     public void connect(String authToken, Integer gameID) throws ResponseException {
@@ -66,6 +70,7 @@ public class WebSocketFacade extends Endpoint {
         try {
             var userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+            this.session.close();
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }

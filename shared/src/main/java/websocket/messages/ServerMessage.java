@@ -38,6 +38,13 @@ public class ServerMessage {
     }
 
     @Override
+    public String toString() {
+        return "ServerMessage{" +
+                "serverMessageType=" + serverMessageType +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
     }

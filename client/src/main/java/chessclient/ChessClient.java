@@ -26,9 +26,9 @@ public class ChessClient implements ServerMessageObserver{
     private WebSocketFacade ws;
     private final ServerMessageObserver serverMessageObserver;
 
-    public ChessClient(String serverURL, ServerMessageObserver notificationHandler) {
+    public ChessClient(String serverURL, ServerMessageObserver serverMessageObserver) {
         this.serverURL = serverURL;
-        this.serverMessageObserver = notificationHandler;
+        this.serverMessageObserver = serverMessageObserver;
         serverFacade = new ServerFacade(serverURL);
     }
 
@@ -289,6 +289,10 @@ public class ChessClient implements ServerMessageObserver{
 
     public String getCurrTeamColor() {
         return currTeamColor;
+    }
+
+    public void setStatusSignedIn() {
+        state = SIGNEDIN;
     }
 
     public String observe(String... params) throws ResponseException {

@@ -123,14 +123,14 @@ public class Repl implements ServerMessageObserver {
 
             try {
                 result = client.evalPlayGame(line);
-
+                System.out.println(result);
 
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
                 System.out.print(e.getMessage());
             }
         }
-
+        client.setStatusSignedIn();
         runSignedIn();
 
         /*ChessBoard board = new ChessBoard();
@@ -291,8 +291,13 @@ public class Repl implements ServerMessageObserver {
         System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
     }
 
+    private void printPromptPlayingGame() {
+        System.out.print(SET_TEXT_COLOR_WHITE + "\n[in game] >>> " + SET_TEXT_COLOR_BLACK);
+    }
+
     @Override
     public void notify(ServerMessage message) {
-        System.out.println(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_RED + message.toString());
+        System.out.println(SET_TEXT_COLOR_RED + message.toString());
+        System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
     }
 }

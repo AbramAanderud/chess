@@ -20,6 +20,7 @@ public class ChessClient implements ServerMessageObserver{
     private final ServerFacade serverFacade;
     private State state = SIGNEDOUT;
     private String currAuthToken;
+    private String currTeamColor;
     private Integer currGameID;
     private final String serverURL;
     private WebSocketFacade ws;
@@ -71,7 +72,7 @@ public class ChessClient implements ServerMessageObserver{
             var cmd = (tokens.length > 0) ? tokens[0]:"help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "redraw chess board" -> create(params);
+                case "redraw chess board" -> drawBoard(params);
                 case "leave" -> leave(params);
                 case "make move" -> makeMove(params);
                 case "resign" -> resign(params);
@@ -118,6 +119,13 @@ public class ChessClient implements ServerMessageObserver{
             ws.resign(currAuthToken, currGameID);
             state = SIGNEDIN;
             return "game resigned";
+        }
+        throw new ResponseException(400, "Bad request");
+    }
+
+    public String drawBoard(String... params) throws ResponseException {
+        if (params.length==0) {
+            return "draw board";
         }
         throw new ResponseException(400, "Bad request");
     }
@@ -265,6 +273,11 @@ public class ChessClient implements ServerMessageObserver{
                 } else {
                     state = PLAYINGGAME;
                     currGameID = gameID;
+                    currTeamColor = teamColor;
+
+                    ws = new WebSocketFacade(serverURL, serverMessageObserver);
+                    ws.connect(currAuthToken, currGameID);
+
                     return "Game joined \n";
                 }
             } catch (ResponseException e) {
@@ -274,13 +287,30 @@ public class ChessClient implements ServerMessageObserver{
         throw new ResponseException(400, "join expects: <gameID> <[BLACK][WHITE]>");
     }
 
+    public String getCurrTeamColor() {
+        return currTeamColor;
+    }
+
     public String observe(String... params) throws ResponseException {
-        if (params.length==1) {
-            return "Observing game: " + params[0];
+        if (params.length == 1) {
+            String gameIDString = params[0];
+            int gameID;
+
+            try {
+                gameID = Integer.parseInt(gameIDString);
+            } catch (NumberFormatException e) {
+                return "observe expects: <gameID>";
+            }
+            currGameID = gameID;
+            state = PLAYINGGAME;
+
+            ws = new WebSocketFacade(serverURL, serverMessageObserver);
+            ws.connect(currAuthToken, currGameID);
+
+            return "Observing game: " + gameIDString;
         } else {
             throw new ResponseException(400, "Expected: <gameID>");
         }
-
     }
 
     public String logout(String... params) throws ResponseException {

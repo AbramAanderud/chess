@@ -7,6 +7,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import websocket.commands.ConnectCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -73,8 +74,10 @@ public class WebSocketHandler {
         }
 
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
-
         connections.broadcast(username, notificationMessage);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, getCurrentGameState(userGameCommand.getGameID()));
+        session.getRemote().sendString(new Gson().toJson(loadGameMessage));
     }
 
     private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {

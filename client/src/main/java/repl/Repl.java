@@ -8,6 +8,7 @@ import chessclient.ChessClient;
 import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -74,10 +75,15 @@ public class Repl implements ServerMessageObserver {
             try {
                 result = client.evalSignedIn(line);
 
-                if (result.startsWith("Game joined") || result.contains("Observing game")) {
+                if (result.startsWith("Game joined")) {
                     System.out.print(RESET_TEXT_COLOR);
                     System.out.println(result);
-                    runPlayGame();
+                    String teamColor = client.getCurrTeamColor();
+                    runPlayGame(true, teamColor);
+                } else if (result.contains("Observing game")) {
+                    System.out.print(RESET_TEXT_COLOR);
+                    System.out.println(result);
+                    runPlayGame(false, null);
                 } else {
                     if (result.contains("500")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
@@ -105,7 +111,7 @@ public class Repl implements ServerMessageObserver {
         runUnsignedIn();
     }
 
-    public void runPlayGame() {
+    public void runPlayGame(Boolean playing, String teamColor) {
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
@@ -117,6 +123,7 @@ public class Repl implements ServerMessageObserver {
 
             try {
                 result = client.evalPlayGame(line);
+
 
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);

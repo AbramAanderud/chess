@@ -1,5 +1,7 @@
 package chessclient;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import repl.State;
 import client.requests.*;
 import client.result.*;
@@ -64,7 +66,6 @@ public class ChessClient implements ServerMessageObserver{
     }
 
     public String evalPlayGame(String input) {
-        state = PLAYINGGAME;
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0]:"help";
@@ -72,7 +73,7 @@ public class ChessClient implements ServerMessageObserver{
             return switch (cmd) {
                 case "redraw chess board" -> create(params);
                 case "leave" -> leave(params);
-                case "make move" -> leave(params);
+                case "make move" -> makeMove(params);
                 case "resign" -> resign(params);
                 default -> help();
             };
@@ -81,6 +82,35 @@ public class ChessClient implements ServerMessageObserver{
         }
     }
 
+
+    public String makeMove(String... params) throws ResponseException {
+        if (params.length== 1) {
+            String move = params[0];
+
+            if (move.length() != 4) {
+                throw new IllegalArgumentException("Format should be like e2e4");
+            }
+
+            char startColChar = move.charAt(0);
+            char startRowChar = move.charAt(1);
+            char endColChar = move.charAt(2);
+            char endRowChar = move.charAt(3);
+
+            int startCol = startColChar - 'a';
+            int startRow = Character.getNumericValue(startRowChar) - 1;
+            int endCol = endColChar - 'a';
+            int endRow = Character.getNumericValue(endRowChar) - 1;
+
+            ChessPosition startPos = new ChessPosition(startRow, startCol);
+            ChessPosition endPos = new ChessPosition(endRow, endCol);
+            ChessMove moveToMake = new ChessMove(startPos, endPos, null);
+
+            ws = new WebSocketFacade(serverURL, serverMessageObserver);
+            ws.makeMove(currAuthToken, currGameID, moveToMake);
+            return "made move";
+        }
+        throw new ResponseException(400, "Bad request");
+    }
 
     public String resign(String... params) throws ResponseException {
         if (params.length==0) {
@@ -233,6 +263,7 @@ public class ChessClient implements ServerMessageObserver{
                 if (joinResult.message()!=null) {
                     return "Error joining due to " + joinResult.message();
                 } else {
+                    state = PLAYINGGAME;
                     currGameID = gameID;
                     return "Game joined \n";
                 }
@@ -280,7 +311,7 @@ public class ChessClient implements ServerMessageObserver{
                     Options:
                     redraw - the chessboard
                     leave - the game
-                    make move <CHESS MOVE> - to make a move
+                    make move start and end <col><row><col><row> - to make a move
                     resign - to resign
                     highlight legal moves <CHESS PIECE> - to show possible moves
                     help - with possible commands

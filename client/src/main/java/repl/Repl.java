@@ -110,7 +110,7 @@ public class Repl implements ServerMessageObserver {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.startsWith("game left")) {
+        while (!result.startsWith("game left") || !result.startsWith("game resigned")) {
             System.out.print(RESET_TEXT_ITALIC);
             printPrompSignedIn();
             String line = scanner.nextLine();

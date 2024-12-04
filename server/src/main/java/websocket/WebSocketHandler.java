@@ -47,7 +47,7 @@ public class WebSocketHandler {
                     }
                     case MAKE_MOVE -> {
                         MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
-                        makeMove(username, makeMoveCommand);
+                        makeMove(makeMoveCommand);
                     }
                     case LEAVE -> {
                         leaveGame(username, userGameCommand);
@@ -79,9 +79,7 @@ public class WebSocketHandler {
             LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
             connections.broadcast(null, loadGameMessage);
 
-        } catch (DataAccessException | SQLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (DataAccessException | SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -98,7 +96,7 @@ public class WebSocketHandler {
 
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
         connections.broadcast(username, notificationMessage);
-
+        loadGame(userGameCommand.getGameID());
     }
 
     private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {
@@ -117,7 +115,7 @@ public class WebSocketHandler {
         connections.remove(username);
     }
 
-    private void makeMove(String username, MakeMoveCommand makeMoveCommand) throws IOException {
+    private void makeMove(MakeMoveCommand makeMoveCommand) throws IOException {
         try (Connection connection = DatabaseManager.daoConnectors()) {
             SQLGameDAO gameDAO = new SQLGameDAO(connection);
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
@@ -132,8 +130,6 @@ public class WebSocketHandler {
 
         loadGame(makeMoveCommand.getGameID());
     }
-
-
 
 
 

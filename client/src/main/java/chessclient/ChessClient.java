@@ -41,6 +41,7 @@ public class ChessClient  {
     private WebSocketFacade ws;
     private final ServerMessageObserver serverMessageObserver;
     private Collection<ChessMove> legalMoves = new ArrayList<>();
+    String currMove;
 
 
     public ChessClient(String serverURL, ServerMessageObserver serverMessageObserver) {
@@ -148,6 +149,8 @@ public class ChessClient  {
             System.out.println("this is the startpos: " + startPos);
             System.out.println("this is the endpos: " + endPos);
             System.out.println("this is the movetomake: " + moveToMake);
+
+            currMove = move;
 
             this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);

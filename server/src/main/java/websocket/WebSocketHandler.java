@@ -74,7 +74,7 @@ public class WebSocketHandler {
                 throw new DataAccessException("Game not found for ID: " + gameID);
             }
 
-            LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
+            LoadGameMessage loadGameMessage = new LoadGameMessage(gameData);
 
             if (broadcast) {
                 connections.broadcast(null, loadGameMessage);
@@ -150,7 +150,7 @@ public class WebSocketHandler {
 
             loadGame(null, makeMoveCommand.getGameID(), true);
 
-            String moveDescription = username + " made a move: " + makeMoveCommand.getMove();
+            String moveDescription = username + " made move " + makeMoveCommand.getMove().toString();
             NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, moveDescription);
             connections.broadcast(null, notificationMessage);
 

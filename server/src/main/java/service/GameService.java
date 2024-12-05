@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class GameService {
     private final AuthDAO authDAO;
@@ -79,23 +80,22 @@ public class GameService {
         if (req.gameID()==null || !playerColor.equals("WHITE") && !playerColor.equals("BLACK")) {
             return new JoinResult("error: bad request");
         }
+        String username = authDAO.getUsernameByAuth(authToken);
 
         GameData gameData = gameDAO.getGame(req.gameID());
         System.out.println(gameData);
 
         if (playerColor.equals("WHITE")) {
             System.out.println("reached");
-            if (gameData.whiteUsername()!=null) {
+            if (gameData.whiteUsername()!=null && !Objects.equals(username, gameData.whiteUsername())) {
                 return new JoinResult("error: already taken");
             }
         }
         if (playerColor.equals("BLACK")) {
-            if (gameData.blackUsername()!=null) {
+            if (gameData.blackUsername()!=null && !Objects.equals(username, gameData.blackUsername())) {
                 return new JoinResult("error: already taken");
             }
         }
-
-        String username = authDAO.getUsernameByAuth(authToken);
 
         gameDAO.joinGameRequest(req.gameID(), username, playerColor);
 

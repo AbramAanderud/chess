@@ -136,11 +136,11 @@ public class Repl implements ServerMessageObserver {
                     ChessBoard gameBoard = gameData.game().getBoard();
 
                     if (Objects.equals(teamColor, "white")) {
-                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>()));
+                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                     } else if (Objects.equals(teamColor, "black")) {
-                        System.out.println(toStringBoard(gameBoard, false, new ArrayList<>()));
+                        System.out.println(toStringBoard(gameBoard, false, new ArrayList<>(), null));
                     } else if (Objects.equals(teamColor, "observer")) {
-                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>()));
+                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                     }
                 } else if (result.startsWith("Highlighted")) {
                     Gson gson = new Gson();
@@ -148,9 +148,11 @@ public class Repl implements ServerMessageObserver {
                     Collection<ChessMove> moves = client.getLegalMoves();
                     Collection<ChessPosition> endPositions = new ArrayList<>();
 
+                    ChessPosition startPos = null;
 
                     for (ChessMove move : moves) {
                         endPositions.add(move.getEndPosition());
+                        startPos = move.getStartPosition();
                     }
 
                     System.out.println("ends " + endPositions);
@@ -161,11 +163,11 @@ public class Repl implements ServerMessageObserver {
                     String teamColor = client.getUserColorOrObserver();
 
                     if (Objects.equals(teamColor, "white")) {
-                        System.out.println(toStringBoard(gameBoard, true, endPositions));
+                        System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
                     } else if (Objects.equals(teamColor, "black")) {
-                        System.out.println(toStringBoard(gameBoard, false, endPositions));
+                        System.out.println(toStringBoard(gameBoard, false, endPositions, startPos));
                     } else if (Objects.equals(teamColor, "observer")) {
-                        System.out.println(toStringBoard(gameBoard, true, endPositions));
+                        System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
                     }
                 } else {
                     System.out.print(RESET_TEXT_COLOR);
@@ -179,35 +181,35 @@ public class Repl implements ServerMessageObserver {
         runSignedIn();
     }
 
-    private StringBuilder toStringBoard(ChessBoard board, boolean isWhite, Collection<ChessPosition> positions) {
+    private StringBuilder toStringBoard(ChessBoard board, boolean isWhite, Collection<ChessPosition> positions, ChessPosition startPosition) {
         StringBuilder sb = new StringBuilder();
 
         if (isWhite) {
             printTopAlphaWHITE(sb);
             for (int i = 8; i >= 1; i--) {
-                pieceLoop(sb, board, i, true, positions);
+                pieceLoop(sb, board, i, true, positions, startPosition);
             }
             printBottAlphaWHITE(sb);
         } else {
             printTopAlphaBLACK(sb);
             for (int i = 1; i <= 8; i++) {
-                pieceLoop(sb, board, i, false, positions);
+                pieceLoop(sb, board, i, false, positions, startPosition);
             }
             printBottAlphaBlACK(sb);
         }
         return sb;
     }
 
-    private void pieceLoop(StringBuilder sb, ChessBoard board, int i, boolean isWhite, Collection<ChessPosition> positions) {
+    private void pieceLoop(StringBuilder sb, ChessBoard board, int i, boolean isWhite, Collection<ChessPosition> positions, ChessPosition startPosition) {
         sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
 
         if (isWhite) {
             for (int j = 1; j <= 8; j++) {
-                appendPiece(board, sb, i, j, positions);
+                appendPiece(board, sb, i, j, positions, startPosition);
             }
         } else {
             for (int j = 8; j >= 1; j--) {
-                appendPiece(board, sb, i, j, positions);
+                appendPiece(board, sb, i, j, positions, startPosition);
             }
         }
 
@@ -215,17 +217,21 @@ public class Repl implements ServerMessageObserver {
         sb.append(RESET_BG_COLOR).append(RESET_TEXT_COLOR).append("\n");
     }
 
-    private void appendPiece(ChessBoard board, StringBuilder sb, int i, int j, Collection<ChessPosition> positions) {
+    private void appendPiece(ChessBoard board, StringBuilder sb, int i, int j, Collection<ChessPosition> positions, ChessPosition startPosition) {
         ChessPosition pos = new ChessPosition(i, j);
+
+        if (startPosition != null && startPosition.equals(pos)) {
+            sb.append(SET_BG_COLOR_YELLOW);
+        }
         if ((i + j) % 2 == 0) {
             sb.append(SET_BG_COLOR_DARK_GREEN);
             if (positions.contains(pos)) {
-                sb.append(SET_BG_COLOR_MAGENTA);
+                sb.append(SET_BG_COLOR_MEDIUM_DARK_GREEN);
             }
         } else {
             sb.append(SET_BG_COLOR_LIGHT_GREY);
             if (positions.contains(pos)) {
-                sb.append(SET_BG_COLOR_BLUE);
+                sb.append(SET_BG_COLOR_LIGHTER_GREY);
             }
         }
 
@@ -352,13 +358,13 @@ public class Repl implements ServerMessageObserver {
             System.out.print(RESET_TEXT_ITALIC);
 
             if (Objects.equals(teamColor, "white")) {
-                System.out.println(toStringBoard(gameBoard, true, new ArrayList<>()));
+                System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                 System.out.print(turn + " to move");
             } else if (Objects.equals(teamColor, "black")) {
-                System.out.println(toStringBoard(gameBoard, false, new ArrayList<>()));
+                System.out.println(toStringBoard(gameBoard, false, new ArrayList<>(), null));
                 System.out.print(turn + " to move");
             } else if (Objects.equals(teamColor, "observer")) {
-                System.out.println(toStringBoard(gameBoard, true, new ArrayList<>()));
+                System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                 System.out.println("observing");
             }
         } else if (message instanceof NotificationMessage notificationMessage) {

@@ -80,13 +80,17 @@ public class ChessClient  {
     public String evalPlayGame(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0]:"help";
-            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            if (tokens.length == 0) {
+                return help();
+            }
+            String cmd = String.join(" ", Arrays.copyOfRange(tokens, 0, Math.min(2, tokens.length)));
+            var params = Arrays.copyOfRange(tokens, cmd.split(" ").length, tokens.length);
             return switch (cmd) {
                 case "redraw" -> drawBoard(params);
                 case "leave" -> leave(params);
                 case "make move" -> makeMove(params);
                 case "resign" -> resign(params);
+                case "highlight legal moves" -> highlightLegalMoves(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -123,6 +127,36 @@ public class ChessClient  {
         }
         throw new ResponseException(400, "Bad request");
     }
+
+    public String highlightLegalMoves(String... params) throws ResponseException {
+        if (params.length== 1) {
+            String move = params[0];
+
+            if (move.length() != 4) {
+                throw new IllegalArgumentException("Format should be like e2e4");
+            }
+
+            char startColChar = move.charAt(0);
+            char startRowChar = move.charAt(1);
+            char endColChar = move.charAt(2);
+            char endRowChar = move.charAt(3);
+
+            int startCol = startColChar - 'a';
+            int startRow = Character.getNumericValue(startRowChar) - 1;
+            int endCol = endColChar - 'a';
+            int endRow = Character.getNumericValue(endRowChar) - 1;
+
+            ChessPosition startPos = new ChessPosition(startRow, startCol);
+            ChessPosition endPos = new ChessPosition(endRow, endCol);
+            ChessMove moveToMake = new ChessMove(startPos, endPos, null);
+
+            this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
+            ws.makeMove(currAuthToken, currGameID, moveToMake);
+            return "made move";
+        }
+        throw new ResponseException(400, "Bad request");
+    }
+
 
     public String resign(String... params) throws ResponseException {
         if (params.length==0) {
@@ -363,9 +397,9 @@ public class ChessClient  {
                     Options:
                     redraw - the chessboard
                     leave - the game
-                    make move start and end <col><row><col><row> - to make a move
+                    make move <start<col><row>><end<col><row>> - to make a move
                     resign - to resign
-                    highlight legal moves <CHESS PIECE> - to show possible moves
+                    highlight legal moves <col><row> - to show possible moves
                     help - with possible commands
                     """;
         } if (state==State.SIGNEDOUT) {

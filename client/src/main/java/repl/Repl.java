@@ -336,6 +336,7 @@ public class Repl implements ServerMessageObserver {
         } else {
             System.out.println(SET_TEXT_COLOR_BLACK + message);
         }
+
         printPromptPlayingGame();
     }
 }

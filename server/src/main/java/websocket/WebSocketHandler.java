@@ -107,7 +107,7 @@ public class WebSocketHandler {
         String message = username + " has left the game";
 
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
-        connections.broadcast(null, notificationMessage);
+        connections.broadcast(username, notificationMessage);
         connections.remove(username);
     }
 

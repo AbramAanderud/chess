@@ -82,12 +82,25 @@ public class ChessClient  {
 
     public String evalPlayGame(String input) {
         try {
-            var tokens = input.toLowerCase().split(" ");
+            var tokens = input.toLowerCase().trim().split("\\s+");  // Trim and split by one or more spaces
             if (tokens.length == 0) {
                 return help();
             }
-            String cmd = String.join(" ", Arrays.copyOfRange(tokens, 0, Math.min(2, tokens.length)));
-            var params = Arrays.copyOfRange(tokens, cmd.split(" ").length, tokens.length);
+
+            String cmd;
+            String[] params;
+
+            if (input.toLowerCase().startsWith("make move")) {
+                cmd = "make move";
+                params = Arrays.copyOfRange(tokens, 2, tokens.length); // Skip "make move"
+            } else if (input.toLowerCase().startsWith("highlight legal moves")) {
+                cmd = "highlight legal moves";
+                params = Arrays.copyOfRange(tokens, 3, tokens.length); // Skip "highlight legal moves"
+            } else {
+                cmd = tokens[0];
+                params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            }
+
             return switch (cmd) {
                 case "redraw" -> drawBoard(params);
                 case "leave" -> leave(params);
@@ -100,6 +113,8 @@ public class ChessClient  {
             return ex.getMessage();
         }
     }
+
+
 
 
     public String makeMove(String... params) throws ResponseException {
@@ -119,10 +134,9 @@ public class ChessClient  {
             int startRow = Character.getNumericValue(startRowChar);
             int endCol = endColChar - 'a';
             int endRow = Character.getNumericValue(endRowChar);
-            if (Objects.equals(currTeamColor, "black")) {
-                startCol = 7 - startCol;
-                endCol = 7 - endCol;
-            }
+
+            startCol = startCol + 1;
+            endCol = endCol + 1;
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             ChessPosition endPos = new ChessPosition(endRow, endCol);
@@ -141,6 +155,7 @@ public class ChessClient  {
     public String highlightLegalMoves(String... params) throws ResponseException {
         if (params.length== 1) {
             String move = params[0];
+            System.out.println("highlight reached");
 
             if (move.length() != 2) {
                 throw new IllegalArgumentException("Format should be like e2");

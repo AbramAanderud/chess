@@ -120,7 +120,7 @@ public class Repl implements ServerMessageObserver {
         Scanner scanner = new Scanner(System.in);
         var result = "";
 
-        while (!result.contains("left") || !result.startsWith("game resigned")) {
+        while (!result.contains("left")) {
             System.out.print(RESET_TEXT_ITALIC);
             printPromptPlayingGame();
             String line = scanner.nextLine();
@@ -336,7 +336,6 @@ public class Repl implements ServerMessageObserver {
         } else {
             System.out.println(SET_TEXT_COLOR_BLACK + message);
         }
-
         printPromptPlayingGame();
     }
 }

@@ -46,5 +46,13 @@ public class ConnectionManager {
         }
     }
 
+    public void sendTo(String username, ServerMessage message) throws IOException {
+        var connection = connections.get(username);
+        if (connection != null && connection.session.isOpen()) {
+            String messageJson = new Gson().toJson(message);
+            connection.send(messageJson);
+        }
+    }
+
 
 }

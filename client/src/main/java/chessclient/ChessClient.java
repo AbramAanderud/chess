@@ -128,7 +128,6 @@ public class ChessClient  {
         if (params.length==0) {
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.resign(currAuthToken, currGameID);
-            state = SIGNEDIN;
             return "game resigned";
         }
         throw new ResponseException(400, "Bad request");

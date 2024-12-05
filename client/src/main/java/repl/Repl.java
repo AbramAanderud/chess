@@ -5,10 +5,13 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chessclient.ChessClient;
+import com.google.gson.Gson;
+import model.GameData;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 
-import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -76,14 +79,13 @@ public class Repl implements ServerMessageObserver {
                 result = client.evalSignedIn(line);
 
                 if (result.startsWith("Game joined")) {
-                    System.out.print(RESET_TEXT_COLOR);
-                    System.out.println(result);
-                    String teamColor = client.getCurrTeamColor();
-                    runPlayGame(true, teamColor);
+                    System.out.print(SET_TEXT_COLOR_WHITE);
+                    System.out.print(result + RESET_TEXT_COLOR);
+                    runPlayGame();
                 } else if (result.contains("Observing game")) {
                     System.out.print(RESET_TEXT_COLOR);
-                    System.out.println(result);
-                    runPlayGame(false, null);
+                    System.out.print(result);
+                    runPlayGame();
                 } else {
                     if (result.contains("500")) {
                         System.out.print(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC);
@@ -111,19 +113,20 @@ public class Repl implements ServerMessageObserver {
         runUnsignedIn();
     }
 
-    public void runPlayGame(Boolean playing, String teamColor) {
+    public void runPlayGame() {
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
+
         while (!result.startsWith("game left") || !result.startsWith("game resigned")) {
             System.out.print(RESET_TEXT_ITALIC);
-            printPrompSignedIn();
+            printPromptPlayingGame();
             String line = scanner.nextLine();
 
             try {
                 result = client.evalPlayGame(line);
-                System.out.println(result);
+                System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
 
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
@@ -132,14 +135,6 @@ public class Repl implements ServerMessageObserver {
         }
         client.setStatusSignedIn();
         runSignedIn();
-
-        /*ChessBoard board = new ChessBoard();
-        board.resetBoard();
-        System.out.print(RESET_TEXT_COLOR);
-        System.out.print(RESET_BG_COLOR);
-        System.out.print(RESET_TEXT_ITALIC);
-        System.out.println(toStringBoard(board, true));
-        System.out.println(toStringBoard(board, false));*/
     }
 
     private StringBuilder toStringBoard(ChessBoard board, boolean isWhite) {
@@ -295,9 +290,34 @@ public class Repl implements ServerMessageObserver {
         System.out.print(SET_TEXT_COLOR_WHITE + "\n[in game] >>> " + SET_TEXT_COLOR_BLACK);
     }
 
-    @Override
+
     public void notify(ServerMessage message) {
-        System.out.println(SET_TEXT_COLOR_RED + message.toString());
-        System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
+        System.out.println("We are in Notify called with message: " + message);
+
+        if (message instanceof LoadGameMessage loadGameMessage) {
+            GameData gameData = loadGameMessage.getGameData();
+            ChessBoard gameBoard = gameData.game().getBoard();
+            ChessGame.TeamColor turn = gameData.game().getTeamTurn();
+
+            System.out.print(RESET_TEXT_COLOR);
+            System.out.print(RESET_BG_COLOR);
+            System.out.print(RESET_TEXT_ITALIC);
+
+            if (turn==ChessGame.TeamColor.WHITE) {
+                System.out.println(toStringBoard(gameBoard, true));
+                System.out.println(turn.toString() + " to move");
+            } else if (turn==ChessGame.TeamColor.BLACK) {
+                System.out.println(toStringBoard(gameBoard, false));
+                System.out.println(turn.toString() + " to move");
+            } else {
+                System.out.println(toStringBoard(gameBoard, true));
+                System.out.println("observing");
+            }
+        } else if (message instanceof NotificationMessage notificationMessage) {
+            System.out.println(SET_TEXT_COLOR_BLUE + notificationMessage.getMessage());
+
+        } else {
+            System.out.println(SET_TEXT_COLOR_BLACK + message);
+        }
     }
 }

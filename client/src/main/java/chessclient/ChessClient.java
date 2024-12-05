@@ -16,7 +16,7 @@ import java.util.Arrays;
 import static repl.State.*;
 import static ui.EscapeSequences.*;
 
-public class ChessClient implements ServerMessageObserver{
+public class ChessClient  {
     private final ServerFacade serverFacade;
     private State state = SIGNEDOUT;
     private String currAuthToken;
@@ -106,7 +106,7 @@ public class ChessClient implements ServerMessageObserver{
             ChessPosition endPos = new ChessPosition(endRow, endCol);
             ChessMove moveToMake = new ChessMove(startPos, endPos, null);
 
-            ws = new WebSocketFacade(serverURL, serverMessageObserver);
+            this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);
             return "made move";
         }
@@ -125,7 +125,7 @@ public class ChessClient implements ServerMessageObserver{
 
     public String drawBoard(String... params) throws ResponseException {
         if (params.length==0) {
-            return "draw board";
+
         }
         throw new ResponseException(400, "Bad request");
     }
@@ -372,8 +372,4 @@ public class ChessClient implements ServerMessageObserver{
                 """;
     }
 
-    @Override
-    public void notify(ServerMessage serverMessage) {
-        System.out.println(serverMessage);
-    }
 }

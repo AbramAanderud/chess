@@ -26,7 +26,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
-        System.out.println("Received message: " + message);
+        System.out.println("\n Received message: " + message);
         try {
             UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
             if (userGameCommand==null || userGameCommand.getAuthToken()==null) {
@@ -59,10 +59,8 @@ public class WebSocketHandler {
                 }
             }
         } catch (DataAccessException e) {
-            e.printStackTrace();
             session.getRemote().sendString("Database error occurred");
         } catch (Exception e) {
-            e.printStackTrace();
             session.getRemote().sendString("An error occurred: " + e.getMessage());
         }
     }
@@ -94,10 +92,9 @@ public class WebSocketHandler {
             message = username + " has been connected as an observer";
         }
 
+        loadGame(userGameCommand.getGameID());
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
         connections.broadcast(username, notificationMessage);
-
-        loadGame(userGameCommand.getGameID());
     }
 
     private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {

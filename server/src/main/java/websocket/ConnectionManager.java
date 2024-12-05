@@ -32,22 +32,7 @@ public class ConnectionManager {
             if (c.session.isOpen()) {
                 if (!c.username.equals(excludeUsername)) {
                     try {
-                        String messageJson;
-
-                        if (message instanceof NotificationMessage notification) {
-                            messageJson = gson.toJson(notification.getMessage());
-                        } else if (message instanceof LoadGameMessage loadGame) {
-                            String role = getRole(c.username, loadGame.getGameData());
-                            String customLoadGameMessage = String.format(
-                                    "Game loaded for %s: %s",
-                                    role,
-                                    gson.toJson(loadGame.getGameData())
-                            );
-                            messageJson = gson.toJson(customLoadGameMessage);
-                        } else {
-                            messageJson = gson.toJson(message);
-                        }
-
+                        String messageJson = gson.toJson(message);
                         c.send(messageJson);
                     } catch (IOException e) {
                         removeList.add(c);
@@ -60,18 +45,6 @@ public class ConnectionManager {
             connections.remove(c.username);
         }
     }
-
-
-    private String getRole(String username, GameData gameData) {
-        if (username.equals(gameData.whiteUsername())) {
-            return "White Player";
-        } else if (username.equals(gameData.blackUsername())) {
-            return "Black Player";
-        } else {
-            return "Observer";
-        }
-    }
-
 
 
 }

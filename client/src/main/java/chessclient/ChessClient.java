@@ -23,6 +23,7 @@ import websocketfacade.WebSocketFacade;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -39,6 +40,8 @@ public class ChessClient  {
     private final String serverURL;
     private WebSocketFacade ws;
     private final ServerMessageObserver serverMessageObserver;
+    private Collection<ChessMove> legalMoves = new ArrayList<>();
+
 
     public ChessClient(String serverURL, ServerMessageObserver serverMessageObserver) {
         this.serverURL = serverURL;
@@ -82,7 +85,7 @@ public class ChessClient  {
 
     public String evalPlayGame(String input) {
         try {
-            var tokens = input.toLowerCase().trim().split("\\s+");  // Trim and split by one or more spaces
+            var tokens = input.toLowerCase().trim().split("\\s+");
             if (tokens.length == 0) {
                 return help();
             }
@@ -92,10 +95,10 @@ public class ChessClient  {
 
             if (input.toLowerCase().startsWith("make move")) {
                 cmd = "make move";
-                params = Arrays.copyOfRange(tokens, 2, tokens.length); // Skip "make move"
+                params = Arrays.copyOfRange(tokens, 2, tokens.length);
             } else if (input.toLowerCase().startsWith("highlight legal moves")) {
                 cmd = "highlight legal moves";
-                params = Arrays.copyOfRange(tokens, 3, tokens.length); // Skip "highlight legal moves"
+                params = Arrays.copyOfRange(tokens, 3, tokens.length);
             } else {
                 cmd = tokens[0];
                 params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -165,7 +168,8 @@ public class ChessClient  {
             char startRowChar = move.charAt(1);
 
             int startCol = startColChar - 'a';
-            int startRow = Character.getNumericValue(startRowChar) - 1;
+            int startRow = Character.getNumericValue(startRowChar);
+            startCol = startCol + 1;
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
 
@@ -181,14 +185,24 @@ public class ChessClient  {
                 ChessGame game = gameData.game();
 
                 Collection<ChessMove> validMoves = game.validMoves(startPos);
-                Gson gson = new Gson();
-                return gson.toJson(validMoves);
+
+                setLegalMoves(validMoves);
+
+                return "Highlighted";
 
             } catch (DataAccessException | SQLException e) {
                 throw new RuntimeException(e);
             }
         }
         throw new ResponseException(400, "Bad request");
+    }
+
+    public void setLegalMoves(Collection<ChessMove> moves) {
+        legalMoves = moves;
+    }
+
+    public Collection<ChessMove> getLegalMoves() {
+        return legalMoves;
     }
 
 

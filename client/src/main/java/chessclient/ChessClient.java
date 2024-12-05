@@ -1,5 +1,6 @@
 package chessclient;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static repl.State.*;
 import static ui.EscapeSequences.*;
@@ -120,7 +122,10 @@ public class ChessClient  {
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             ChessPosition endPos = new ChessPosition(endRow, endCol);
             ChessMove moveToMake = new ChessMove(startPos, endPos, null);
-
+            System.out.println("this is the startpos: " + startPos);
+            System.out.println("this is the endpos: " + endPos);
+            System.out.println("this is the movetomake: " + moveToMake);
+            
             this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);
             return "made move";
@@ -132,27 +137,36 @@ public class ChessClient  {
         if (params.length== 1) {
             String move = params[0];
 
-            if (move.length() != 4) {
-                throw new IllegalArgumentException("Format should be like e2e4");
+            if (move.length() != 2) {
+                throw new IllegalArgumentException("Format should be like e2");
             }
 
             char startColChar = move.charAt(0);
             char startRowChar = move.charAt(1);
-            char endColChar = move.charAt(2);
-            char endRowChar = move.charAt(3);
 
             int startCol = startColChar - 'a';
             int startRow = Character.getNumericValue(startRowChar) - 1;
-            int endCol = endColChar - 'a';
-            int endRow = Character.getNumericValue(endRowChar) - 1;
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
-            ChessPosition endPos = new ChessPosition(endRow, endCol);
-            ChessMove moveToMake = new ChessMove(startPos, endPos, null);
 
-            this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
-            ws.makeMove(currAuthToken, currGameID, moveToMake);
-            return "made move";
+            Integer gameID = currGameID;
+            try(Connection connection = DatabaseManager.daoConnectors()) {
+                GameDAO gameDAO = new SQLGameDAO(connection);
+                GameData gameData = gameDAO.getGame(gameID);
+
+                if (gameData==null) {
+                    throw new DataAccessException("Game not found for ID: " + gameID);
+                }
+
+                ChessGame game = gameData.game();
+
+                Collection<ChessMove> validMoves = game.validMoves(startPos);
+                Gson gson = new Gson();
+                return gson.toJson(validMoves);
+
+            } catch (DataAccessException | SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         throw new ResponseException(400, "Bad request");
     }
@@ -179,9 +193,7 @@ public class ChessClient  {
                 }
 
                 Gson gson = new Gson();
-
                 return gson.toJson(gameData);
-
             } catch (DataAccessException | SQLException e) {
                 throw new RuntimeException(e);
             }

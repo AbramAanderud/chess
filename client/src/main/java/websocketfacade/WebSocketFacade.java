@@ -1,6 +1,7 @@
 package websocketfacade;
 
 import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import serverfacade.ResponseException;
 import websocket.WebSocketHandler;

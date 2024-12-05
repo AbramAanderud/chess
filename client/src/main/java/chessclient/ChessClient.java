@@ -301,7 +301,7 @@ public class ChessClient  {
                     currTeamColor = teamColor;
 
                     ws = new WebSocketFacade(serverURL, serverMessageObserver);
-                    ws.connect(currAuthToken, currGameID);
+                    ws.connect(currAuthToken, currGameID, currTeamColor, false);
 
                     return "Game joined \n";
                 }
@@ -327,7 +327,7 @@ public class ChessClient  {
             currTeamColor = "observer";
 
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
-            ws.connect(currAuthToken, currGameID);
+            ws.connect(currAuthToken, currGameID, null, true);
 
             return "Observing game: " + gameIDString;
         } else {

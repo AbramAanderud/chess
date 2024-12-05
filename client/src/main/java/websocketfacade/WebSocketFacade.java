@@ -4,6 +4,8 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 import serverfacade.ResponseException;
 import websocket.WebSocketHandler;
+import websocket.commands.ConnectCommand;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -69,19 +71,20 @@ public class WebSocketFacade extends Endpoint {
         System.out.println("WebSocket connection established with session: " + session);
     }
 
-    public void connect(String authToken, Integer gameID) throws ResponseException {
+    public void connect(String authToken, Integer gameID, String playerColor, boolean isObserver) throws ResponseException {
         try {
-            var userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
-            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+            var connectCommand = new ConnectCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, isObserver, playerColor);
+            this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
     }
 
+
     public void makeMove(String authToken, Integer gameID, ChessMove move) throws ResponseException {
         try {
-            var userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
-            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+            var makeMoveCommand = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
+            this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveCommand));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }

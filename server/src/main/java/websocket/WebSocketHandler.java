@@ -100,7 +100,7 @@ public class WebSocketHandler {
         }
 
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, message);
-        connections.broadcast(null, notificationMessage);
+        connections.broadcast(username, notificationMessage);
     }
 
     private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {
@@ -175,8 +175,6 @@ public class WebSocketHandler {
         } catch (InvalidMoveException e) {
             System.out.println("invalid move");
         }
-
-        loadGame(null, makeMoveCommand.getGameID(), true);
     }
 
 

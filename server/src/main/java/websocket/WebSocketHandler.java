@@ -65,8 +65,8 @@ public class WebSocketHandler {
         }
     }
 
-    private void loadGame(String username, int gameID) {
-        try(Connection connection = DatabaseManager.daoConnectors()) {
+    private void loadGame(String username, int gameID, boolean broadcast) {
+        try (Connection connection = DatabaseManager.daoConnectors()) {
             GameDAO gameDAO = new SQLGameDAO(connection);
             GameData gameData = gameDAO.getGame(gameID);
 
@@ -75,7 +75,12 @@ public class WebSocketHandler {
             }
 
             LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData);
-            connections.broadcast(username, loadGameMessage);
+
+            if (broadcast) {
+                connections.broadcast(null, loadGameMessage);
+            } else {
+                connections.sendTo(username, loadGameMessage);
+            }
 
         } catch (DataAccessException | SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -86,7 +91,7 @@ public class WebSocketHandler {
         connections.add(username, session);
 
         String message;
-        loadGame(username, connectCommand.getGameID());
+        loadGame(username, connectCommand.getGameID(), true);
 
         if (!connectCommand.isObserver()) {
             message = username + " has been connected as the " + connectCommand.getPlayerColor() + " player";
@@ -143,7 +148,7 @@ public class WebSocketHandler {
             currentGame.makeMove(makeMoveCommand.getMove());
             gameDAO.updateGame(makeMoveCommand.getGameID(), currentGame);
 
-            loadGame(null, makeMoveCommand.getGameID());
+            loadGame(null, makeMoveCommand.getGameID(), true);
 
             String moveDescription = username + " made a move: " + makeMoveCommand.getMove();
             NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username, moveDescription);
@@ -171,7 +176,7 @@ public class WebSocketHandler {
             System.out.println("invalid move");
         }
 
-        loadGame(null, makeMoveCommand.getGameID());
+        loadGame(null, makeMoveCommand.getGameID(), true);
     }
 
 

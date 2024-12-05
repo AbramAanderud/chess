@@ -3,6 +3,7 @@ package websocketfacade;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import serverfacade.ResponseException;
+import websocket.WebSocketHandler;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;

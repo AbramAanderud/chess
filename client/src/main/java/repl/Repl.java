@@ -12,6 +12,7 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -119,21 +120,36 @@ public class Repl implements ServerMessageObserver {
         Scanner scanner = new Scanner(System.in);
         var result = "";
 
-        while (!result.startsWith("game left") || !result.startsWith("game resigned")) {
+        while (!result.contains("left") || !result.startsWith("game resigned")) {
             System.out.print(RESET_TEXT_ITALIC);
             printPromptPlayingGame();
             String line = scanner.nextLine();
 
             try {
                 result = client.evalPlayGame(line);
-                System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
+
+                if (result.contains("squares")) {
+                    String teamColor = client.getUserColorOrObserver();
+                    Gson gson = new Gson();
+                    GameData gameData = gson.fromJson(result, GameData.class);
+                    ChessBoard gameBoard = gameData.game().getBoard();
+
+                    if (Objects.equals(teamColor, "white")) {
+                        System.out.println(toStringBoard(gameBoard, true));
+                    } else if (Objects.equals(teamColor, "black")) {
+                        System.out.println(toStringBoard(gameBoard, false));
+                    } else if (Objects.equals(teamColor, "observer")) {
+                        System.out.println(toStringBoard(gameBoard, true));
+                    }
+                } else {
+                    System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
+                }
 
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
                 System.out.print(e.getMessage());
             }
         }
-        client.setStatusSignedIn();
         runSignedIn();
     }
 
@@ -298,18 +314,19 @@ public class Repl implements ServerMessageObserver {
             GameData gameData = loadGameMessage.getGameData();
             ChessBoard gameBoard = gameData.game().getBoard();
             ChessGame.TeamColor turn = gameData.game().getTeamTurn();
+            String teamColor = client.getUserColorOrObserver();
 
             System.out.print(RESET_TEXT_COLOR);
             System.out.print(RESET_BG_COLOR);
             System.out.print(RESET_TEXT_ITALIC);
 
-            if (turn==ChessGame.TeamColor.WHITE) {
+            if (Objects.equals(teamColor, "white")) {
                 System.out.println(toStringBoard(gameBoard, true));
                 System.out.println(turn + " to move");
-            } else if (turn==ChessGame.TeamColor.BLACK) {
+            } else if (Objects.equals(teamColor, "black")) {
                 System.out.println(toStringBoard(gameBoard, false));
                 System.out.println(turn + " to move");
-            } else {
+            } else if (Objects.equals(teamColor, "observer")) {
                 System.out.println(toStringBoard(gameBoard, true));
                 System.out.println("observing");
             }

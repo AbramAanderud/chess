@@ -2,15 +2,26 @@ package chessclient;
 
 import chess.ChessMove;
 import chess.ChessPosition;
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import dataaccess.GameDAO;
+import dataaccess.SQLGameDAO;
+import model.GameData;
 import repl.State;
 import client.requests.*;
 import client.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
+import websocket.messages.LoadGameMessage;
+import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 import websocketfacade.WebSocketFacade;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import static repl.State.*;
@@ -72,7 +83,7 @@ public class ChessClient  {
             var cmd = (tokens.length > 0) ? tokens[0]:"help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "redraw chess board" -> drawBoard(params);
+                case "redraw" -> drawBoard(params);
                 case "leave" -> leave(params);
                 case "make move" -> makeMove(params);
                 case "resign" -> resign(params);
@@ -125,7 +136,22 @@ public class ChessClient  {
 
     public String drawBoard(String... params) throws ResponseException {
         if (params.length==0) {
+            Integer gameID = currGameID;
+            try(Connection connection = DatabaseManager.daoConnectors()) {
+                GameDAO gameDAO = new SQLGameDAO(connection);
+                GameData gameData = gameDAO.getGame(gameID);
 
+                if (gameData == null) {
+                    throw new DataAccessException("Game not found for ID: " + gameID);
+                }
+
+                Gson gson = new Gson();
+
+                return gson.toJson(gameData);
+
+            } catch (DataAccessException | SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         throw new ResponseException(400, "Bad request");
     }
@@ -287,14 +313,6 @@ public class ChessClient  {
         throw new ResponseException(400, "join expects: <gameID> <[BLACK][WHITE]>");
     }
 
-    public String getCurrTeamColor() {
-        return currTeamColor;
-    }
-
-    public void setStatusSignedIn() {
-        state = SIGNEDIN;
-    }
-
     public String observe(String... params) throws ResponseException {
         if (params.length == 1) {
             String gameIDString = params[0];
@@ -307,6 +325,7 @@ public class ChessClient  {
             }
             currGameID = gameID;
             state = PLAYINGGAME;
+            currTeamColor = "observer";
 
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.connect(currAuthToken, currGameID);
@@ -370,6 +389,10 @@ public class ChessClient  {
                 logout - when you are done
                 help - with possible commands
                 """;
+    }
+
+    public String getUserColorOrObserver() {
+        return currTeamColor;
     }
 
 }

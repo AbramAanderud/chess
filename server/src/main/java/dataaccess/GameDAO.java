@@ -17,4 +17,6 @@ public interface GameDAO {
     void updateGame(int gameID, ChessGame updateGame) throws DataAccessException;
 
     void joinGameRequest(Integer gameID, String username, String color) throws DataAccessException;
+
+    public void playerLeft(int gameID, String username) throws DataAccessException;
 }

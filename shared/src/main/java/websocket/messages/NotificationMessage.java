@@ -4,8 +4,8 @@ public class NotificationMessage extends ServerMessage {
     private final String message;
     private final String username;
 
-    public NotificationMessage(ServerMessageType type, String username, String message) {
-        super(type);
+    public NotificationMessage(String username, String message) {
+        super(ServerMessageType.NOTIFICATION);
         this.username = username;
         this.message = message;
     }

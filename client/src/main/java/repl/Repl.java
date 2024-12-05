@@ -220,7 +220,7 @@ public class Repl implements ServerMessageObserver {
     private void appendPiece(ChessBoard board, StringBuilder sb, int i, int j, Collection<ChessPosition> positions, ChessPosition startPosition) {
         ChessPosition pos = new ChessPosition(i, j);
 
-        if (startPosition != null && startPosition.equals(pos)) {
+        if (startPosition.equals(pos)) {
             sb.append(SET_BG_COLOR_YELLOW);
         }
         if ((i + j) % 2 == 0) {

@@ -76,5 +76,7 @@ public class MemoryGameDAO implements GameDAO {
     public void updateGame(int gameID, ChessGame updatedGame) throws DataAccessException {
     }
 
+    public void playerLeft(int gameID, String username) throws DataAccessException {}
+
 
 }

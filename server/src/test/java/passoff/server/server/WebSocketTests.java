@@ -65,7 +65,7 @@ public class WebSocketTests {
     @Order(1)
     @DisplayName("Normal Connect")
     public void connectGood() {
-d        setupNormalGame();
+        setupNormalGame();
     }
 
     @Test

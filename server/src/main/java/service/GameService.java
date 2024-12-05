@@ -87,15 +87,16 @@ public class GameService {
 
         if (playerColor.equals("WHITE")) {
             System.out.println("reached");
-            if (gameData.whiteUsername()!=null && !Objects.equals(username, gameData.whiteUsername())) {
+            if (gameData.whiteUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }
         if (playerColor.equals("BLACK")) {
-            if (gameData.blackUsername()!=null && !Objects.equals(username, gameData.blackUsername())) {
+            if (gameData.blackUsername()!=null) {
                 return new JoinResult("error: already taken");
             }
         }
+
 
         gameDAO.joinGameRequest(req.gameID(), username, playerColor);
 

@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 import static repl.State.*;
 import static ui.EscapeSequences.*;
@@ -115,20 +116,24 @@ public class ChessClient  {
             char endRowChar = move.charAt(3);
 
             int startCol = startColChar - 'a';
-            int startRow = Character.getNumericValue(startRowChar) - 1;
+            int startRow = Character.getNumericValue(startRowChar);
             int endCol = endColChar - 'a';
-            int endRow = Character.getNumericValue(endRowChar) - 1;
+            int endRow = Character.getNumericValue(endRowChar);
+            if (Objects.equals(currTeamColor, "black")) {
+                startCol = 7 - startCol;
+                endCol = 7 - endCol;
+            }
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             ChessPosition endPos = new ChessPosition(endRow, endCol);
             ChessMove moveToMake = new ChessMove(startPos, endPos, null);
+
             System.out.println("this is the startpos: " + startPos);
             System.out.println("this is the endpos: " + endPos);
             System.out.println("this is the movetomake: " + moveToMake);
-            
+
             this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);
-            return "made move";
         }
         throw new ResponseException(400, "Bad request");
     }

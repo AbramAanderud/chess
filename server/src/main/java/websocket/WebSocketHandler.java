@@ -173,7 +173,7 @@ public class WebSocketHandler {
         } catch (DataAccessException | SQLException e) {
             throw new RuntimeException(e);
         } catch (InvalidMoveException e) {
-            System.out.println("invalid move");
+            System.out.println(e.getMessage());
         }
     }
 

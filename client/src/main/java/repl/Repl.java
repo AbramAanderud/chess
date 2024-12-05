@@ -305,10 +305,10 @@ public class Repl implements ServerMessageObserver {
 
             if (turn==ChessGame.TeamColor.WHITE) {
                 System.out.println(toStringBoard(gameBoard, true));
-                System.out.println(turn.toString() + " to move");
+                System.out.println(turn + " to move");
             } else if (turn==ChessGame.TeamColor.BLACK) {
                 System.out.println(toStringBoard(gameBoard, false));
-                System.out.println(turn.toString() + " to move");
+                System.out.println(turn + " to move");
             } else {
                 System.out.println(toStringBoard(gameBoard, true));
                 System.out.println("observing");
@@ -319,5 +319,7 @@ public class Repl implements ServerMessageObserver {
         } else {
             System.out.println(SET_TEXT_COLOR_BLACK + message);
         }
+
+        printPromptPlayingGame();
     }
 }

@@ -7,7 +7,7 @@ import client.requests.*;
 import client.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
-import websocket.messages.ServerMessage;
+
 import websocketfacade.ServerMessageObserver;
 import websocketfacade.WebSocketFacade;
 

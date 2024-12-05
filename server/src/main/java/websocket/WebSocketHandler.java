@@ -86,6 +86,7 @@ public class WebSocketHandler {
         connections.add(username, session);
 
         String message;
+        
         if (!userGameCommand.isObserver()) {
             message = username + " has been connected as the " + userGameCommand.getPlayerColor() + " player";
         } else {

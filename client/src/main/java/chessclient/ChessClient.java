@@ -6,10 +6,7 @@ import chess.ChessPosition;
 import client.requests.*;
 import client.result.*;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
-import dataaccess.GameDAO;
-import dataaccess.SQLGameDAO;
+
 import model.GameData;
 import repl.State;
 import serverfacade.ResponseException;
@@ -32,6 +29,7 @@ public class ChessClient {
     private final String serverURL;
     private final ServerMessageObserver serverMessageObserver;
     String currMove;
+    private GameData currentGameData;
     private State state = SIGNEDOUT;
     private String currAuthToken;
     private String currTeamColor;
@@ -168,28 +166,19 @@ public class ChessClient {
             startCol = startCol + 1;
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
+            currentGameData = getCurrentGameData();
 
-            Integer gameID = currGameID;
-            try (Connection connection = DatabaseManager.daoConnectors()) {
-                GameDAO gameDAO = new SQLGameDAO(connection);
-                GameData gameData = gameDAO.getGame(gameID);
-
-                if (gameData==null) {
-                    throw new DataAccessException("Game not found for ID: " + gameID);
-                }
-
-                ChessGame game = gameData.game();
-
-                Collection<ChessMove> validMoves = game.validMoves(startPos);
-
-                setLegalMoves(validMoves);
-
-                return "Highlighted";
-
-            } catch (DataAccessException | SQLException e) {
-                throw new RuntimeException(e);
+            if (currentGameData == null) {
+                throw new ResponseException(400, "No game data available");
             }
+
+            ChessGame game = currentGameData.game();
+            Collection<ChessMove> validMoves = game.validMoves(startPos);
+
+            setLegalMoves(validMoves);
+            return "Highlighted";
         }
+
         throw new ResponseException(400, "Bad request");
     }
 
@@ -212,20 +201,9 @@ public class ChessClient {
 
     public String drawBoard(String... params) throws ResponseException {
         if (params.length==0) {
-            Integer gameID = currGameID;
-            try (Connection connection = DatabaseManager.daoConnectors()) {
-                GameDAO gameDAO = new SQLGameDAO(connection);
-                GameData gameData = gameDAO.getGame(gameID);
-
-                if (gameData==null) {
-                    throw new DataAccessException("Game not found for ID: " + gameID);
-                }
-
-                Gson gson = new Gson();
-                return gson.toJson(gameData);
-            } catch (DataAccessException | SQLException e) {
-                throw new RuntimeException(e);
-            }
+            currentGameData = getCurrentGameData();
+            Gson gson = new Gson();
+            return gson.toJson(currentGameData);
         }
         throw new ResponseException(400, "Bad request");
     }
@@ -467,6 +445,14 @@ public class ChessClient {
 
     public String getUserColorOrObserver() {
         return currTeamColor;
+    }
+
+    public GameData getCurrentGameData() {
+        return currentGameData;
+    }
+
+    public void setCurrentGameData(GameData gameData) {
+        this.currentGameData = gameData;
     }
 
 }

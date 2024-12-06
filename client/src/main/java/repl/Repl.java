@@ -345,6 +345,7 @@ public class Repl implements ServerMessageObserver {
     public void notify(ServerMessage message) {
         if (message instanceof LoadGameMessage loadGameMessage) {
             GameData gameData = loadGameMessage.getGameData();
+            client.setCurrentGameData(gameData);
             ChessBoard gameBoard = gameData.game().getBoard();
             ChessGame.TeamColor turn = gameData.game().getTeamTurn();
             String teamColor = client.getUserColorOrObserver();

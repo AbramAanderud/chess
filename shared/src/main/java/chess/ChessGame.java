@@ -96,7 +96,9 @@ public class ChessGame {
                     && currChessPiece.getTeamColor()==teamColor) {
                 ChessPosition newKingPosition = move.getEndPosition();
                 if (!newKingPositionThreat(newKingPosition, teamColor)) {
-                    validMoves.add(move);
+                    if (!isInCheckWithBoard(teamColor, boardCopy)) {
+                        validMoves.add(move);
+                    }
                 }
             } else if (!isInCheckWithBoard(teamColor, boardCopy)) {
                 validMoves.add(move);
@@ -165,19 +167,23 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
 
-        if (piece == null || piece.getTeamColor() != this.getTeamTurn()) {
-            throw new InvalidMoveException("Wrong team's piece to be moved");
+        if (piece==null) {
+            throw new InvalidMoveException("No piece in that spot");
+        }
+
+        if (piece.getTeamColor()!=this.getTeamTurn()) {
+            throw new InvalidMoveException("Piece Doesn't exist or isn't yours to move");
         }
 
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
 
-        if (validMoves == null || !validMoves.contains(move)) {
+        if (validMoves==null || !validMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move: not in valid moves");
         }
 
         try {
             ChessBoard boardCopy = board.copyBoard();
-            if (move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (move.getPromotionPiece()!=null && piece.getPieceType()==ChessPiece.PieceType.PAWN) {
                 boardCopy.makePromoMoveOnBoard(move);
             } else {
                 boardCopy.makeMoveOnBoard(move);
@@ -190,7 +196,7 @@ public class ChessGame {
         }
 
         // Make the move on the actual board
-        if (move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+        if (move.getPromotionPiece()!=null && piece.getPieceType()==ChessPiece.PieceType.PAWN) {
             board.makePromoMoveOnBoard(move);
         } else {
             board.makeMoveOnBoard(move);
@@ -201,7 +207,7 @@ public class ChessGame {
         }
 
         // Update the turn
-        if (turn == TeamColor.WHITE) {
+        if (turn==TeamColor.WHITE) {
             setTeamTurn(TeamColor.BLACK);
         } else {
             setTeamTurn(TeamColor.WHITE);

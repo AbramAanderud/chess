@@ -4,6 +4,7 @@ import chess.*;
 import chessclient.ChessClient;
 import com.google.gson.Gson;
 import model.GameData;
+import serverfacade.ResponseException;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -129,59 +130,90 @@ public class Repl implements ServerMessageObserver {
                 result = client.evalPlayGame(line);
 
                 if (result.contains("squares")) {
-                    String teamColor = client.getUserColorOrObserver();
-                    Gson gson = new Gson();
-                    GameData gameData = gson.fromJson(result, GameData.class);
-                    ChessBoard gameBoard = gameData.game().getBoard();
-
-                    if (Objects.equals(teamColor, "white")) {
-                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
-                    } else if (Objects.equals(teamColor, "black")) {
-                        System.out.println(toStringBoard(gameBoard, false, new ArrayList<>(), null));
-                    } else if (Objects.equals(teamColor, "observer")) {
-                        System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
-                    }
-                    printPromptPlayingGame();
+                    displayBoard(result);
                 } else if (result.startsWith("Highlighted")) {
-                    Gson gson = new Gson();
-
-                    Collection<ChessMove> moves = client.getLegalMoves();
-                    Collection<ChessPosition> endPositions = new ArrayList<>();
-
-                    ChessPosition startPos = null;
-
-                    for (ChessMove move : moves) {
-                        endPositions.add(move.getEndPosition());
-                        startPos = move.getStartPosition();
-                    }
-
-                    String gameStateJson = client.drawBoard();
-                    GameData gameData = gson.fromJson(gameStateJson, GameData.class);
-                    ChessBoard gameBoard = gameData.game().getBoard();
-                    String teamColor = client.getUserColorOrObserver();
-
-                    if (Objects.equals(teamColor, "white")) {
-                        System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
-                    } else if (Objects.equals(teamColor, "black")) {
-                        System.out.println(toStringBoard(gameBoard, false, endPositions, startPos));
-                    } else if (Objects.equals(teamColor, "observer")) {
-                        System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
-                    }
-                    printPromptPlayingGame();
+                    highlightLegalMoves();
                 } else if (result.contains("Options")) {
-                    System.out.println(result);
-                    printPromptPlayingGame();
-                } else if (result.contains("Format")) {
-                    System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + result + RESET_TEXT_ITALIC + RESET_TEXT_COLOR);
-                    printPromptPlayingGame();
+                    displayOptions(result);
+                } else if (result.contains("Format") || (result.contains("Between") && result.contains("must be"))) {
+                    displayError(result);
+                } else if (result.startsWith("No valid moves available")) {
+                    displayNoValidMoves(result);
                 }
             } catch (Throwable e) {
-                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_RED + "Error: ");
-                System.out.println(e.getMessage());
+                displayException(e);
             }
         }
         runSignedIn();
     }
+
+    private void displayBoard(String result) {
+        Gson gson = new Gson();
+        GameData gameData = gson.fromJson(result, GameData.class);
+        ChessBoard gameBoard = gameData.game().getBoard();
+        String teamColor = client.getUserColorOrObserver();
+
+        if (Objects.equals(teamColor, "white")) {
+            System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
+        } else if (Objects.equals(teamColor, "black")) {
+            System.out.println(toStringBoard(gameBoard, false, new ArrayList<>(), null));
+        } else if (Objects.equals(teamColor, "observer")) {
+            System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
+        }
+        printPromptPlayingGame();
+    }
+
+    private void highlightLegalMoves() throws ResponseException {
+        Gson gson = new Gson();
+        Collection<ChessMove> moves = client.getLegalMoves();
+
+        if (moves.isEmpty()) {
+            System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_RED + "No valid moves for that piece");
+        } else {
+            Collection<ChessPosition> endPositions = new ArrayList<>();
+            ChessPosition startPos = null;
+
+            for (ChessMove move : moves) {
+                endPositions.add(move.getEndPosition());
+                startPos = move.getStartPosition();
+            }
+
+            String gameStateJson = client.drawBoard();
+            GameData gameData = gson.fromJson(gameStateJson, GameData.class);
+            ChessBoard gameBoard = gameData.game().getBoard();
+            String teamColor = client.getUserColorOrObserver();
+
+            if (Objects.equals(teamColor, "white")) {
+                System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
+            } else if (Objects.equals(teamColor, "black")) {
+                System.out.println(toStringBoard(gameBoard, false, endPositions, startPos));
+            } else if (Objects.equals(teamColor, "observer")) {
+                System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
+            }
+            printPromptPlayingGame();
+        }
+    }
+
+    private void displayOptions(String result) {
+        System.out.println(result);
+        printPromptPlayingGame();
+    }
+
+    private void displayError(String result) {
+        System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + result + RESET_TEXT_ITALIC + RESET_TEXT_COLOR);
+        printPromptPlayingGame();
+    }
+
+    private void displayNoValidMoves(String result) {
+        System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + result + RESET_TEXT_ITALIC + RESET_TEXT_COLOR);
+        printPromptPlayingGame();
+    }
+
+    private void displayException(Throwable e) {
+        System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
+        System.out.print(e.getMessage());
+    }
+
 
     private StringBuilder toStringBoard(ChessBoard board, boolean isWhite, Collection<ChessPosition> positions, ChessPosition startPosition) {
         StringBuilder sb = new StringBuilder();
@@ -377,6 +409,7 @@ public class Repl implements ServerMessageObserver {
         } else if (message instanceof ErrorMessage errorMessage) {
             System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + errorMessage.getMessage());
             System.out.print(RESET_TEXT_ITALIC);
+            printPromptPlayingGame();
         }
     }
 }

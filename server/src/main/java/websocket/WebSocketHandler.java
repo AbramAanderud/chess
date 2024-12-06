@@ -119,7 +119,7 @@ public class WebSocketHandler {
         String message;
 
         if (leaveCommand.isObserver()) {
-            message = username + " (observer) has left the game";
+            message = username + " has stopped observing the game";
         } else {
             message = username + " has left the game";
         }
@@ -178,7 +178,7 @@ public class WebSocketHandler {
             SQLGameDAO gameDAO = new SQLGameDAO(connection);
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
 
-            if (gameData == null) {
+            if (gameData==null) {
                 throw new DataAccessException("Game not found for ID: " + makeMoveCommand.getGameID());
             }
 
@@ -198,7 +198,7 @@ public class WebSocketHandler {
             } else if (Objects.equals(gameData.blackUsername(), username)) {
                 playerColor = "BLACK";
             } else {
-                ErrorMessage errorMessage = new ErrorMessage("You are not a player in this game");
+                ErrorMessage errorMessage = new ErrorMessage("As observer you cannot make moves");
                 connections.sendTo(username, errorMessage);
                 return;
             }
@@ -212,7 +212,7 @@ public class WebSocketHandler {
             try {
                 currentGame.makeMove(makeMoveCommand.getMove());
             } catch (InvalidMoveException e) {
-                ErrorMessage errorMessage = new ErrorMessage("Error: Invalid move - " + e.getMessage());
+                ErrorMessage errorMessage = new ErrorMessage("Error: " + e.getMessage());
                 connections.sendTo(username, errorMessage);
                 return;
             }
@@ -225,17 +225,19 @@ public class WebSocketHandler {
             NotificationMessage moveNotification = new NotificationMessage(username, moveDescription);
             connections.broadcast(username, moveNotification, gameData.gameID());
 
-            if (currentGame.isInCheck(currentGame.getTeamTurn())) {
-                String checkMessage = currentGame.getTeamTurn() + " is in check!";
-                NotificationMessage checkNotification = new NotificationMessage(null, checkMessage);
-                connections.broadcast(null, checkNotification, gameData.gameID());
-            } else if (currentGame.isInCheckmate(currentGame.getTeamTurn())) {
+            if (currentGame.isInCheckmate(currentGame.getTeamTurn())) {
+                currentGame.setGameOver(true);
                 String checkmateMessage = currentGame.getTeamTurn() + " is in checkmate, game over!";
                 NotificationMessage checkmateNotification = new NotificationMessage(null, checkmateMessage);
                 connections.broadcast(null, checkmateNotification, gameData.gameID());
+            } else if (currentGame.isInCheck(currentGame.getTeamTurn())) {
+                String checkMessage = currentGame.getTeamTurn() + " is in check!";
+                NotificationMessage checkNotification = new NotificationMessage(null, checkMessage);
+                connections.broadcast(null, checkNotification, gameData.gameID());
             }
 
             if (currentGame.isInStalemate(currentGame.getTeamTurn())) {
+                currentGame.setGameOver(true);
                 NotificationMessage stalemateNotification = new NotificationMessage(null, "The game has ended in stalemate");
                 connections.broadcast(null, stalemateNotification, gameData.gameID());
             }
@@ -243,14 +245,12 @@ public class WebSocketHandler {
         } catch (DataAccessException | SQLException e) {
             throw new RuntimeException("Error loading game: " + e.getMessage(), e);
         } catch (Exception e) {
-            System.err.println("Unexpected error during move: " + e.getMessage());
+            System.err.println("Error during move: " + e.getMessage());
             e.printStackTrace();
-            ErrorMessage errorMessage = new ErrorMessage("An unexpected error occurred: " + e.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage("Error: " + e.getMessage());
             connections.sendTo(username, errorMessage);
         }
     }
-
-
 
 
 }

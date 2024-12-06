@@ -2,11 +2,11 @@ package chessclient;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import client.requests.*;
 import client.result.*;
 import com.google.gson.Gson;
-
 import model.GameData;
 import repl.State;
 import serverfacade.ResponseException;
@@ -114,14 +114,21 @@ public class ChessClient {
         if (params.length==1) {
             String move = params[0];
 
-            if (move.length() != 4) {
-                throw new IllegalArgumentException("Format should be like e2e4");
+            if (move.length()!=4 && move.length()!=5) {
+                throw new IllegalArgumentException("Format should be like e2e4 e7e8q for promotion");
             }
 
             char startColChar = move.charAt(0);
             char startRowChar = move.charAt(1);
             char endColChar = move.charAt(2);
             char endRowChar = move.charAt(3);
+
+            if (startColChar < 'a' || startColChar > 'h' || endColChar < 'a' || endColChar > 'h') {
+                throw new IllegalArgumentException("Columns must be letters between 'a' and 'h'");
+            }
+            if (startRowChar < '1' || startRowChar > '8' || endRowChar < '1' || endRowChar > '8') {
+                throw new IllegalArgumentException("Rows must be numbers between '1' and '8'");
+            }
 
             int startCol = startColChar - 'a';
             int startRow = Character.getNumericValue(startRowChar);
@@ -133,7 +140,18 @@ public class ChessClient {
 
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             ChessPosition endPos = new ChessPosition(endRow, endCol);
-            ChessMove moveToMake = new ChessMove(startPos, endPos, null);
+
+            ChessPiece.PieceType promotionPiece = null;
+
+            if (move.length()==5) {
+                char promotionChar = move.charAt(4);
+                promotionPiece = getPromotionPieceType(promotionChar);
+                if (promotionPiece==null) {
+                    throw new IllegalArgumentException("Invalid promotion piece type must be q, r, b, or n");
+                }
+            }
+
+            ChessMove moveToMake = new ChessMove(startPos, endPos, promotionPiece);
 
             currMove = move;
 
@@ -142,7 +160,17 @@ public class ChessClient {
 
             return "Move made";
         }
-        throw new ResponseException(400, "Format should be like e2e4");
+        throw new ResponseException(400, "Make move expects: make move e2e4");
+    }
+
+    private ChessPiece.PieceType getPromotionPieceType(char promotionChar) {
+        return switch (Character.toLowerCase(promotionChar)) {
+            case 'q' -> ChessPiece.PieceType.QUEEN;
+            case 'r' -> ChessPiece.PieceType.ROOK;
+            case 'b' -> ChessPiece.PieceType.BISHOP;
+            case 'n' -> ChessPiece.PieceType.KNIGHT;
+            default -> null;
+        };
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {
@@ -163,18 +191,21 @@ public class ChessClient {
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             currentGameData = getCurrentGameData();
 
-            if (currentGameData == null) {
+            if (currentGameData==null) {
                 throw new ResponseException(400, "No game data available");
             }
 
             ChessGame game = currentGameData.game();
-            Collection<ChessMove> validMoves = game.validMoves(startPos);
+            Collection<ChessMove> possibleMoves = game.validMoves(startPos);
 
-            setLegalMoves(validMoves);
+            if (possibleMoves==null || possibleMoves.isEmpty()) {
+                return "No valid moves available for the given position";
+            }
+
+            setLegalMoves(possibleMoves);
             return "Highlighted";
         }
-
-        throw new ResponseException(400, "Bad request");
+        throw new ResponseException(400, "Highlight legal move expects: highlight legal moves e2");
     }
 
     public Collection<ChessMove> getLegalMoves() {

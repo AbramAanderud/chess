@@ -126,6 +126,30 @@ public class Repl implements ServerMessageObserver {
             System.out.print(RESET_TEXT_ITALIC);
             String line = scanner.nextLine();
 
+            if (line.toLowerCase().startsWith("resign")) {
+                System.out.println(SET_TEXT_COLOR_YELLOW + "Are you sure you want to resign? (yes/no)" + RESET_TEXT_COLOR);
+                String confirmation = scanner.nextLine().toLowerCase().trim();
+
+                if (confirmation.equals("yes")) {
+                    try {
+                        result = client.resign();
+                        System.out.println(SET_TEXT_COLOR_RED + "You have resigned" + RESET_TEXT_COLOR);
+                        runSignedIn();
+                        return;
+                    } catch (ResponseException e) {
+                        displayError(e.getMessage());
+                    }
+                } else if (confirmation.equals("no")) {
+                    System.out.println(SET_TEXT_COLOR_GREEN + "Resign canceled" + RESET_TEXT_COLOR);
+                    printPromptPlayingGame();
+                    continue;
+                } else {
+                    System.out.println(SET_TEXT_COLOR_RED + "Invalid response please enter 'yes' or 'no'." + RESET_TEXT_COLOR);
+                    printPromptPlayingGame();
+                    continue;
+                }
+            }
+
             try {
                 result = client.evalPlayGame(line);
 

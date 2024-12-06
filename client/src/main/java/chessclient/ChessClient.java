@@ -110,7 +110,12 @@ public class ChessClient {
                     }
                     yield leave(params);
                 }
-                case "make move" -> makeMove(params);
+                case "make move" -> {
+                    if (params.length >= 1) {
+                        throw new ResponseException(400, "Bad request: 'make move' expects one arguments");
+                    }
+                    yield makeMove(params);
+                }
                 case "resign" -> {
                     if (params.length != 0) {
                         throw new ResponseException(400, "Bad request: 'resign' expects no additional arguments");

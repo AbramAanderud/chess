@@ -168,7 +168,9 @@ public class Repl implements ServerMessageObserver {
                     } else if (Objects.equals(teamColor, "observer")) {
                         System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
                     }
-                } else {
+                } else if (result.contains("Options")) {
+                    System.out.println(result);
+                }else {
                     System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
                 }
             } catch (Throwable e) {
@@ -231,7 +233,7 @@ public class Repl implements ServerMessageObserver {
         }
 
         if (startPosition!=null && startPosition.equals(pos)) {
-            sb.append(SET_BG_COLOR_YELLOW);
+            sb.append(SET_BG_COLOR_BLUE);
         }
 
         ChessPiece piece = board.getPiece(pos);
@@ -366,6 +368,7 @@ public class Repl implements ServerMessageObserver {
                 System.out.println("observing");
             }
         } else if (message instanceof NotificationMessage notificationMessage) {
+            System.out.println();
             System.out.println(SET_TEXT_COLOR_BLUE + notificationMessage.getMessage());
 
         } else if (message instanceof ErrorMessage errorMessage) {

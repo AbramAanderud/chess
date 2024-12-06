@@ -25,7 +25,6 @@ public class WebSocketFacade extends Endpoint {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "ws");
 
-
             this.serverMessageObserver = serverMessageObserver;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -64,7 +63,6 @@ public class WebSocketFacade extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        System.out.println("WebSocket connection established with session: " + session);
     }
 
     public void connect(String authToken, Integer gameID, String playerColor, boolean isObserver) throws ResponseException {

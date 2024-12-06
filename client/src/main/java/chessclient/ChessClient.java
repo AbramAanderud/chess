@@ -14,8 +14,6 @@ import serverfacade.ServerFacade;
 import websocketfacade.ServerMessageObserver;
 import websocketfacade.WebSocketFacade;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -136,10 +134,6 @@ public class ChessClient {
             ChessPosition startPos = new ChessPosition(startRow, startCol);
             ChessPosition endPos = new ChessPosition(endRow, endCol);
             ChessMove moveToMake = new ChessMove(startPos, endPos, null);
-
-            System.out.println("this is the startpos: " + startPos);
-            System.out.println("this is the endpos: " + endPos);
-            System.out.println("this is the movetomake: " + moveToMake);
 
             currMove = move;
 
@@ -409,8 +403,8 @@ public class ChessClient {
 
 
     public String help() {
+        System.out.print(RESET_TEXT_COLOR);
         if (state==State.PLAYINGGAME) {
-            System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:
                     redraw - the chessboard
@@ -422,7 +416,6 @@ public class ChessClient {
                     """;
         }
         if (state==State.SIGNEDOUT) {
-            System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account

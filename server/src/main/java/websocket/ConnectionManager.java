@@ -1,11 +1,7 @@
 package websocket;
 
 import com.google.gson.Gson;
-import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
-import server.Server;
-import websocket.messages.LoadGameMessage;
-import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -15,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionManager {
     public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
-    public void add(String username, Session session) {
-        var connection = new Connection(username, session);
+    public void add(String username, Session session, Integer gameID) {
+        var connection = new Connection(username, session, gameID);
         connections.put(username, connection);
     }
 
@@ -24,12 +20,12 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
-    public void broadcast(String excludeUsername, ServerMessage message) throws IOException {
+    public void broadcast(String excludeUsername, ServerMessage message, Integer gameID) throws IOException {
         var removeList = new ArrayList<Connection>();
         Gson gson = new Gson();
 
         for (var c : connections.values()) {
-            if (c.session.isOpen()) {
+            if (c.session.isOpen() && c.gameID.equals(gameID)) {
                 if (!c.username.equals(excludeUsername)) {
                     try {
                         String messageJson = gson.toJson(message);
@@ -48,7 +44,7 @@ public class ConnectionManager {
 
     public void sendTo(String username, ServerMessage message) throws IOException {
         var connection = connections.get(username);
-        if (connection != null && connection.session.isOpen()) {
+        if (connection!=null && connection.session.isOpen()) {
             String messageJson = new Gson().toJson(message);
             connection.send(messageJson);
         }

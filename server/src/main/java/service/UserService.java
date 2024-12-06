@@ -1,14 +1,14 @@
 package service;
 
-import dataaccess.*;
-import model.UserData;
-import org.mindrot.jbcrypt.BCrypt;
 import client.requests.LoginRequest;
 import client.requests.LogoutRequest;
 import client.requests.RegisterRequest;
 import client.result.LoginResult;
 import client.result.LogoutResult;
 import client.result.RegisterResult;
+import dataaccess.*;
+import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 

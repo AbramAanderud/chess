@@ -50,26 +50,25 @@ public class ChessMove {
         StringBuilder sb = new StringBuilder();
         sb.append("Move from ").append(startPosition.toString());
         sb.append(" to ").append(endPosition.toString());
-        if (promotionPiece != null) {
+        if (promotionPiece!=null) {
             sb.append(" promoting to ").append(promotionPiece.toString().toLowerCase());
         }
         return sb.toString();
     }
 
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (this==o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o==null || getClass()!=o.getClass()) {
             return false;
         }
         ChessMove chessMove = (ChessMove) o;
         return Objects.equals(startPosition, chessMove.startPosition)
                 && Objects.equals(endPosition, chessMove.endPosition)
-                && promotionPiece == chessMove.promotionPiece;
+                && promotionPiece==chessMove.promotionPiece;
     }
 
     @Override

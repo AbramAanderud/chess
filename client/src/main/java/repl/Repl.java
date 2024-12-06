@@ -3,14 +3,13 @@ package repl;
 import chess.*;
 import chessclient.ChessClient;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import model.GameData;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -74,7 +73,7 @@ public class Repl implements ServerMessageObserver {
         var result = "";
         while (!result.startsWith("Logged out")) {
             System.out.print(RESET_TEXT_ITALIC);
-            printPrompSignedIn();
+            printPromptSignedIn();
             String line = scanner.nextLine();
 
             try {
@@ -170,12 +169,11 @@ public class Repl implements ServerMessageObserver {
                         System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
                     }
                 } else {
-                    System.out.print(RESET_TEXT_COLOR);
-                    System.out.println(result);
+                    System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
                 }
             } catch (Throwable e) {
-                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
-                System.out.print(e.getMessage());
+                System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_RED + "Error: ");
+                System.out.println(e.getMessage());
             }
         }
         runSignedIn();
@@ -219,11 +217,7 @@ public class Repl implements ServerMessageObserver {
 
     private void appendPiece(ChessBoard board, StringBuilder sb, int i, int j, Collection<ChessPosition> positions, ChessPosition startPosition) {
         ChessPosition pos = new ChessPosition(i, j);
-
-        if (startPosition.equals(pos)) {
-            sb.append(SET_BG_COLOR_YELLOW);
-        }
-        if ((i + j) % 2 == 0) {
+        if ((i + j) % 2==0) {
             sb.append(SET_BG_COLOR_DARK_GREEN);
             if (positions.contains(pos)) {
                 sb.append(SET_BG_COLOR_MEDIUM_DARK_GREEN);
@@ -233,6 +227,10 @@ public class Repl implements ServerMessageObserver {
             if (positions.contains(pos)) {
                 sb.append(SET_BG_COLOR_LIGHTER_GREY);
             }
+        }
+
+        if (startPosition!=null && startPosition.equals(pos)) {
+            sb.append(SET_BG_COLOR_YELLOW);
         }
 
         ChessPiece piece = board.getPiece(pos);
@@ -286,7 +284,7 @@ public class Repl implements ServerMessageObserver {
 
     private void printBottAlphaBlACK(StringBuilder sb) {
         sb.append(SET_BG_COLOR_BLACK + "   " + SET_TEXT_COLOR_WHITE);
-        sb.append(" h " );
+        sb.append(" h ");
         sb.append(" g ");
         sb.append(" f ");
         sb.append(" e ");
@@ -335,7 +333,7 @@ public class Repl implements ServerMessageObserver {
         System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed out] >>> " + SET_TEXT_COLOR_BLACK);
     }
 
-    private void printPrompSignedIn() {
+    private void printPromptSignedIn() {
         System.out.print(SET_TEXT_COLOR_WHITE + "\n[signed in] >>> " + SET_TEXT_COLOR_BLACK);
     }
 
@@ -345,8 +343,6 @@ public class Repl implements ServerMessageObserver {
 
 
     public void notify(ServerMessage message) {
-        System.out.println("We are in Notify called with message: " + message);
-
         if (message instanceof LoadGameMessage loadGameMessage) {
             GameData gameData = loadGameMessage.getGameData();
             ChessBoard gameBoard = gameData.game().getBoard();
@@ -355,7 +351,7 @@ public class Repl implements ServerMessageObserver {
 
             System.out.print(RESET_TEXT_COLOR);
             System.out.print(RESET_BG_COLOR);
-            System.out.print(RESET_TEXT_ITALIC);
+            System.out.print(RESET_TEXT_ITALIC + "\n");
 
             if (Objects.equals(teamColor, "white")) {
                 System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
@@ -370,8 +366,9 @@ public class Repl implements ServerMessageObserver {
         } else if (message instanceof NotificationMessage notificationMessage) {
             System.out.println(SET_TEXT_COLOR_BLUE + notificationMessage.getMessage());
 
-        } else {
-            System.out.println(SET_TEXT_COLOR_BLACK + message);
+        } else if (message instanceof ErrorMessage errorMessage) {
+            System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + errorMessage.getMessage());
+            System.out.print(RESET_TEXT_ITALIC);
         }
         printPromptPlayingGame();
     }

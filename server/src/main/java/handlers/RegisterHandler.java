@@ -1,8 +1,8 @@
 package handlers;
 
-import dataaccess.DataAccessException;
 import client.requests.RegisterRequest;
 import client.result.RegisterResult;
+import dataaccess.DataAccessException;
 import service.UserService;
 import spark.Request;
 import spark.Response;

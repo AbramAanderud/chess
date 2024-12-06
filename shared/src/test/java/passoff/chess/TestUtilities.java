@@ -49,7 +49,7 @@ public class TestUtilities {
                 }
                 default -> {
                     ChessGame.TeamColor color = Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK
-                            : ChessGame.TeamColor.WHITE;
+                            :ChessGame.TeamColor.WHITE;
                     var type = CHAR_TO_TYPE_MAP.get(Character.toLowerCase(c));
                     var position = new ChessPositionBuilder().setRow(row).setCol(column).createChessPosition();
                     var piece = new ChessPiece(color, type);

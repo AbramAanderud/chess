@@ -25,7 +25,7 @@ public class MovementHelper {
 
                 if (board.isEmpty(newPosition)) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
-                } else if (board.getPiece(newPosition).getTeamColor() !=
+                } else if (board.getPiece(newPosition).getTeamColor()!=
                         board.getPiece(startPosition).getTeamColor()) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
                     break;
@@ -53,7 +53,7 @@ public class MovementHelper {
             if (inBoard(nextRow, nextCol)) {
                 if (board.isEmpty(newPosition)) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
-                } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                } else if (board.getPiece(newPosition).getTeamColor()!=board.getPiece(startPosition).getTeamColor()) {
                     moves.add(new ChessMove(startPosition, newPosition, null));
                 }
             }

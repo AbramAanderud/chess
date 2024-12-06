@@ -8,18 +8,18 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -29,14 +29,14 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         try {
             UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
-            if (userGameCommand == null || userGameCommand.getAuthToken() == null) {
+            if (userGameCommand==null || userGameCommand.getAuthToken()==null) {
                 throw new IllegalArgumentException("Bad request: Missing required fields");
             }
 
             try (Connection connection = DatabaseManager.daoConnectors()) {
                 SQLAuthDAO sqlAuthDAO = new SQLAuthDAO(connection);
                 String username = sqlAuthDAO.getUsernameByAuth(userGameCommand.getAuthToken());
-                if (username == null) {
+                if (username==null) {
                     throw new IllegalArgumentException("Invalid authentication token");
                 }
 
@@ -49,7 +49,10 @@ public class WebSocketHandler {
                         MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
                         makeMove(username, makeMoveCommand);
                     }
-                    case LEAVE -> leaveGame(username, userGameCommand);
+                    case LEAVE -> {
+                        LeaveCommand leaveCommand = new Gson().fromJson(message, LeaveCommand.class);
+                        leaveGame(username, leaveCommand);
+                    }
                     case RESIGN -> resign(username, userGameCommand);
                     default -> throw new IllegalArgumentException("Unsupported command type: " + userGameCommand.getCommandType());
                 }
@@ -73,19 +76,19 @@ public class WebSocketHandler {
     }
 
 
-    private void loadGame(String username, int gameId, boolean broadcast) {
+    private void loadGame(String username, int gameID, boolean broadcast) {
         try (Connection connection = DatabaseManager.daoConnectors()) {
-            GameDAO gameDAO = new SQLGameDAO(connection);
-            GameData gameData = gameDAO.getGame(gameId);
+            SQLGameDAO gameDAO = new SQLGameDAO(connection);
+            GameData gameData = gameDAO.getGame(gameID);
 
-            if (gameData == null) {
-                throw new DataAccessException("Game not found for ID: " + gameId);
+            if (gameData==null) {
+                throw new DataAccessException("Game not found for ID: " + gameID);
             }
 
             LoadGameMessage loadGameMessage = new LoadGameMessage(gameData);
 
             if (broadcast) {
-                connections.broadcast(username, loadGameMessage);
+                connections.broadcast(username, loadGameMessage, gameID);
             } else {
                 connections.sendTo(username, loadGameMessage);
             }
@@ -97,7 +100,7 @@ public class WebSocketHandler {
 
 
     private void connect(Session session, String username, ConnectCommand connectCommand) throws IOException {
-        connections.add(username, session);
+        connections.add(username, session, connectCommand.getGameID());
 
         String message;
         loadGame(username, connectCommand.getGameID(), false);
@@ -109,36 +112,36 @@ public class WebSocketHandler {
         }
 
         NotificationMessage notificationMessage = new NotificationMessage(username, message);
-        connections.broadcast(username, notificationMessage);
+        connections.broadcast(username, notificationMessage, connectCommand.getGameID());
     }
 
-    private void leaveGame(String username, UserGameCommand userGameCommand) throws IOException {
-        String message = username + " has left the game";
+    private void leaveGame(String username, LeaveCommand leaveCommand) throws IOException {
+        String message;
 
-
-        try (Connection connection = DatabaseManager.daoConnectors()) {
-            GameDAO gameDAO = new SQLGameDAO(connection);
-            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-
-            if(gameData.whiteUsername() == username) {
-                gameData.whiteUsername() = null;
-            } else if(gameData.blackUsername() == username) {
-                gameData.blackUsername() = null;
-            }
-
-            gameDAO.
-
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error loading game: " + e.getMessage(), e);
+        if (leaveCommand.isObserver()) {
+            message = username + " (observer) has left the game";
+        } else {
+            message = username + " has left the game";
         }
 
+        try (Connection connection = DatabaseManager.daoConnectors()) {
+            SQLGameDAO gameDAO = new SQLGameDAO(connection);
+            GameData gameData = gameDAO.getGame(leaveCommand.getGameID());
 
+            if (Objects.equals(username, gameData.blackUsername()) || Objects.equals(username, gameData.whiteUsername())) {
+                gameDAO.playerLeft(leaveCommand.getGameID(), username);
+            }
 
+            NotificationMessage notificationMessage = new NotificationMessage(username, message);
 
-        NotificationMessage notificationMessage = new NotificationMessage(username, message);
-        connections.broadcast(username, notificationMessage);
-        connections.remove(username);
+            connections.broadcast(username, notificationMessage, leaveCommand.getGameID());
+            connections.remove(username);
+
+        } catch (DataAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private void resign(String username, UserGameCommand userGameCommand) throws IOException {
         try (Connection connection = DatabaseManager.daoConnectors()) {
@@ -146,12 +149,24 @@ public class WebSocketHandler {
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
             ChessGame currentGame = gameData.game();
 
+            if (!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())) {
+                ErrorMessage errorMessage = new ErrorMessage("Cannot make move as observer");
+                connections.sendTo(username, errorMessage);
+                return;
+            }
+
+            if (currentGame.isGameOver()) {
+                ErrorMessage errorMessage = new ErrorMessage("Cannot resign as game is already over");
+                connections.sendTo(username, errorMessage);
+                return;
+            }
+
             currentGame.setGameOver(true);
             gameDAO.updateGame(userGameCommand.getGameID(), currentGame);
 
             String message = username + " has resigned from the game";
             NotificationMessage notificationMessage = new NotificationMessage(username, message);
-            connections.broadcast(null, notificationMessage);
+            connections.broadcast(null, notificationMessage, userGameCommand.getGameID());
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException("Error loading game: " + e.getMessage(), e);
         }
@@ -160,75 +175,76 @@ public class WebSocketHandler {
 
     private void makeMove(String username, MakeMoveCommand makeMoveCommand) throws IOException {
         try (Connection connection = DatabaseManager.daoConnectors()) {
-            // Access the game data from the database
             SQLGameDAO gameDAO = new SQLGameDAO(connection);
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
 
-            if (gameData == null) {
+            if (gameData==null) {
                 throw new DataAccessException("Game not found for ID: " + makeMoveCommand.getGameID());
             }
 
             ChessGame currentGame = gameData.game();
 
-            // Step 1: Verify the validity of the move
             if (currentGame.isGameOver()) {
-                // Send a notification to the root client indicating the game is over
-                NotificationMessage gameOverNotification = new NotificationMessage(
-                        username,
-                        "Cannot make move because the game is over."
-                );
-                connections.sendTo(username, gameOverNotification);
-                return;
-            }
-
-            try {
-                // Attempt to make the move, throw an exception if invalid
-                currentGame.makeMove(makeMoveCommand.getMove());
-            } catch (InvalidMoveException e) {
-                // Send an error message to the root client if the move is invalid
-                ErrorMessage errorMessage = new ErrorMessage("Error Invalid move: " + e.getMessage());
+                ErrorMessage errorMessage = new ErrorMessage("Cannot make move because the game is over");
                 connections.sendTo(username, errorMessage);
                 return;
             }
 
-            // Step 2: Update the game in the database
+            ChessGame.TeamColor currentTurnColor = currentGame.getTeamTurn();
+            String playerColor;
+
+            if (Objects.equals(gameData.whiteUsername(), username)) {
+                playerColor = "WHITE";
+            } else if (Objects.equals(gameData.blackUsername(), username)) {
+                playerColor = "BLACK";
+            } else {
+                ErrorMessage errorMessage = new ErrorMessage("You are not a player in this game");
+                connections.sendTo(username, errorMessage);
+                return;
+            }
+            if (!currentTurnColor.name().equalsIgnoreCase(playerColor)) {
+                ErrorMessage errorMessage = new ErrorMessage("It's not your turn to move.");
+                connections.sendTo(username, errorMessage);
+                return;
+            }
+
+            try {
+                currentGame.makeMove(makeMoveCommand.getMove());
+            } catch (InvalidMoveException e) {
+                ErrorMessage errorMessage = new ErrorMessage("Error Invalid move: " + e.getMessage());
+                connections.sendTo(username, errorMessage);
+                return;
+            }
             gameDAO.updateGame(makeMoveCommand.getGameID(), currentGame);
 
-            // Step 3: Send a LOAD_GAME message to all clients in the game (including the root client)
             loadGame(null, makeMoveCommand.getGameID(), true);
 
-            // Step 4: Send a Notification message to all other clients (excluding the root client)
             String moveDescription = username + " made move " + makeMoveCommand.getMove().toString();
             NotificationMessage moveNotification = new NotificationMessage(username, moveDescription);
-            connections.broadcast(username, moveNotification); // Exclude root client from this notification
+            connections.broadcast(username, moveNotification, gameData.gameID());
 
-            // Step 5: Check if the move results in check, checkmate, or stalemate and notify all clients accordingly
             if (currentGame.isInCheck(currentGame.getTeamTurn())) {
                 String checkMessage = currentGame.getTeamTurn() + " is in check!";
                 NotificationMessage checkNotification = new NotificationMessage(null, checkMessage);
-                connections.broadcast(null, checkNotification);
+                connections.broadcast(null, checkNotification, gameData.gameID());
             } else if (currentGame.isInCheckmate(currentGame.getTeamTurn())) {
                 String checkmateMessage = currentGame.getTeamTurn() + " is in checkmate, game over!";
                 NotificationMessage checkmateNotification = new NotificationMessage(null, checkmateMessage);
-                connections.broadcast(null, checkmateNotification);
+                connections.broadcast(null, checkmateNotification, gameData.gameID());
             }
 
             if (currentGame.isInStalemate(currentGame.getTeamTurn())) {
-                NotificationMessage stalemateNotification = new NotificationMessage(null, "The game has ended in stalemate.");
-                connections.broadcast(null, stalemateNotification);
+                NotificationMessage stalemateNotification = new NotificationMessage(null, "The game has ended in stalemate");
+                connections.broadcast(null, stalemateNotification, gameData.gameID());
             }
 
         } catch (DataAccessException | SQLException e) {
-            // Handle database access exceptions
             throw new RuntimeException("Error loading game: " + e.getMessage(), e);
         } catch (Exception e) {
-            // Handle any other unexpected exceptions by sending an error message to the root client
             ErrorMessage errorMessage = new ErrorMessage("An unexpected error occurred: " + e.getMessage());
             connections.sendTo(username, errorMessage);
         }
     }
-
-
 
 
 }

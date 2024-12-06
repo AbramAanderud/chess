@@ -1,20 +1,19 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.*;
-import model.GameData;
 import client.requests.CreateGameRequest;
 import client.requests.JoinRequest;
 import client.requests.ListRequest;
 import client.result.CreateGameResult;
 import client.result.JoinResult;
 import client.result.ListResult;
+import dataaccess.*;
+import model.GameData;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class GameService {
     private final AuthDAO authDAO;

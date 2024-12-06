@@ -1,7 +1,7 @@
 package service;
 
-import dataaccess.*;
 import client.result.ClearResult;
+import dataaccess.*;
 
 import java.sql.Connection;
 

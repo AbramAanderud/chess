@@ -3,6 +3,8 @@ package chessclient;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import client.requests.*;
+import client.result.*;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -10,17 +12,11 @@ import dataaccess.GameDAO;
 import dataaccess.SQLGameDAO;
 import model.GameData;
 import repl.State;
-import client.requests.*;
-import client.result.*;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
-
-import websocket.messages.LoadGameMessage;
-import websocket.messages.ServerMessage;
 import websocketfacade.ServerMessageObserver;
 import websocketfacade.WebSocketFacade;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,17 +27,17 @@ import java.util.Objects;
 import static repl.State.*;
 import static ui.EscapeSequences.*;
 
-public class ChessClient  {
+public class ChessClient {
     private final ServerFacade serverFacade;
+    private final String serverURL;
+    private final ServerMessageObserver serverMessageObserver;
+    String currMove;
     private State state = SIGNEDOUT;
     private String currAuthToken;
     private String currTeamColor;
     private Integer currGameID;
-    private final String serverURL;
     private WebSocketFacade ws;
-    private final ServerMessageObserver serverMessageObserver;
     private Collection<ChessMove> legalMoves = new ArrayList<>();
-    String currMove;
 
 
     public ChessClient(String serverURL, ServerMessageObserver serverMessageObserver) {
@@ -87,7 +83,7 @@ public class ChessClient  {
     public String evalPlayGame(String input) {
         try {
             var tokens = input.toLowerCase().trim().split("\\s+");
-            if (tokens.length == 0) {
+            if (tokens.length==0) {
                 return help();
             }
 
@@ -118,14 +114,11 @@ public class ChessClient  {
         }
     }
 
-
-
-
     public String makeMove(String... params) throws ResponseException {
-        if (params.length== 1) {
+        if (params.length==1) {
             String move = params[0];
 
-            if (move.length() != 4) {
+            if (move.length()!=4) {
                 throw new IllegalArgumentException("Format should be like e2e4");
             }
 
@@ -159,11 +152,11 @@ public class ChessClient  {
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {
-        if (params.length== 1) {
+        if (params.length==1) {
             String move = params[0];
             System.out.println("highlight reached");
 
-            if (move.length() != 2) {
+            if (move.length()!=2) {
                 throw new IllegalArgumentException("Format should be like e2");
             }
 
@@ -177,7 +170,7 @@ public class ChessClient  {
             ChessPosition startPos = new ChessPosition(startRow, startCol);
 
             Integer gameID = currGameID;
-            try(Connection connection = DatabaseManager.daoConnectors()) {
+            try (Connection connection = DatabaseManager.daoConnectors()) {
                 GameDAO gameDAO = new SQLGameDAO(connection);
                 GameData gameData = gameDAO.getGame(gameID);
 
@@ -200,14 +193,13 @@ public class ChessClient  {
         throw new ResponseException(400, "Bad request");
     }
 
-    public void setLegalMoves(Collection<ChessMove> moves) {
-        legalMoves = moves;
-    }
-
     public Collection<ChessMove> getLegalMoves() {
         return legalMoves;
     }
 
+    public void setLegalMoves(Collection<ChessMove> moves) {
+        legalMoves = moves;
+    }
 
     public String resign(String... params) throws ResponseException {
         if (params.length==0) {
@@ -221,11 +213,11 @@ public class ChessClient  {
     public String drawBoard(String... params) throws ResponseException {
         if (params.length==0) {
             Integer gameID = currGameID;
-            try(Connection connection = DatabaseManager.daoConnectors()) {
+            try (Connection connection = DatabaseManager.daoConnectors()) {
                 GameDAO gameDAO = new SQLGameDAO(connection);
                 GameData gameData = gameDAO.getGame(gameID);
 
-                if (gameData == null) {
+                if (gameData==null) {
                     throw new DataAccessException("Game not found for ID: " + gameID);
                 }
 
@@ -241,14 +233,13 @@ public class ChessClient  {
     public String leave(String... params) throws ResponseException {
         if (params.length==0) {
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
-            ws.leave(currAuthToken, currGameID);
+            ws.leave(currAuthToken, currGameID, Objects.equals(currTeamColor, "observer"));
+
             state = SIGNEDIN;
-            return "game left";
+            return "game left \n";
         }
         throw new ResponseException(400, "Bad request");
     }
-
-
 
     //from here down are my http
 
@@ -396,7 +387,7 @@ public class ChessClient  {
     }
 
     public String observe(String... params) throws ResponseException {
-        if (params.length == 1) {
+        if (params.length==1) {
             String gameIDString = params[0];
             int gameID;
 
@@ -412,7 +403,7 @@ public class ChessClient  {
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.connect(currAuthToken, currGameID, null, true);
 
-            return "Observing game: " + gameIDString;
+            return "Observing game: " + gameIDString + "\n";
         } else {
             throw new ResponseException(400, "Expected: <gameID>");
         }
@@ -440,7 +431,7 @@ public class ChessClient  {
 
 
     public String help() {
-        if (state== State.PLAYINGGAME) {
+        if (state==State.PLAYINGGAME) {
             System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:
@@ -451,7 +442,8 @@ public class ChessClient  {
                     highlight legal moves <col><row> - to show possible moves
                     help - with possible commands
                     """;
-        } if (state==State.SIGNEDOUT) {
+        }
+        if (state==State.SIGNEDOUT) {
             System.out.print(RESET_TEXT_COLOR);
             return """
                     Options:

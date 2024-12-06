@@ -1,11 +1,10 @@
 package websocketfacade;
 
 import chess.ChessMove;
-import chess.ChessPosition;
 import com.google.gson.Gson;
 import serverfacade.ResponseException;
-import websocket.WebSocketHandler;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
@@ -13,8 +12,6 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -89,10 +86,10 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void leave(String authToken,  Integer gameID) throws ResponseException {
+    public void leave(String authToken, Integer gameID, boolean isObserver) throws ResponseException {
         try {
-            var userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
-            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+            var leavecommand = new LeaveCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, isObserver);
+            this.session.getBasicRemote().sendText(new Gson().toJson(leavecommand));
 
             this.session.close();
         } catch (IOException ex) {
@@ -100,7 +97,7 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void resign(String authToken,  Integer gameID) throws ResponseException {
+    public void resign(String authToken, Integer gameID) throws ResponseException {
         try {
             var userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));

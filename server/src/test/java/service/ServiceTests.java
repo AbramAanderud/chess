@@ -1,11 +1,11 @@
 package service;
 
+import client.requests.*;
+import client.result.*;
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import client.requests.*;
-import client.result.*;
 
 public class ServiceTests {
     private GameService gameService;

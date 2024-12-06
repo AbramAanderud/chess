@@ -23,7 +23,7 @@ public class ChessBoard {
             for (int j = 0; j < 8; j++) {
                 ChessPiece piece = this.squares[i][j];
 
-                if (this.squares[i][j] != null) {
+                if (this.squares[i][j]!=null) {
                     copy.squares[i][j] = new ChessPiece(piece.getTeamColor(),
                             piece.getPieceType());
                 } else {
@@ -41,7 +41,7 @@ public class ChessBoard {
 
         ChessPiece piece = this.getPiece(startPos);
 
-        if (piece == null) {
+        if (piece==null) {
             throw new RuntimeException("No piece at the start pos");
         }
 
@@ -58,7 +58,7 @@ public class ChessBoard {
         ChessPosition endPos = move.getEndPosition();
 
         ChessPiece piece = this.getPiece(startPos);
-        if (piece == null) {
+        if (piece==null) {
             throw new RuntimeException("No piece at the start pos");
         }
 
@@ -80,9 +80,9 @@ public class ChessBoard {
     public void removePiece(ChessPosition position, ChessPiece piece) {
         if (squares[position.getRow() - 1]
                 [position.getColumn() - 1].getPieceType()
-                == piece.getPieceType() && squares[position.getRow() - 1]
+                ==piece.getPieceType() && squares[position.getRow() - 1]
                 [position.getColumn() - 1].getTeamColor()
-                == piece.getTeamColor()) {
+                ==piece.getTeamColor()) {
             squares[position.getRow() - 1][position.getColumn() - 1] = null;
         }
     }
@@ -99,7 +99,7 @@ public class ChessBoard {
     }
 
     public boolean isEmpty(ChessPosition position) {
-        return getPiece(position) == null;
+        return getPiece(position)==null;
     }
 
 
@@ -162,10 +162,10 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o){
+        if (this==o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()){
+        if (o==null || getClass()!=o.getClass()) {
             return false;
         }
         ChessBoard that = (ChessBoard) o;
@@ -187,16 +187,16 @@ public class ChessBoard {
     }
 
     private char getPieceCharacter(ChessPiece piece) {
-        if (piece == null) {
+        if (piece==null) {
             return ' ';
         }
         char firstInitial = piece.getPieceType().toString().charAt(0);
 
-        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+        if (piece.getPieceType()==ChessPiece.PieceType.KNIGHT) {
             firstInitial = 'n';
         }
 
-        if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+        if (piece.getTeamColor()==ChessGame.TeamColor.WHITE) {
             return Character.toUpperCase(firstInitial);
         } else {
             return Character.toLowerCase(firstInitial);

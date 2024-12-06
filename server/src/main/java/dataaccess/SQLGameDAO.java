@@ -153,14 +153,12 @@ public class SQLGameDAO implements GameDAO {
                     updateSql = "UPDATE gameDataTable SET whiteUsername = NULL WHERE gameID = ?";
                 } else if (username.equals(blackUsername)) {
                     updateSql = "UPDATE gameDataTable SET blackUsername = NULL WHERE gameID = ?";
-                } else {
-                    throw new DataAccessException("The specified player is not part of this game");
                 }
 
                 try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
                     updateStmt.setInt(1, gameID);
                     int rowsUpdated = updateStmt.executeUpdate();
-                    if (rowsUpdated == 0) {
+                    if (rowsUpdated==0) {
                         throw new DataAccessException("No game found with the specified game ID");
                     }
                 }
@@ -173,7 +171,6 @@ public class SQLGameDAO implements GameDAO {
             throw new DataAccessException("Failed to leave game " + e.getMessage());
         }
     }
-
 
 
     private GameData readGame(ResultSet rs) throws SQLException {

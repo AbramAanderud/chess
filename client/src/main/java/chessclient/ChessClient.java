@@ -102,7 +102,7 @@ public class ChessClient {
                     if (params.length != 0) {
                         throw new ResponseException(400, "Bad request: 'redraw' expects no additional arguments");
                     }
-                    yield leave(params);
+                    yield drawBoard(params);
                 }
                 case "leave" -> {
                     if (params.length != 0) {

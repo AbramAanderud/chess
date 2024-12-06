@@ -198,7 +198,8 @@ public class Repl implements ServerMessageObserver {
         return sb;
     }
 
-    private void pieceLoop(StringBuilder sb, ChessBoard board, int i, boolean isWhite, Collection<ChessPosition> positions, ChessPosition startPosition) {
+    private void pieceLoop(StringBuilder sb, ChessBoard board, int i, boolean isWhite,
+                           Collection<ChessPosition> positions, ChessPosition startPosition) {
         sb.append(SET_BG_COLOR_BLACK).append(SET_TEXT_COLOR_WHITE).append(" ").append(i).append(" ");
 
         if (isWhite) {

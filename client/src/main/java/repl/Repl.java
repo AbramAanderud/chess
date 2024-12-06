@@ -170,7 +170,9 @@ public class Repl implements ServerMessageObserver {
                     }
                 } else if (result.contains("Options")) {
                     System.out.println(result);
-                }else {
+                } else if (result.contains("Format")) {
+                    System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + result + RESET_TEXT_ITALIC + RESET_TEXT_COLOR);
+                } else {
                     System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
                 }
             } catch (Throwable e) {

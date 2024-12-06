@@ -139,8 +139,9 @@ public class ChessClient {
 
             this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);
+            return "Move made successfully";
         }
-        throw new ResponseException(400, "Bad request");
+        throw new ResponseException(400, "Format should be like e2e4");
     }
 
     public String highlightLegalMoves(String... params) throws ResponseException {

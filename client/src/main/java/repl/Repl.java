@@ -116,13 +116,13 @@ public class Repl implements ServerMessageObserver {
 
     public void runPlayGame() {
         System.out.print(client.help());
+        printPromptPlayingGame();
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
 
         while (!result.contains("left")) {
             System.out.print(RESET_TEXT_ITALIC);
-            printPromptPlayingGame();
             String line = scanner.nextLine();
 
             try {
@@ -141,6 +141,7 @@ public class Repl implements ServerMessageObserver {
                     } else if (Objects.equals(teamColor, "observer")) {
                         System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                     }
+                    printPromptPlayingGame();
                 } else if (result.startsWith("Highlighted")) {
                     Gson gson = new Gson();
 
@@ -154,8 +155,6 @@ public class Repl implements ServerMessageObserver {
                         startPos = move.getStartPosition();
                     }
 
-                    System.out.println("ends " + endPositions);
-
                     String gameStateJson = client.drawBoard();
                     GameData gameData = gson.fromJson(gameStateJson, GameData.class);
                     ChessBoard gameBoard = gameData.game().getBoard();
@@ -168,12 +167,13 @@ public class Repl implements ServerMessageObserver {
                     } else if (Objects.equals(teamColor, "observer")) {
                         System.out.println(toStringBoard(gameBoard, true, endPositions, startPos));
                     }
+                    printPromptPlayingGame();
                 } else if (result.contains("Options")) {
                     System.out.println(result);
+                    printPromptPlayingGame();
                 } else if (result.contains("Format")) {
                     System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + result + RESET_TEXT_ITALIC + RESET_TEXT_COLOR);
-                } else {
-                    System.out.println(SET_TEXT_COLOR_WHITE + result + RESET_TEXT_COLOR);
+                    printPromptPlayingGame();
                 }
             } catch (Throwable e) {
                 System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_RED + "Error: ");
@@ -369,14 +369,14 @@ public class Repl implements ServerMessageObserver {
                 System.out.println(toStringBoard(gameBoard, true, new ArrayList<>(), null));
                 System.out.println("observing");
             }
+            printPromptPlayingGame();
         } else if (message instanceof NotificationMessage notificationMessage) {
             System.out.println();
             System.out.println(SET_TEXT_COLOR_BLUE + notificationMessage.getMessage());
-
+            printPromptPlayingGame();
         } else if (message instanceof ErrorMessage errorMessage) {
             System.out.println(SET_TEXT_COLOR_RED + SET_TEXT_ITALIC + errorMessage.getMessage());
             System.out.print(RESET_TEXT_ITALIC);
         }
-        printPromptPlayingGame();
     }
 }

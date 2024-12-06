@@ -7,6 +7,7 @@ import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -49,6 +50,9 @@ public class WebSocketFacade extends Endpoint {
                             break;
 
                         case ERROR:
+                            ErrorMessage errorMessage = gson.fromJson(message, ErrorMessage.class);
+                            serverMessageObserver.notify(errorMessage);
+
                         default:
                             serverMessageObserver.notify(baseMessage);
                             break;

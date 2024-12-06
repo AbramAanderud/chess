@@ -165,48 +165,49 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
 
-        if (piece==null || piece.getTeamColor()!=this.getTeamTurn()) {
-            throw new InvalidMoveException("wrong teams piece to be moved");
+        if (piece == null || piece.getTeamColor() != this.getTeamTurn()) {
+            throw new InvalidMoveException("Wrong team's piece to be moved");
         }
 
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
 
-        if (validMoves==null || !validMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid, not in valid moves");
+        if (validMoves == null || !validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move: not in valid moves");
         }
 
         try {
             ChessBoard boardCopy = board.copyBoard();
-            if (move.getPromotionPiece()!=null && piece.getPieceType()==
-                    ChessPiece.PieceType.PAWN) {
+            if (move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
                 boardCopy.makePromoMoveOnBoard(move);
             } else {
                 boardCopy.makeMoveOnBoard(move);
             }
-            if (isInCheckWithBoard(this.getTeamTurn(), board)) {
+            if (isInCheckWithBoard(this.getTeamTurn(), boardCopy)) {
                 throw new InvalidMoveException("Move would cause check");
             }
         } catch (RuntimeException e) {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("Runtime exception occurred: " + e.getMessage());
         }
 
-        if (move.getPromotionPiece()!=null && piece.getPieceType()==
-                ChessPiece.PieceType.PAWN) {
+        // Make the move on the actual board
+        if (move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             board.makePromoMoveOnBoard(move);
         } else {
             board.makeMoveOnBoard(move);
         }
+
         if (isInCheckWithBoard(this.getTeamTurn(), board)) {
             throw new InvalidMoveException("Move would cause check");
         }
 
-        if (turn==TeamColor.WHITE) {
+        // Update the turn
+        if (turn == TeamColor.WHITE) {
             setTeamTurn(TeamColor.BLACK);
         } else {
             setTeamTurn(TeamColor.WHITE);
         }
-
     }
+
 
     /**
      * Determines if the given team is in check

@@ -60,7 +60,7 @@ public class WebSocketHandler {
         } catch (DataAccessException e) {
             sendErrorMessage(session, "Database error occurred: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            sendErrorMessage(session, e.getMessage());
+            sendErrorMessage(session, "Illegal args: " + e.getMessage());
         } catch (Exception e) {
             sendErrorMessage(session, "An unexpected error occurred: " + e.getMessage());
         }
@@ -150,7 +150,7 @@ public class WebSocketHandler {
             ChessGame currentGame = gameData.game();
 
             if (!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())) {
-                ErrorMessage errorMessage = new ErrorMessage("Cannot make move as observer");
+                ErrorMessage errorMessage = new ErrorMessage("Cannot resign as observer");
                 connections.sendTo(username, errorMessage);
                 return;
             }
@@ -178,7 +178,7 @@ public class WebSocketHandler {
             SQLGameDAO gameDAO = new SQLGameDAO(connection);
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
 
-            if (gameData==null) {
+            if (gameData == null) {
                 throw new DataAccessException("Game not found for ID: " + makeMoveCommand.getGameID());
             }
 
@@ -202,8 +202,9 @@ public class WebSocketHandler {
                 connections.sendTo(username, errorMessage);
                 return;
             }
+
             if (!currentTurnColor.name().equalsIgnoreCase(playerColor)) {
-                ErrorMessage errorMessage = new ErrorMessage("It's not your turn to move.");
+                ErrorMessage errorMessage = new ErrorMessage("It's not your turn to move");
                 connections.sendTo(username, errorMessage);
                 return;
             }
@@ -211,15 +212,16 @@ public class WebSocketHandler {
             try {
                 currentGame.makeMove(makeMoveCommand.getMove());
             } catch (InvalidMoveException e) {
-                ErrorMessage errorMessage = new ErrorMessage("Error Invalid move: " + e.getMessage());
+                ErrorMessage errorMessage = new ErrorMessage("Error: Invalid move - " + e.getMessage());
                 connections.sendTo(username, errorMessage);
                 return;
             }
+
             gameDAO.updateGame(makeMoveCommand.getGameID(), currentGame);
 
             loadGame(null, makeMoveCommand.getGameID(), true);
 
-            String moveDescription = username + " made move " + makeMoveCommand.getMove().toString();
+            String moveDescription = username + " made move" + makeMoveCommand.getMove().toString();
             NotificationMessage moveNotification = new NotificationMessage(username, moveDescription);
             connections.broadcast(username, moveNotification, gameData.gameID());
 
@@ -241,10 +243,14 @@ public class WebSocketHandler {
         } catch (DataAccessException | SQLException e) {
             throw new RuntimeException("Error loading game: " + e.getMessage(), e);
         } catch (Exception e) {
+            System.err.println("Unexpected error during move: " + e.getMessage());
+            e.printStackTrace();
             ErrorMessage errorMessage = new ErrorMessage("An unexpected error occurred: " + e.getMessage());
             connections.sendTo(username, errorMessage);
         }
     }
+
+
 
 
 }

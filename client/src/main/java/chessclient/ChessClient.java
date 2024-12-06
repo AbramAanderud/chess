@@ -114,7 +114,7 @@ public class ChessClient {
         if (params.length==1) {
             String move = params[0];
 
-            if (move.length()!=4) {
+            if (move.length() != 4) {
                 throw new IllegalArgumentException("Format should be like e2e4");
             }
 
@@ -139,7 +139,8 @@ public class ChessClient {
 
             this.ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.makeMove(currAuthToken, currGameID, moveToMake);
-            return "Move made successfully";
+
+            return "Move made";
         }
         throw new ResponseException(400, "Format should be like e2e4");
     }
@@ -147,7 +148,6 @@ public class ChessClient {
     public String highlightLegalMoves(String... params) throws ResponseException {
         if (params.length==1) {
             String move = params[0];
-            System.out.println("highlight reached");
 
             if (move.length()!=2) {
                 throw new IllegalArgumentException("Format should be like e2");

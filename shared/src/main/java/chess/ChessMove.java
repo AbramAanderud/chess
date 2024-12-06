@@ -48,7 +48,7 @@ public class ChessMove {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Move from ").append(startPosition.toString());
+        sb.append(" from ").append(startPosition.toString());
         sb.append(" to ").append(endPosition.toString());
         if (promotionPiece!=null) {
             sb.append(" promoting to ").append(promotionPiece.toString().toLowerCase());

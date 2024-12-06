@@ -98,10 +98,25 @@ public class ChessClient {
             }
 
             return switch (cmd) {
-                case "redraw" -> drawBoard(params);
-                case "leave" -> leave(params);
+                case "redraw" -> {
+                    if (params.length != 0) {
+                        throw new ResponseException(400, "Bad request: 'redraw' expects no additional arguments");
+                    }
+                    yield leave(params);
+                }
+                case "leave" -> {
+                    if (params.length != 0) {
+                        throw new ResponseException(400, "Bad request: 'leave' expects no additional arguments");
+                    }
+                    yield leave(params);
+                }
                 case "make move" -> makeMove(params);
-                case "resign" -> resign(params);
+                case "resign" -> {
+                    if (params.length != 0) {
+                        throw new ResponseException(400, "Bad request: 'resign' expects no additional arguments");
+                    }
+                    yield resign(params);
+                }
                 case "highlight legal moves" -> highlightLegalMoves(params);
                 default -> help();
             };
@@ -115,7 +130,7 @@ public class ChessClient {
             String move = params[0];
 
             if (move.length()!=4 && move.length()!=5) {
-                throw new IllegalArgumentException("Format should be like e2e4 e7e8q for promotion");
+                throw new IllegalArgumentException("Format should be like e2e4 or e7e8q for promotion");
             }
 
             char startColChar = move.charAt(0);
@@ -221,17 +236,20 @@ public class ChessClient {
             ws = new WebSocketFacade(serverURL, serverMessageObserver);
             ws.resign(currAuthToken, currGameID);
             return "game resigned";
+        } else {
+            throw new ResponseException(400, "Bad request");
         }
-        throw new ResponseException(400, "Bad request");
+
     }
 
     public String drawBoard(String... params) throws ResponseException {
-        if (params.length==0) {
+        if (params.length == 0) {
             currentGameData = getCurrentGameData();
             Gson gson = new Gson();
             return gson.toJson(currentGameData);
+        } else {
+            throw new ResponseException(400, "Bad request");
         }
-        throw new ResponseException(400, "Bad request");
     }
 
     public String leave(String... params) throws ResponseException {

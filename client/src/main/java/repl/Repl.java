@@ -139,6 +139,8 @@ public class Repl implements ServerMessageObserver {
                     displayError(result);
                 } else if (result.startsWith("No valid moves available")) {
                     displayNoValidMoves(result);
+                } else if (result.contains("Bad request")) {
+                    displayError(result);
                 }
             } catch (Throwable e) {
                 displayException(e);
@@ -210,8 +212,9 @@ public class Repl implements ServerMessageObserver {
     }
 
     private void displayException(Throwable e) {
-        System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_BLUE);
+        System.out.print(SET_TEXT_ITALIC + SET_TEXT_COLOR_RED);
         System.out.print(e.getMessage());
+        printPromptPlayingGame();
     }
 
 
